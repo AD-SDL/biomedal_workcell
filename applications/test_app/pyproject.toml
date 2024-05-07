@@ -1,7 +1,7 @@
 [project]
-name = "example_app"
+name = "test_app"
 version = "1.0.0"
-description = "A simple example WEI application that waits for a set amount of time, then takes a picture with a webcam."
+description = "Simple testing application used during workcell development."
 authors = [{name = "Ryan D. Lewis", email="ryan.lewis@anl.gov"}]
 dependencies = [
     "ad_sdl.wei",

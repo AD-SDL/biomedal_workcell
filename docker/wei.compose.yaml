@@ -8,11 +8,12 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ${WORKCELLS_DIR}:/workcell_defs
-      - ${WEI_DATA_DIR}:/home/app/.wei
-    command: python3 -m wei.server --workcell /workcell_defs/${WORKCELL_FILENAME}
-    env_file:
-      - .env
+      - ../workcells:/workcell_defs
+      - ~/.wei:/home/app/.wei
+    command: python3 -m wei.server --workcell /workcell_defs/bio446.workcell.yaml
+    environment:
+      - USER_ID=1000
+      - GROUP_ID=1000
     depends_on:
       - wei_redis
 
@@ -20,13 +21,13 @@ services:
     image: ghcr.io/ad-sdl/wei
     container_name: wei_engine
     volumes:
-      - ${WORKCELLS_DIR}:/workcell_defs
-      - ${WEI_DATA_DIR}:/home/app/.wei
-    env_file:
-      - .env
-    command: python3 -m wei.engine --workcell /workcell_defs/${WORKCELL_FILENAME}
+      - ../workcells:/workcell_defs
+      - ~/.wei:/home/app/.wei
+    command: python3 -m wei.engine --workcell /workcell_defs/bio446.workcell.yaml
     environment:
       - PYTHONUNBUFFERED=1 # Fix weird bug with empty logging
+      - USER_ID=1000
+      - GROUP_ID=1000
     depends_on:
       - wei_redis
       - wei_server
@@ -37,5 +38,5 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - ${REDIS_DIR}:/data
+      - ~/.wei/redis:/data
     command: redis-server --save 60 1 --loglevel warning

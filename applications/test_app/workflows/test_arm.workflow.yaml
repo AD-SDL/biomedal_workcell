@@ -5,8 +5,7 @@ metadata:
   version: 0.2
 
 modules:
-  - name: sleeper
-  - name: webcam
+  - name: biopf400
 
 flowdef:
   #This defines a step in the workflow. Each step represents an action on a single module
@@ -24,16 +23,12 @@ flowdef:
   #This is a place for additional notes
     # comment: Sleep for 5 seconds before we take a picture
 
-  - name: Sleep workcell for t seconds
-    module: sleeper
-    action: sleep
+  - name: Test transfer
+    module: biopf400
+    action: transfer
     args:
-      t: "payload.wait_time"
-    checks: null
-    comment: Sleep for 5 seconds before we take a picture
-
-  - name: Take Picture
-    module: webcam
-    action: take_picture
-    args:
-      file_name: "payload.file_name"
+      source: biopf400.test1
+      target: biopf400.test2
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfers from 1 test point to another

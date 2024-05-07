@@ -10,25 +10,20 @@ config:
   redis_host: wei_redis
   redis_port: 6379
   reset_locations: false
-  update_interval: 1.0
+  update_interval: 5.0
   use_diaspora: false
   log_level: 20 # INFO level, see https://docs.python.org/3/library/logging.html#levels for a list of levels
+  cold_start_delay: 5
 
 #List of all components accessible in this workcell
 modules:
-  - name: sleeper
-    model: sleeper_test_node
+  - name: biopf400
+    model: PreciseFlex 400SXL B45A
     interface: wei_rest_node
     config:
-      rest_node_address: "http://sleep_node:2000"
-  - name: webcam
-    model: camera_test_node
-    interface: wei_rest_node
-    config:
-      rest_node_address: "http://camera_node:2001"
+      rest_node_address: "http://biopf400:3000"
 
 locations:
-  webcam:
-    webcam.pos: 0
-  workcell:
-    webcam.pos: [15, 0, 0, 0, 0, 0]
+  biopf400:
+    biopf400.test1: [713.000, -63.991, 497.192, -256.646, 77.368, -210.498]
+    biopf400.test2: [715.514, -67.309, 503.184, -258.607, 78.159, 556.394]
