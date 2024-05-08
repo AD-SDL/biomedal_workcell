@@ -3,7 +3,7 @@
 #####################
 services:
   wei_server:
-    image: ghcr.io/ad-sdl/wei
+    image: ghcr.io/ad-sdl/wei:v0.5.8
     container_name: wei_server
     ports:
       - 8000:8000
@@ -18,7 +18,7 @@ services:
       - wei_redis
 
   wei_engine:
-    image: ghcr.io/ad-sdl/wei
+    image: ghcr.io/ad-sdl/wei:v0.5.8
     container_name: wei_engine
     volumes:
       - ../workcells:/workcell_defs
