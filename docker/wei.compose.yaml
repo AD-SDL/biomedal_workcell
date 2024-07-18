@@ -3,7 +3,7 @@
 #####################
 services:
   wei_server:
-    image: ghcr.io/ad-sdl/wei:v0.5.8
+    image: ghcr.io/ad-sdl/wei:dev
     container_name: wei_server
     ports:
       - 8000:8000
@@ -14,11 +14,12 @@ services:
     environment:
       - USER_ID=1000
       - GROUP_ID=1000
+    restart: unless-stopped
     depends_on:
       - wei_redis
 
   wei_engine:
-    image: ghcr.io/ad-sdl/wei:v0.5.8
+    image: ghcr.io/ad-sdl/wei:dev
     container_name: wei_engine
     volumes:
       - ../workcells:/workcell_defs
@@ -28,6 +29,7 @@ services:
       - PYTHONUNBUFFERED=1 # Fix weird bug with empty logging
       - USER_ID=1000
       - GROUP_ID=1000
+    restart: unless-stopped
     depends_on:
       - wei_redis
       - wei_server

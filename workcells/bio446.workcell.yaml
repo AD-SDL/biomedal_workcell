@@ -24,16 +24,18 @@ modules:
       rest_node_address: "http://biopf400:3000"
   - name: ot2bioalpha
     model: Opentrons OT-2
+    active: False
     interface: wei_rest_node
     config:
       rest_node_address: "http://ot2bioalpha:3001"
   - name: ot2biobeta
     model: Opentrons OT-2
+    active: False
     interface: wei_rest_node
     config:
       rest_node_address: "http://ot2biobeta:3002"
 
 locations:
   biopf400:
-    biopf400.test1: [713.000, -63.991, 497.192, -256.646, 77.368, -210.498]
-    biopf400.test2: [715.514, -67.309, 503.184, -258.607, 78.159, 556.394]
+    ot2bioalpha.deck1: [708.132, -49.277, 318.588, 448.364, 78.476, -207.488]
+    hidex.default: [695.980, 26.367, 42.204, 739.301, 78.523, -746.939]

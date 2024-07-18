@@ -1,7 +1,6 @@
 name: bio446_workcell
 include:
   - path: 'docker/wei.compose.yaml'
-  - path: 'docker/dashboard.compose.yaml'
 services:
   ###########
   # Modules #
@@ -10,17 +9,20 @@ services:
     container_name: biopf400
     image: ghcr.io/ad-sdl/pf400_module
     command: python -m pf400_rest_node --port 3000 --pf400_ip 146.137.240.33 --pf400_port 10100
+    restart: unless-stopped
     ports:
       - 3000:3000
-  ot2bioalpha:
-    image: ghcr.io/ad-sdl/ot2_module
-    container_name: ot2bioalpha
-    ports:
-      - 3001:3001
-    command: python3 ot2_module/src/ot2_rest_node.py --alias="ot2bioalpha" --port=3001 --ot2_ip=169.254.86.133
-  ot2biobeta:
-    image: ghcr.io/ad-sdl/ot2_module
-    container_name: ot2biobeta
-    ports:
-      - 3002:3002
-    command: python3 ot2_module/src/ot2_rest_node.py --alias="ot2biobeta" --port=3002 --ot2_ip=146.137.240.106
+  # ot2bioalpha:
+  #   image: ghcr.io/ad-sdl/ot2_module
+  #   container_name: ot2bioalpha
+  #   restart: unless-stopped
+  #   ports:
+  #     - 3001:3001
+  #   command: python3 ot2_module/src/ot2_rest_node.py --alias="ot2bioalpha" --port=3001 --ot2_ip=169.254.86.133
+  # ot2biobeta:
+  #   image: ghcr.io/ad-sdl/ot2_module
+  #   container_name: ot2biobeta
+  #   restart: unless-stopped
+  #   ports:
+  #     - 3002:3002
+  #   command: python3 ot2_module/src/ot2_rest_node.py --alias="ot2biobeta" --port=3002 --ot2_ip=146.137.240.106
