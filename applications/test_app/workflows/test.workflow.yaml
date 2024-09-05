@@ -1,0 +1,53 @@
+name: Test_Arm_Workflow
+metadata:
+  author: Ryan D. Lewis
+  info: Tests the biopf400 arm
+  version: 0.2
+
+modules:
+  - name: biopf400
+
+flowdef:
+  - name: Run Protocol
+    module: ot2bioalpha
+    action: run_protocol
+    files:
+      protocol: payload.ot2_protocol
+
+  - name: Open Hidex I
+    module: hidex_geraldine
+    action: open
+
+  - name: Transfer Plate I
+    module: biopf400
+    action: transfer
+    args:
+      source: ot2bioalpha.deck1
+      target: hidex_geraldine.default
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfers a plate from ot2bioalpha's Deck 1 location to Hidex "Geraldine"
+
+  - name: Read Plate I
+    module: hidex_geraldine
+    action: run_assay
+    args:
+      assay_name: demo_absorbance
+
+  - name: Open Hidex II
+    module: hidex_geraldine
+    action: open
+
+  - name: Transfer Plate II
+    module: biopf400
+    action: transfer
+    args:
+      source: hidex_geraldine.default
+      target: ot2bioalpha.deck1
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfers a plate from Hidex "Geraldine" to ot2bioalpha's Deck 1 location
+    
+  - name: Close Hidex I
+    module: hidex_geraldine
+    action: close

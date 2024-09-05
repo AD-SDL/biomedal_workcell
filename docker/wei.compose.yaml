@@ -3,14 +3,14 @@
 #####################
 services:
   wei_server:
-    image: ghcr.io/ad-sdl/wei:dev
+    image: ghcr.io/ad-sdl/wei:main
     container_name: wei_server
     ports:
       - 8000:8000
     volumes:
       - ../workcells:/workcell_defs
       - ~/.wei:/home/app/.wei
-    command: python3 -m wei.server --workcell /workcell_defs/bio446.workcell.yaml
+    command: python3 -m wei.server --workcell /workcell_defs/bio446.workcell.yaml --server_host 0.0.0.0
     environment:
       - USER_ID=1000
       - GROUP_ID=1000
@@ -19,7 +19,7 @@ services:
       - wei_redis
 
   wei_engine:
-    image: ghcr.io/ad-sdl/wei:dev
+    image: ghcr.io/ad-sdl/wei:main
     container_name: wei_engine
     volumes:
       - ../workcells:/workcell_defs
