@@ -63,7 +63,7 @@ def run(protocol: protocol_api.ProtocolContext):
         substrate_assay_plate_5, 
         substrate_assay_plate_6,
     ]
-    for i in range(substrate_assay_plates): 
+    for i in range(len(substrate_assay_plates)): 
         source_column = substrate_stock.columns_by_name()[str(i+1)]
         destination_columns = substrate_assay_plates[i].columns()
         right_pipette_300uL_multi.distribute(

@@ -1,0 +1,30 @@
+metadata:
+  protocolName: Inoculate between substrate plates 
+  author: Casey Stone cstone@anl.gov
+  description: Between plate inoculation protocol for Substrate app
+  apiLevel: "2.12"
+
+equipment:
+  - name: corning_96_wellplate_360ul_flat
+    location: "1"
+    alias: current_assay_plate
+
+  - name: corning_96_wellplate_360ul_flat
+    location: "3"
+    alias: old_assay_plate
+
+  - name: opentrons_96_tiprack_20ul
+    location: "6"
+
+  - name: p20_multi_gen2
+    mount: left
+
+commands:
+  - name: First Inoculation Transfer
+    command: multi_transfer
+    multi_source: old_assay_plate:[[A1, A2, A3, A4, A5, A6, A7, A8]]
+    multi_destination: current_assay_plate:[[B1, B2, B3, B4, B5, B6, B7, B8]]
+    multi_volume: 10            
+    multi_dispense_clearance: 2
+    multi_aspirate_clearance: 2
+    multi_drop_tip: True 

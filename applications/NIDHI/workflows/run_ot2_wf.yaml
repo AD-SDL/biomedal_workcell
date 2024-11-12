@@ -1,0 +1,14 @@
+name: Run OT-2 Protocol - Substrate App Workflow
+
+metadata:
+  author: Casey Stone
+  info: Workflow for running one OT-2 protocol from payload 
+  version: 0.1
+
+flowdef:
+  - name: Run OT-2 protocol
+    module: ot2bioalpha
+    action: run_protocol
+    files:
+      protocol: payload.current_ot2_protocol
+    comment: Run the current OT-2 protocol
