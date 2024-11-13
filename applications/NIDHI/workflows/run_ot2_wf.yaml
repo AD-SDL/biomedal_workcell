@@ -7,8 +7,11 @@ metadata:
 
 flowdef:
   - name: Run OT-2 protocol
-    module: ot2bioalpha
+    module: ot2biobeta
     action: run_protocol
+    args: 
+      source_wells_list: payload.source_wells_list
+      destination_wells_list: payload.destination_wells_list
     files:
       protocol: payload.current_ot2_protocol
     comment: Run the current OT-2 protocol

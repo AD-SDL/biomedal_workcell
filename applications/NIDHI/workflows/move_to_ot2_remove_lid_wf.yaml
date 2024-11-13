@@ -1,0 +1,32 @@
+name: Transfer Substrate Plate to OT-2 and Remove Lid - Substrate App Workflow
+
+metadata:
+  author: Casey Stone
+  info: Workflow for returning substrate plate to the OT-2 after reading and incubation
+  version: 0.1
+
+flowdef:
+  - name: Open the BMG plate reader tray
+    module: bmg
+    acton: open 
+
+  - name: Transfer assay plate back to OT-2 deck 
+    module: biopf400
+    action: transfer
+    args: 
+      source: bmg.nest
+      target: payload.assay_plate_ot2_replacement_location
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+    comment: TODO - will this work if the payload argument is a string? 
+
+  - name: Remove lid from assay plate 
+    module: bippf400
+    action: remove_lid
+    args: 
+      source: payload.assay_plate_ot2_replacement_location
+      target: lidnes2
+      source_plate_rotation: narrow 
+      target_plate_rotaiton: narrow
+    comment: TODO - where is lid nest2? check that you're not swapping lids between assay plates!

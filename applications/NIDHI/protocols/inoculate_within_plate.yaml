@@ -18,8 +18,26 @@ equipment:
 commands:
   - name: First Inoculation Transfer
     command: multi_transfer
-    multi_source: current_assay_plate:
-    multi_destination: current_assay_plate:[[B1, B2, B3, B4, B5, B6, B7, B8]]
+    multi_source: current_assay_plate:payload.source_wells_list[0]
+    multi_destination: current_assay_plate:payload.destination_wells_list[0]
+    multi_volume: 10            
+    multi_dispense_clearance: 2
+    multi_aspirate_clearance: 2
+    multi_drop_tip: True 
+
+  - name: Second Inoculation Transfer
+    command: multi_transfer
+    multi_source: current_assay_plate:payload.source_wells_list[1]
+    multi_destination: current_assay_plate:payload.destination_wells_list[1]
+    multi_volume: 10            
+    multi_dispense_clearance: 2
+    multi_aspirate_clearance: 2
+    multi_drop_tip: True 
+
+  - name: Third Inoculation Transfer
+    command: multi_transfer
+    multi_source: current_assay_plate:payload.source_wells_list[2]
+    multi_destination: current_assay_plate:payload.destination_wells_list[2]
     multi_volume: 10            
     multi_dispense_clearance: 2
     multi_aspirate_clearance: 2
