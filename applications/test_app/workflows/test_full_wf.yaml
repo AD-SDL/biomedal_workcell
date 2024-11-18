@@ -1,96 +1,65 @@
 name: Test_Arm_Workflow
 metadata:
-  author: Ryan D. Lewis
-  info: Tests the biopf400 arm
+  author: Tobias Ginsburg 
+  info: Demo of robots for AutoProtocol Project
   version: 0.2
 
 modules:
   - name: biopf400
 
 flowdef:
- - name: Transfer Plate 0
-    module: biopf400
-    action: transfer
-    args:
-      source: stack.level9
-      target: ot2bioalpha.deck1
-      source_plate_rotation: narrow
-      target_plate_rotation: narrow
-    comment: Transfers a plate from ot2bioalpha's Deck 1 location to Hidex "Geraldine"
-
   - name: Run Protocol
     module: ot2bioalpha
     action: run_protocol
     files:
       protocol: payload.ot2_protocol
 
-  - name: Open Hidex I
-    module: hidex_geraldine
-    action: open
-
   - name: Transfer Plate I
     module: biopf400
     action: transfer
     args:
       source: ot2bioalpha.deck1
-      target: hidex_geraldine.default
+      target: bio_sealer.default
       source_plate_rotation: narrow
       target_plate_rotation: narrow
-    comment: Transfers a plate from ot2bioalpha's Deck 1 location to Hidex "Geraldine"
-
-  - name: Read Plate I
-    module: hidex_geraldine
-    action: run_assay
-    args:
-      assay_name: demo_absorbance
-
-  - name: Open Hidex II
-    module: hidex_geraldine
-    action: open
+    comment: Transfers a plate from ot2bioalpha to the sealer
+  
+  - name: Seal Plate
+    module: bio_sealer
+    action: seal
+    comment: Seal the Plate
 
   - name: Transfer Plate II
     module: biopf400
     action: transfer
     args:
-      source: hidex_geraldine.default
-      target: sealer.deck
-      source_plate_rotation: narrow
-      target_plate_rotation: narrow
-    comment: Transfers a plate from Hidex "Geraldine" to the sealer
-  
-  - name: Close Hidex II
-    module: hidex_geraldine
-    action: close
-  
-  - name: Seal Plate
-    module: bio_sealer
-    action: seal
-  comment: Seal the Plate
-
-  - name: Transfer Plate III
-    module: biopf400
-    action: transfer
-    args:
-      source: sealer.deck
-      target: biometra3.deck
+      source: bio_sealer.default
+      target: bio_biometra3.default
       source_plate_rotation: narrow
       target_plate_rotation: narrow
     comment: Transfers a plate from sealer to the biometra
   
+  - name: Close Biometra I
+    module: bio_biometra3
+    action: close
 
   - name: Run Biometra
     module: bio_biometra3
-    action: run_protocol
+    action: run_program
     args:
-      protocol: 3
-    comment: Runs a biometra protocol
+      program_number: 2
+    comment: Runs a biometra program
   
+  - name: Open Biometra I
+    module: bio_biometra3
+    action: open
+
   - name: Transfer Plate III
     module: biopf400
     action: transfer
     args:
-      source: biometra3.deck
-      target: peeler.deck
+      source: biometra3.default
+      target: bio_peeler.default
       source_plate_rotation: narrow
       target_plate_rotation: narrow
     comment: Transfers a plate from biometra to the peeler
@@ -98,7 +67,26 @@ flowdef:
   - name: Peel Plate
     module: bio_peeler
     action: peel
-  comment: Peel the Plate
+    comment: Peel the Plate
+  
+  - name: Open Hidex I
+    module: hidex_geraldine
+    action: open
 
+  - name: Transfer Plate IV
+    module: biopf400
+    action: transfer
+    args:
+      source: bio_peeler.default
+      target: hidex_geraldine.default
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfers a plate from peeler to the hidex
+  
+  - name: Read Plate I
+    module: hidex_geraldine
+    action: run_assay
+    args:
+      assay_name: demo_absorbance  
 
         

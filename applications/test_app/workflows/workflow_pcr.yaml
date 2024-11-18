@@ -1,0 +1,132 @@
+name: Liquid Test 2
+author: Autoprotocol
+info: A PCR protocol written by Autoprotocol
+version: '0.1'
+modules:
+- name: bio_sealer
+- name: ot2bioalpha
+- name: bio_biometra3
+- name: hidex_geraldine
+- name: biopf400
+- name: bio_peeler
+flowdef:
+# - name: Run liquid protocol
+#   module: ot2bioalpha
+#   action: run_protocol
+#   files:
+#     protocol: payload.ot2_protocol
+# - name: Transfer plate from OT2 Bioalpha to bio_sealer
+#   module: biopf400
+#   action: transfer
+#   args:
+#     source: ot2bioalpha.deck1
+#     target: bio_sealer.default
+#     source_plate_rotation: narrow
+#     target_plate_rotation: narrow
+# - name: Seal the plate
+#   module: bio_sealer
+#   action: seal
+#   args: {}
+# - name: Open the lid of the thermocycler
+#   module: bio_biometra3
+#   action: open
+#   args: {}
+# - name: Transfer the sealed plate from bio_sealer to bio_biometra3 with narrow orientation
+#   module: biopf400
+#   action: transfer
+#   args:
+#     source: bio_sealer.default
+#     target: bio_biometra3.default
+#     source_plate_rotation: narrow
+#     target_plate_rotation: narrow
+# - name: Close the lid of the thermocycler
+#   module: bio_biometra3
+#   action: close
+#   args: {}
+# - name: Run thermocycling protocol 1
+#   module: bio_biometra3
+#   action: run_program
+#   args:
+#     program_number: 2
+- name: Open the lid of the thermocycler
+  module: bio_biometra3
+  action: open
+  args: {}
+- name: Transfer plate from thermocycler to peeler
+  module: biopf400
+  action: transfer
+  args:
+    source: bio_biometra3.default
+    target: bio_peeler.default
+    source_plate_rotation: narrow
+    target_plate_rotation: narrow
+- name: Peel the plate
+  module: bio_peeler
+  action: peel
+  args: {}
+- name: Open the lid of the Hidex plate reader
+  module: hidex_geraldine
+  action: open
+  args: {}
+- name: Transfer plate from Peeler to OT2 Bioalpha
+  module: biopf400
+  action: transfer
+  args:
+    source: bio_peeler.default
+    target: ot2bioalpha.deck1
+    source_plate_rotation: narrow
+    target_plate_rotation: narrow
+- name: Open the lid of the Hidex plate reader
+  module: hidex_geraldine
+  action: open
+  args: {}
+- name: Transfer plate from OT2 Bioalpha to Hidex
+  module: biopf400
+  action: transfer
+  args:
+    source: ot2bioalpha.deck1
+    target: hidex_geraldine.default
+    source_plate_rotation: narrow
+    target_plate_rotation: narrow
+- name: Close the lid of the Hidex plate reader
+  module: hidex_geraldine
+  action: close
+  args: {}
+- name: Close the lid of the Hidex plate reader
+  module: hidex_geraldine
+  action: close
+  args: {}
+- name: Open the lid of the Hidex plate reader
+  module: hidex_geraldine
+  action: open
+  args: {}
+- name: Close the lid of the Hidex plate reader
+  module: hidex_geraldine
+  action: close
+  args: {}
+- name: Close the lid of the Hidex plate reader
+  module: hidex_geraldine
+  action: close
+  args: {}
+- name: Run assay protocol to read the final plate results
+  module: hidex_geraldine
+  action: run_assay
+  args:
+    assay_name: "A260/A280"
+    wait_for_result: false
+- name: Close the lid of the Hidex plate reader
+  module: hidex_geraldine
+  action: close
+  args: {}
+- name: Open the lid of the Hidex plate reader
+  module: hidex_geraldine
+  action: open
+  args: {}
+- name: Transfer plate from Hidex to OT2 Bioalpha
+  module: biopf400
+  action: transfer
+  args:
+    source: hidex_geraldine.default
+    target: ot2bioalpha.deck1
+    source_plate_rotation: narrow
+    target_plate_rotation: narrow

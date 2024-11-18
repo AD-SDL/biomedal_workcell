@@ -1,0 +1,43 @@
+equipment:
+  - name: corning_96_wellplate_360ul_flat
+    location: "2"
+    alias: plate1
+    offset: [0, 0.6, 0]  # add plate offset here
+
+  - name: opentrons_96_tiprack_300ul
+    location: "11"
+    offset: [0.3, 0.7, -0.5]  # add plate offset here
+
+  - name: p300_single_gen2
+    mount: left
+
+commands:
+  - name: Transfer from A1 to H12
+    command: transfer
+    source: plate1:A1
+    destination: plate1:H12  
+    volume: 100    # 100uL   
+    dispense_clearance: 2
+    aspirate_clearance: 2
+    drop_tip: True
+
+  - name: Transfer form A2 to H12
+    command: transfer
+    source: plate1:A2
+    destination: plate1:H12
+    volume: 100    # 100uL
+    dispense_clearance: 2
+    aspirate_clearance: 1
+    drop_tip: False
+
+  - name: Mix H12 
+    command: mix
+    reps: 3
+    mix_volume: 100
+    location: plate1:H12
+
+metadata:
+  protocolName: Color Mixing all
+  author: Casey Stone 
+  description: Protopiler demo
+  apiLevel: "2.12"

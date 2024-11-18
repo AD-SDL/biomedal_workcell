@@ -1,0 +1,74 @@
+name: Liquid Test 2
+author: Autoprotocol
+info: A PCR protocol written by Autoprotocol
+version: '0.1'
+modules:
+- name: hidex_geraldine
+- name: bio_peeler
+- name: biopf400
+- name: ot2bioalpha
+- name: bio_sealer
+flowdef:
+- name: Run liquid protocol
+  module: ot2bioalpha
+  action: run_protocol
+  files:
+    protocol: payload.ot2_protocol
+- name: Open the lid of hidex geraldine
+  module: hidex_geraldine
+  action: open
+  args: {}
+- name: Move the plate from ot2bioalpha to hidex geraldine
+  module: biopf400
+  action: transfer
+  args:
+    source: ot2bioalpha.deck1
+    target: hidex_geraldine.default
+    source_plate_rotation: narrow
+    target_plate_rotation: narrow
+- name: Close the lid of the hidex geraldine
+  module: hidex_geraldine
+  action: close
+  args: {}
+- name: Run the 'demo_absorbance' assay on the hidex geraldine
+  module: hidex_geraldine
+  action: run_assay
+  args:
+    assay_name: demo_absorbance
+    wait_for_result: true
+- name: Open the lid of the hidex geraldine
+  module: hidex_geraldine
+  action: open
+  args: {}
+- name: Transfer plate from hidex geraldine to bio_sealer
+  module: biopf400
+  action: transfer
+  args:
+    source: hidex_geraldine.default
+    target: bio_sealer.default
+    source_plate_rotation: narrow
+    target_plate_rotation: narrow
+- name: Seal the plate
+  module: bio_sealer
+  action: seal
+  args: {}
+- name: Move plate from bio_sealer to bio_peeler
+  module: biopf400
+  action: transfer
+  args:
+    source: bio_sealer.default
+    target: bio_peeler.default
+    source_plate_rotation: narrow
+    target_plate_rotation: narrow
+- name: Peel the film off the plate
+  module: bio_peeler
+  action: peel
+  args: {}
+- name: Transfer plate from bio_peeler to ot2bioalpha
+  module: biopf400
+  action: transfer
+  args:
+    source: bio_peeler.default
+    target: ot2bioalpha.deck1
+    source_plate_rotation: narrow
+    target_plate_rotation: narrow
