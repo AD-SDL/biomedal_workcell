@@ -8,42 +8,67 @@ metadata = {
 }
 
 # requirements
-requirements = {"robotType": "OT-2", "apiLevel": "2.19"}
+requirements = {"robotType": "OT-2", "apiLevel": "2.12"}
 
 # protocol run function
 def run(protocol: protocol_api.ProtocolContext):
 
+    # TODOs: 
+        # do we need to use a disposal volume for propper liquid transfers?
+        # we may need to change the z height aspirating from source substrate deepwell overtime
+        # do we have enough volume in the substrate deepwell
+        # add labware offsets to each deck position
+
     #* load labware 
     substrate_stock = protocol.load_labware(
-        "nest_96_wellplate_2ml_deep", location="4"
+        "nest_96_wellplate_2ml_deep", 
+        location="4",
     )
 
     substrate_assay_plate_1 = protocol.load_labware(
-        "corning_96_wellplate_360ul_flat", location="1"
+        "corning_96_wellplate_360ul_flat", 
+        location="1",
     )
     substrate_assay_plate_2 = protocol.load_labware(
-        "corning_96_wellplate_360ul_flat", location="7"
+        "corning_96_wellplate_360ul_flat", 
+        location="7",
     )
     substrate_assay_plate_3 = protocol.load_labware(
-        "corning_96_wellplate_360ul_flat", location="8"
+        "corning_96_wellplate_360ul_flat", 
+        location="8",
     )
     substrate_assay_plate_4 = protocol.load_labware(
-        "corning_96_wellplate_360ul_flat", location="9"
+        "corning_96_wellplate_360ul_flat", 
+        location="9",
     )
     substrate_assay_plate_5 = protocol.load_labware(
-        "corning_96_wellplate_360ul_flat", location="10"
+        "corning_96_wellplate_360ul_flat", 
+        location="10",
     )
     substrate_assay_plate_6 = protocol.load_labware(
-        "corning_96_wellplate_360ul_flat", location="11"
+        "corning_96_wellplate_360ul_flat", 
+        location="11",
     )
 
     tip_rack_300uL = protocol.load_labware(
-         "opentrons_96_tiprack_300ul", location="5"
+         "opentrons_96_tiprack_300ul", 
+         location="5",
     )
     tip_rack_20uL = protocol.load_labware(
-         "opentrons_96_tiprack_20ul", location="6"
+         "opentrons_96_tiprack_20ul", 
+         location="6",
     )
-    #tiprack.set_offset(x=-0.7, y=0.3, z=0.0)
+
+    # set labware offsets 
+    tip_rack_300uL.set_offset(x=0.1, y=0.4, z=-0.5) # pos 5
+    tip_rack_20uL.set_offset(x=0.4, y=1.1, z=0.0) # pos 6
+    substrate_assay_plate_1.set_offset(x=-0.0, y=1.2, z=0.0) # pos 1
+    substrate_assay_plate_2.set_offset(x=-0.0, y=1.0, z=0.0) # pos 7
+    substrate_assay_plate_3.set_offset(x=-0.0, y=0.0, z=0.0) # pos 8
+    substrate_assay_plate_4.set_offset(x=-0.0, y=0.3, z=0.0) # pos 9
+    substrate_assay_plate_5.set_offset(x=-0.0, y=0.4, z=0.0) # pos 10
+    substrate_assay_plate_6.set_offset(x=-0.0, y=0.2, z=0.0) # pos 11
+
 
     #* load pipettes 
     left_pipette_20uL_multi = protocol.load_instrument(
@@ -70,7 +95,8 @@ def run(protocol: protocol_api.ProtocolContext):
             150, 
             source_column[0], 
             [column[0] for column in destination_columns], 
-            new_tip="once"
+            new_tip="once",
+            disposal_volume=0, # TODO: do we need a disposal volume for propper volume transfer
         )
 
     # Inoculate 3 columns (columns 1, 5, and 9) of assay plate 1 from substrate stock plate columns 8, 10, and 12 respectively

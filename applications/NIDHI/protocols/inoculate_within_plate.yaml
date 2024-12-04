@@ -4,13 +4,18 @@ metadata:
   description: Within plate inoculation protocol for Substrate app
   apiLevel: "2.12"
 
+requirements: 
+  robotType: OT-2
+
 equipment:
   - name: corning_96_wellplate_360ul_flat
     location: "1"
     alias: current_assay_plate
+    offset: [0.0,1.2,0.0]
 
   - name: opentrons_96_tiprack_20ul
     location: "6"
+    offset: [0.4,1.1,0.0]
 
   - name: p20_multi_gen2
     mount: left
@@ -18,30 +23,30 @@ equipment:
 commands:
   - name: First Inoculation Transfer
     command: multi_transfer
-    multi_source: current_assay_plate:payload.source_wells_list[0]
-    multi_destination: current_assay_plate:payload.destination_wells_list[0]
-    multi_volume: 10            
-    multi_dispense_clearance: 2
-    multi_aspirate_clearance: 2
-    multi_drop_tip: True 
+    multi_source: current_assay_plate:payload.source_wells_1
+    multi_destination: current_assay_plate:payload.destination_wells_1
+    multi_volume: [10, 10, 10, 10, 10, 10, 10, 10]
+    multi_dispense_clearance: [2,2,2,2,2,2,2,2]
+    multi_aspirate_clearance: [2,2,2,2,2,2,2,2]
+    multi_drop_tip: [True, True, True, True, True, True, True, True]
 
   - name: Second Inoculation Transfer
     command: multi_transfer
-    multi_source: current_assay_plate:payload.source_wells_list[1]
-    multi_destination: current_assay_plate:payload.destination_wells_list[1]
-    multi_volume: 10            
-    multi_dispense_clearance: 2
-    multi_aspirate_clearance: 2
-    multi_drop_tip: True 
+    multi_source: current_assay_plate:payload.source_wells_2
+    multi_destination: current_assay_plate:payload.destination_wells_2
+    multi_volume: [10, 10, 10, 10, 10, 10, 10, 10]        
+    multi_dispense_clearance: [2,2,2,2,2,2,2,2]
+    multi_aspirate_clearance: [2,2,2,2,2,2,2,2]
+    multi_drop_tip: [True, True, True, True, True, True, True, True]
 
   - name: Third Inoculation Transfer
     command: multi_transfer
-    multi_source: current_assay_plate:payload.source_wells_list[2]
-    multi_destination: current_assay_plate:payload.destination_wells_list[2]
-    multi_volume: 10            
-    multi_dispense_clearance: 2
-    multi_aspirate_clearance: 2
-    multi_drop_tip: True 
+    multi_source: current_assay_plate:payload.source_wells_3
+    multi_destination: current_assay_plate:payload.destination_wells_3
+    multi_volume: [10, 10, 10, 10, 10, 10, 10, 10]        
+    multi_dispense_clearance: [2,2,2,2,2,2,2,2]
+    multi_aspirate_clearance: [2,2,2,2,2,2,2,2]
+    multi_drop_tip: [True, True, True, True, True, True, True, True]
 
 
 

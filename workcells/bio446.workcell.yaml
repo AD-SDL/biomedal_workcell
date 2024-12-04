@@ -59,8 +59,22 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2009"
+  - name: bio_bmg
+    model: BMG VANTAstar
+    interface: wei_rest_node
+    config:
+      rest_node_address: "http://hudson02.cels.anl.gov:3003"
+  - name: otflexbio2
+    model: Opentrons OT-Flex
+    interface: wei_rest_node
+    config: 
+      rest_node_address: "http://hudson02.cels.anl.gov:3004"
 
 locations:
   biopf400:
     ot2bioalpha.deck1: [708.132, -49.277, 318.588, 448.364, 78.476, -207.488]
+    ot2biobeta.deck1: [701.941, -20.563, 316.331, 333.900, 122.034, 458.676]
     hidex_geraldine.default: [695.980, 26.367, 42.204, 739.301, 78.523, -746.939]
+    bio_biometra3.default: [775.356, 66.949, 67.620, 758.671, 77.462, 735.973]
+    bio_peeler.default: [606.489, -38.393, 231.287, 433.080, 77.591, -764.287]
+    bio_sealer.default: [583.320, -69.616, 233.645, 462.783, 77.802, -368.290]
