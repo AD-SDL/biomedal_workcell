@@ -54,7 +54,7 @@ def main() -> None:
     # important variables 
     loop_num = 0
     # total_loops = 24
-    total_loops=5 # TESTING
+    total_loops=3 # TESTING
     # initial payload setup
     payload = {
         "current_ot2_protocol": str(plate_prep_and_first_inoculation_protocol),
@@ -75,6 +75,8 @@ def main() -> None:
         if loop_num == 0: # very first cycle 
             print("FIRST LOOP") # TESTING
 
+            payload["use_existing_resources"] = False
+
             # Run first OT-2 workflow  
             # experiment_client.start_run(
             #     str(run_ot2_wf),
@@ -84,6 +86,11 @@ def main() -> None:
             # )
 
         else: # if not the very first cycle
+
+            if loop_num == 1: 
+                payload["use_existing_resources"] = False
+            else: 
+                payload["use_existing_resources"] = True
 
             # set up variables 
             if loop_num % 4 == 0: 
@@ -106,6 +113,7 @@ def main() -> None:
                 
                 # set current OT-2 protocol as WITHIN plate transffer
                 payload["current_ot2_protocol"] = str(inoculate_within_plate_protocol)
+                
 
                 # determine inoculation columns based on loop number and add to payload
                 source_wells_list, destination_wells_list = determine_inoculation_columns(loop_num) 
@@ -127,6 +135,10 @@ def main() -> None:
                 payload["destination_wells_1"] = [destination_wells_list[0]]
                 payload["destination_wells_2"] = [destination_wells_list[1]]
                 payload["destination_wells_3"] = [destination_wells_list[2]]
+
+                # TESTING
+                print("App file payload:")
+                print(payload)
 
             # run workflow to run the specified OT-2 protocol
             experiment_client.start_run(

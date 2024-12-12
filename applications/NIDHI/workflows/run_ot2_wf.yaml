@@ -17,6 +17,7 @@ flowdef:
       destination_wells_1: payload.destination_wells_1
       destination_wells_2: payload.destination_wells_2
       destination_wells_3: payload.destination_wells_3
+      use_existing_resources: payload.use_existing_resources
     files:
       protocol: payload.current_ot2_protocol
     comment: Run the current OT-2 protocol

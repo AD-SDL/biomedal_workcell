@@ -18,7 +18,28 @@ equipment:
 
   - name: opentrons_96_tiprack_20ul
     location: "6"
+    offset: [0.4,1.1,0.0]
 
+  - name: opentrons_96_tiprack_20ul
+    location: "7"
+    offset: [0.0,1.0,0.0]
+
+  - name: opentrons_96_tiprack_20ul
+    location: "8"
+    offset: [0.0,0.0,0.0]
+
+  - name: opentrons_96_tiprack_20ul
+    location: "9"
+    offset: [0.0,1.3,0.0]
+
+  - name: opentrons_96_tiprack_20ul
+    location: "10"
+    offset: [0.0,0.4,0.0]
+
+  - name: opentrons_96_tiprack_20ul
+    location: "11"
+    offset: [0.0,0.2,0.0]
+    
   - name: p20_multi_gen2
     mount: left
 
