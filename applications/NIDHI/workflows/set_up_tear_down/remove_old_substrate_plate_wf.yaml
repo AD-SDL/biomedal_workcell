@@ -1,0 +1,27 @@
+name: Remove old substrate plate - Substrate App Workflow
+author: Casey Stone
+info: Workflow for using PF400 to remove old substrate plate from OT-2 back to stack
+version: '0.1'
+
+# TODO: TEST
+
+flowdef:
+  - name: transfer
+    module: biopf400
+    action: transfer
+    args:
+      source: ot2biobeta.deck3  
+      target: payload.current_substrate_stack # TODO: REPLACE WITH STACK NAME!
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+    comment: Remove old substrate plate from the OT-2
+
+  - name: replace lid
+    module: biopf400
+    action: replace_lid
+    args: 
+      source: lidstorage.nest1  # TODO: REPLACE WITH LID NEST NAME
+      target: payload.current_substrate_stack  # TODO: REPLACE WITH STACK NAME!    
+      source_plate_rotation: wide
+      target_plate_roation: wide
+    comment: Replaces lid on used plate in stack

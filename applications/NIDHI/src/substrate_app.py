@@ -4,29 +4,63 @@
 from pathlib import Path
 
 from wei import ExperimentClient
+from wei.types.experiment_types import CampaignDesign, ExperimentDesign
+
+"""
+TODOs: 
+
+- Name stacks Stack.deck1, Stack.deck2, etc when calibrating
+
+"""
 
 
 def main() -> None:
     """Runs the Substrate Experiment Application"""
 
-    # define the experiment object that will communicate with the WEI server
-    exp = ExperimentClient("localhost", "8000", "Substrate_Experiment")
+    # INITIAL EXPERIMENT SETUP
+    # define the ExperimentDesign object that will be used to register the experiment
+    experiment_design = ExperimentDesign(
+        experiment_name="Substrate_Experiment",
+        experiment_description="Experiment application for the adaptive evolution to substrates experiment",
+    )
+    # define a campaign object (useful if we want to group many of these substrate experiments together)
+    campaign = CampaignDesign(
+        campaign_name="Substrate_Campaign",
+        campaign_description="Campaign to collect substrate experiments",
+    )
+    # define the experiment client object that will communicate with the WEI server
+    experiment_client = ExperimentClient(
+        server_host="localhost",
+        server_port="8000",
+        experiment=experiment_design,
+        campaign=campaign,
+    )
 
+
+    # DEFINING PATHS AND VARIABLES
     # directory paths
     app_directory = Path(__file__).parent.parent
     wf_directory = app_directory / "workflows"
+    wf_set_up_tear_down_directory = wf_directory / "set_up_tear_down"
+    wf_run_instrument_directory = wf_directory / "run_instrument"
+    wf_transfers_directory = wf_directory / "transfers"
     protocol_directory = app_directory / "protocols"
 
-    # workflow paths
-    run_ot2_wf = wf_directory / "run_ot2_wf.yaml"
-    incubate_read_and_replace_wf = wf_directory / "incubate_read_and_replace_wf.yaml"
-    replace_lid_move_to_bmg_wf = wf_directory / "replace_lid_move_to_bmg_wf.yaml"
-    run_bmg_wf = wf_directory / "run_bmg_wf.yaml"
-    move_to_ot2_remove_lid_wf = wf_directory / "move_to_ot2_remove_lid_wf.yaml"
-    remove_old_substrate_plate_wf = wf_directory / "remove_old_substrate_plate_wf.yaml"
-    get_new_substrate_plate_wf = wf_directory / "get_new_substrate_plate_wf.yaml"
-    cleanup_wf = wf_directory / "cleanup_wf.yaml"
+    # workflow paths (run instruments)
+    run_ot2_wf = wf_run_instrument_directory / "run_ot2_wf.yaml"
+    incubator_to_run_bmg_wf = wf_run_instrument_directory / "incubator_to_run_bmg_wf.yaml"
+    bmg_to_run_incubator_wf = wf_run_instrument_directory / "bmg_to_run_incubator_wf.yaml"
 
+    # workflow paths (set up and tear down related)
+    tear_down_old_substrate_plate_wf = wf_set_up_tear_down_directory / "remove_old_substrate_plate_wf.yaml"
+    incubate_read_and_replace_wf = wf_directory / "incubate_read_and_replace_wf.yaml"
+    get_new_substrate_plate_wf = wf_set_up_tear_down_directory / "get_new_substrate_plate_wf.yaml"
+    cleanup_wf = wf_set_up_tear_down_directory / "cleanup_wf.yaml"
+
+    # workflow paths (pf400 transfers)
+    remove_lid_move_to_ot2_wf = wf_transfers_directory / "remove_lid_move_to_ot2_wf.yaml"
+    move_to_bmg_replace_lid_wf = wf_transfers_directory / "move_to_bmg_replace_lid_wf.yaml"
+    
     # protocol paths (for OT-2)
     plate_prep_and_first_inoculation_protocol = protocol_directory / "plate_prep_first_inoculation.py"
     inoculate_within_plate_protocol = protocol_directory / "inoculate_within_plate.yaml"
@@ -34,13 +68,15 @@ def main() -> None:
 
     # important variables 
     loop_num = 0
-    total_loops = 24
-    
+    current_substrate_stack = 1
+    # total_loops = 24
+    total_loops=2 # TESTING
     # initial payload setup
     payload = {
-        "current_ot2_protocol": plate_prep_and_first_inoculation_protocol,
-        "assay_plate_ot2_replacement_location": "ot2biobeta.deck1",
-        "assay_plate_lid_location": "lidnest1"
+        "current_ot2_protocol": str(plate_prep_and_first_inoculation_protocol),
+        "current_substrate_stack": "Stack.deck" + str(current_substrate_stack)
+        # "assay_plate_ot2_replacement_location": "ot2biobeta.deck1",
+        # "assay_plate_lid_location": "lidnest1"
     }
     
     # RUN THE EXPERIMENT --------------------------------------------
@@ -51,105 +87,136 @@ def main() -> None:
 
         # add current loop_num variable to payload
         payload["loop_num"] = loop_num
+        print(f"CURRENT LOOP #: {loop_num}")   # TESTING
 
         if loop_num == 0: # very first cycle 
+            print("FIRST LOOP") # TESTING
 
-            # Run first OT-2 workflow 
-            exp.start_run(
-                run_ot2_wf.resolve(),
+            payload["use_existing_resources"] = False
+
+            # Run first OT-2 workflow  
+            experiment_client.start_run(
+                str(run_ot2_wf),
                 payload=payload,
                 blocking=True,
                 simulate=False,
             )
 
-            # TESTING
-            print("RUNNING FIRST OT2 PROTOCOL")
-
         else: # if not the very first cycle
+
+            if loop_num == 1: 
+                payload["use_existing_resources"] = False
+            else: 
+                payload["use_existing_resources"] = True
 
             # set up variables 
             if loop_num % 4 == 0: 
                 # set current ot-2 transfer as BETWEEN plate transfer 
-                payload["current_ot2_protocol"] = inoculate_between_plates_protocol
+                payload["current_ot2_protocol"] = str(inoculate_between_plates_protocol)
 
-                # run workflow to get a new substrate plate and place it onto OT-2
-                exp.start_run(
+                print("BETWEEN PLATE TRANSFER")  # TESTING
+
+                # run workflow to get a new substrate plate and place in onto OT-2
+                experiment_client.start_run(
                     get_new_substrate_plate_wf.resolve(),
                     payload=payload,
                     blocking=True,
                     simulate=False,
                 )
+                current_substrate_stack += 1
+                payload["current_substrate_stack"] = "Stack.deck" + str(current_substrate_stack)
 
             else: 
-                # set current OT-2 protocol as WITHIN plate transffer
-                payload["current_ot2_protocol"] = inoculate_within_plate_protocol
+
+                print("WITHIN PLATE TRANSFER")  # TESTING
+                
+                # set current OT-2 protocol as WITHIN plate transfer
+                payload["current_ot2_protocol"] = str(inoculate_within_plate_protocol)
 
                 # determine inoculation columns based on loop number and add to payload
-                source_wells_list, destination_wells_list = determine_inoculation_columns(loop_num)
-                payload["source_wells_list"] = source_wells_list
-                payload["destination_wells_list"] = destination_wells_list
+                source_wells_list, destination_wells_list = determine_inoculation_columns(loop_num) 
 
                 if loop_num % 4 == 3: 
                     # if completing the last within plate transfer for a substrate plate, place plate at old position on ot2 (deck 3)
                     payload["assay_plate_ot2_replacement_location"] = "ot2biobeta.deck3"
                     payload["assay_plate_lid_location"] = "lidnest2"
-
+                    
                 else: 
                     # otherwise, place current substrate plate at deck 1 in the ot-2
                     payload["assay_plate_ot2_replacement_location"] = "ot2biobeta.deck1"
                     payload["assay_plate_lid_location"] = "lidnest1"
-                    
+
+                payload["source_wells_1"] = [source_wells_list[0]]
+                payload["source_wells_2"] = [source_wells_list[1]]
+                payload["source_wells_3"] = [source_wells_list[2]]
+
+                payload["destination_wells_1"] = [destination_wells_list[0]]
+                payload["destination_wells_2"] = [destination_wells_list[1]]
+                payload["destination_wells_3"] = [destination_wells_list[2]]
+
             # run workflow to run the specified OT-2 protocol
-            exp.start_run(
+            experiment_client.start_run(
                 run_ot2_wf.resolve(),
                 payload=payload,
                 blocking=True,
                 simulate=False,
             )
 
-            # run workflow to collect plate from OT-2 and place into BMG plate reader 
-            exp.start_run(
-                replace_lid_move_to_bmg_wf.resolve(),
+            # Clean up the old substrate plate if it was a between plate transfer
+                # TODO: maybe do in parallel to first 30 min incubation?
+            if loop_num % 4 == 0:
+                experiment_client.start_run(
+                run_ot2_wf.resolve(),
                 payload=payload,
                 blocking=True,
                 simulate=False,
             )
 
-            # run workflow to start bmg readings and incubation cycles
-            exp.start_run(
-                run_bmg_wf.resolve(),
-                payload=payload,
-                blocking=True,
-                simulate=False,
-            )            
+        # -------------------------------------------------------------------------------
+        # Run loop  
+        #     # run workflow to collect plate from OT-2 and place into BMG plate reader 
+        #     experiment_client.start_run(
+        #         replace_lid_move_to_bmg_wf.resolve(),
+        #         payload=payload,
+        #         blocking=True,
+        #         simulate=False,
+        #     )
 
-            if loop_num % 4 == 0: 
-                # TODO: have this run at the same time as the BMG readings/incubation
-                # run workflow to collect the old assay plate used in the between plate inoculation
-                exp.start_run(
-                    remove_old_substrate_plate_wf.resolve(),
-                    payload=payload,
-                    blocking=True,
-                    simulate=False,
-                )             
+        #     # run workflow to start bmg readings and incubation cycles
+        #     experiment_client.start_run(
+        #         run_bmg_wf.resolve(),
+        #         payload=payload,
+        #         blocking=True,
+        #         simulate=False,
+        #     )            
 
-            # run workflow to transfer the substrate plate from the BMG to the OT-2 and prep for next inoculation
-            exp.start_run(
-                move_to_ot2_remove_lid_wf.resolve(),
-                payload=payload,
-                blocking=True,
-                simulate=False,
-            )   
+        #     if loop_num % 4 == 0: 
+        #         # TODO: have this run at the same time as the BMG readings/incubation
+        #         # run workflow to collect the old assay plate used in the between plate inoculation
+        #         experiment_client.start_run(
+        #             remove_old_substrate_plate_wf.resolve(),
+        #             payload=payload,
+        #             blocking=True,
+        #             simulate=False,
+        #         )             
 
-            # cleanup at the very end of the experiment
-            if loop_num == total_loops - 1: 
-                # run cleanup workflow
-                exp.start_run(
-                    cleanup_wf.resolve(),
-                    payload=payload,
-                    blocking=True,
-                    simulate=False,
-                )   
+        #     # run workflow to transfer the substrate plate from the BMG to the OT-2 and prep for next inoculation
+        #     experiment_client.start_run(
+        #         move_to_ot2_remove_lid_wf.resolve(),
+        #         payload=payload,
+        #         blocking=True,
+        #         simulate=False,
+        #     )   
+
+        #     # cleanup at the very end of the experiment
+        #     if loop_num == total_loops - 1: 
+        #         # run cleanup workflow
+        #         experiment_client.start_run(
+        #             cleanup_wf.resolve(),
+        #             payload=payload,
+        #             blocking=True,
+        #             simulate=False,
+        #         )   
 
         # increase the loop number
         loop_num += 1
@@ -188,8 +255,6 @@ def determine_inoculation_columns(loop_num):
         - Protopiler has rows and columns switched for multichannel transfers currently. CHAOS!!!
   
     """
-    print("DETERMINE INOCULATION COlUMNS CALLED")
-
     mod = loop_num % 4
 
     if mod == 0: 
@@ -207,10 +272,7 @@ def determine_inoculation_columns(loop_num):
     source_well_list = [[f"{row}{column}" for row in "ABCDEFGH"] for column in source_columns]
     destination_well_list = [[f"{row}{column}" for row in "ABCDEFGH"] for column in destination_columns]
 
-    # TESTING
-    print(source_well_list)
-    print(destination_well_list)
-
+    # return source_wells_dict, destination_wells_dict
     return source_well_list, destination_well_list
 
 if __name__ == "__main__":

@@ -1,0 +1,40 @@
+name: Run the Tekmatic incubator - Substrate App Workflow
+
+metadata:
+  author: Casey Stone
+  info: Workflow for incubating on tekmatic incubator
+  version: 0.1
+
+flowdef:
+  - name: open incubator
+    module: tekmatic
+    action: open
+
+  - name: transfer
+    module: biopf400
+    action: transfer
+    args:
+      source: bmg_reader.default 
+      target: tekmatic_incubator.default
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfer plate with lid from bmg reader to tekmatic incubator
+
+  - name: close incubator
+    module: tekmatic
+    action: close
+
+  - name: run incubation
+    module: tekmatic
+    action: incubate
+    args: 
+      temperature: 30.0
+      shaker_frequency: 7     # TODO: WHAT SHOULD THE SHAKING Hz BE?
+      wait_for_incubation: True
+      incubation_time: 1800
+    comment: incubate for 30 min at 30 deg C, shaking at 7 Hz
+  
+  - name: open incubator
+    module: tekmatic
+    action: open
+
