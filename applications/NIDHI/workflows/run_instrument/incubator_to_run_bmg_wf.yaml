@@ -1,0 +1,36 @@
+name: Run the BMG plate reader assay - Substrate App Workflow
+
+metadata:
+  author: Casey Stone
+  info: Workflow for running an assay on the BMG plate reader
+  version: 0.1
+
+flowdef:
+  - name: open bmg
+    module: bmg
+    action: open
+
+  - name: transfer
+    module: biopf400
+    action: transfer
+    args:
+      source: tekmatic_incubator.default
+      target: bmg_reader.default
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfer plate with lid from tekmatic incubator to bmg reader
+
+  - name: close bmg
+    module: bmg
+    action: close
+
+  - name: Run BMG Inoculation and reading assay
+    module: bmg
+    action: run_assay
+    args: 
+      assay_name: NIDHI
+      data_output_name: payload.data_output_name   # TODO: make intelligent data output name
+
+  - name: open bmg
+    module: bmg
+    action: open

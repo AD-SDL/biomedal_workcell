@@ -6,6 +6,13 @@ from pathlib import Path
 from wei import ExperimentClient
 from wei.types.experiment_types import CampaignDesign, ExperimentDesign
 
+"""
+TODOs: 
+
+- Name stacks Stack.deck1, Stack.deck2, etc when calibrating
+
+"""
+
 
 def main() -> None:
     """Runs the Substrate Experiment Application"""
@@ -34,18 +41,26 @@ def main() -> None:
     # directory paths
     app_directory = Path(__file__).parent.parent
     wf_directory = app_directory / "workflows"
+    wf_set_up_tear_down_directory = wf_directory / "set_up_tear_down"
+    wf_run_instrument_directory = wf_directory / "run_instrument"
+    wf_transfers_directory = wf_directory / "transfers"
     protocol_directory = app_directory / "protocols"
 
-    # workflow paths
-    run_ot2_wf = wf_directory / "run_ot2_wf.yaml"
-    incubate_read_and_replace_wf = wf_directory / "incubate_read_and_replace_wf.yaml"
-    replace_lid_move_to_bmg_wf = wf_directory / "replace_lid_move_to_bmg_wf.yaml"
-    run_bmg_wf = wf_directory / "run_bmg_wf.yaml"
-    move_to_ot2_remove_lid_wf = wf_directory / "move_to_ot2_remove_lid_wf.yaml"
-    remove_old_substrate_plate_wf = wf_directory / "remove_old_substrate_plate_wf.yaml"
-    get_new_substrate_plate_wf = wf_directory / "get_new_substrate_plate_wf.yaml"
-    cleanup_wf = wf_directory / "cleanup_wf.yaml"
+    # workflow paths (run instruments)
+    run_ot2_wf = wf_run_instrument_directory / "run_ot2_wf.yaml"
+    incubator_to_run_bmg_wf = wf_run_instrument_directory / "incubator_to_run_bmg_wf.yaml"
+    bmg_to_run_incubator_wf = wf_run_instrument_directory / "bmg_to_run_incubator_wf.yaml"
 
+    # workflow paths (set up and tear down related)
+    tear_down_old_substrate_plate_wf = wf_set_up_tear_down_directory / "remove_old_substrate_plate_wf.yaml"
+    incubate_read_and_replace_wf = wf_directory / "incubate_read_and_replace_wf.yaml"
+    get_new_substrate_plate_wf = wf_set_up_tear_down_directory / "get_new_substrate_plate_wf.yaml"
+    cleanup_wf = wf_set_up_tear_down_directory / "cleanup_wf.yaml"
+
+    # workflow paths (pf400 transfers)
+    remove_lid_move_to_ot2_wf = wf_transfers_directory / "remove_lid_move_to_ot2_wf.yaml"
+    move_to_bmg_replace_lid_wf = wf_transfers_directory / "move_to_bmg_replace_lid_wf.yaml"
+    
     # protocol paths (for OT-2)
     plate_prep_and_first_inoculation_protocol = protocol_directory / "plate_prep_first_inoculation.py"
     inoculate_within_plate_protocol = protocol_directory / "inoculate_within_plate.yaml"
@@ -53,11 +68,13 @@ def main() -> None:
 
     # important variables 
     loop_num = 0
+    current_substrate_stack = 1
     # total_loops = 24
-    total_loops=3 # TESTING
+    total_loops=2 # TESTING
     # initial payload setup
     payload = {
         "current_ot2_protocol": str(plate_prep_and_first_inoculation_protocol),
+        "current_substrate_stack": "Stack.deck" + str(current_substrate_stack)
         # "assay_plate_ot2_replacement_location": "ot2biobeta.deck1",
         # "assay_plate_lid_location": "lidnest1"
     }
@@ -78,12 +95,12 @@ def main() -> None:
             payload["use_existing_resources"] = False
 
             # Run first OT-2 workflow  
-            # experiment_client.start_run(
-            #     str(run_ot2_wf),
-            #     payload=payload,
-            #     blocking=True,
-            #     simulate=False,
-            # )
+            experiment_client.start_run(
+                str(run_ot2_wf),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
 
         else: # if not the very first cycle
 
@@ -100,20 +117,21 @@ def main() -> None:
                 print("BETWEEN PLATE TRANSFER")  # TESTING
 
                 # run workflow to get a new substrate plate and place in onto OT-2
-                # experiment_client.start_run(
-                #     get_new_substrate_plate_wf.resolve(),
-                #     payload=payload,
-                #     blocking=True,
-                #     simulate=False,
-                # )
+                experiment_client.start_run(
+                    get_new_substrate_plate_wf.resolve(),
+                    payload=payload,
+                    blocking=True,
+                    simulate=False,
+                )
+                current_substrate_stack += 1
+                payload["current_substrate_stack"] = "Stack.deck" + str(current_substrate_stack)
 
             else: 
 
                 print("WITHIN PLATE TRANSFER")  # TESTING
                 
-                # set current OT-2 protocol as WITHIN plate transffer
+                # set current OT-2 protocol as WITHIN plate transfer
                 payload["current_ot2_protocol"] = str(inoculate_within_plate_protocol)
-                
 
                 # determine inoculation columns based on loop number and add to payload
                 source_wells_list, destination_wells_list = determine_inoculation_columns(loop_num) 
@@ -136,10 +154,6 @@ def main() -> None:
                 payload["destination_wells_2"] = [destination_wells_list[1]]
                 payload["destination_wells_3"] = [destination_wells_list[2]]
 
-                # TESTING
-                print("App file payload:")
-                print(payload)
-
             # run workflow to run the specified OT-2 protocol
             experiment_client.start_run(
                 run_ot2_wf.resolve(),
@@ -148,7 +162,18 @@ def main() -> None:
                 simulate=False,
             )
 
+            # Clean up the old substrate plate if it was a between plate transfer
+                # TODO: maybe do in parallel to first 30 min incubation?
+            if loop_num % 4 == 0:
+                experiment_client.start_run(
+                run_ot2_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
         # -------------------------------------------------------------------------------
+        # Run loop  
         #     # run workflow to collect plate from OT-2 and place into BMG plate reader 
         #     experiment_client.start_run(
         #         replace_lid_move_to_bmg_wf.resolve(),

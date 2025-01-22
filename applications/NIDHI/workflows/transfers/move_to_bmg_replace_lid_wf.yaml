@@ -6,19 +6,9 @@ metadata:
   version: 0.1
 
 flowdef:
-  - name: Replace lid on the assay plate on the OT-2
-    module: biopf400
-    action: replace_lid
-    args: 
-      source: lidnest1
-      target: ot2bioalpha.deck1
-      source_plate_rotation: narrow
-      target_plate_rotation: narrow
-    comment: TODO - where is lid nest 1?
-
   - name: Open the BMG plate reader tray
     module: bmg
-    acton: open 
+    acton: open
 
   - name: Transfer assay plate into BMG tray
     module: biopf400
@@ -29,8 +19,18 @@ flowdef:
       source_plate_rotation: narrow
       target_plate_rotation: narrow
 
-  - name: Open the BMG plate reader tray
-    module: bmg
-    acton: close
+  - name: Replace lid on the assay plate on the bmg
+    module: biopf400
+    action: replace_lid
+    args: 
+      source: lidnest1
+      target: bmg_reader.default
+      source_plate_rotation: narrow    # TODO: is the lid nest narrow???
+      target_plate_rotation: narrow
+    comment: Replace the lid
+
+  # TODO: TEST!
+
+
 
   
