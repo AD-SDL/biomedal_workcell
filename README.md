@@ -3,10 +3,10 @@
 This is a repository for the biology robotic Workcell in building 446. 
 
 ### Nodes availible
-- Opentrons OT-Flex (FUTURE)
+- Opentrons OT-Flex 
 - Opentrons OT-2 (two available)
 - Precise Flex PF400 Robotic Arm 
-- Analytik Jena Biometra Thermal Cyclers (96 and 384-well versinos)
+- Analytik Jena Biometra Thermal Cyclers (96 and 384-well versions)
 - BMG VANTAstar Microplate Reader
 - Hidex Sense Microplate Reader
 - Azenta Automated Microplate Sealer
