@@ -6,27 +6,42 @@ metadata:
   version: 0.1
 
 flowdef:
-  - name: Open the BMG plate reader tray
-    module: bmg
-    acton: open 
+  # - name: Open the BMG plate reader tray
+  #   module: bio_bmg
+  #   action: open
 
-  - name: Transfer assay plate back to OT-2 deck 
+  # - name: Transfer plate with lid from from bmg to exchange
+  #   module: biopf400
+  #   action: transfer
+  #   args: 
+  #     source: bmg_reader.nest
+  #     target: exchange_deck_low_narrow
+  #     source_approach: safe_path_bmg
+  #     target_approach: safe_exchange_height
+  #     source_plate_rotation: narrow
+  #     target_plate_rotation: narrow
+
+  # - name: Close the BMG plate reader tray
+  #   module: bio_bmg
+  #   action: close
+
+  # - name: Remove lid on plate at exchange location, place at lidnest 1
+  #   module: biopf400
+  #   action: transfer
+  #   args: 
+  #     source: exchange_deck_high_wide 
+  #     target: payload.remove_lid_location
+  #     source_approach: safe_exchange_height
+  #     source_plate_rotation: wide
+  #     target_plate_rotation: wide
+
+  - name: Transfer plate without lid from exchange to OT-2 (deck 1 or 3 depending on loop)
     module: biopf400
     action: transfer
     args: 
-      source: bmg.nest
+      source: exchange_deck_high_wide
       target: payload.assay_plate_ot2_replacement_location
-      source_plate_rotation: narrow
-      target_plate_rotation: narrow
+      source_approach: safe_exchange_height
+      source_plate_rotation: wide
+      target_plate_rotation: wide
 
-    comment: TODO - will this work if the payload argument is a string? 
-
-  - name: Remove lid from assay plate 
-    module: bippf400
-    action: remove_lid
-    args: 
-      source: payload.assay_plate_ot2_replacement_location
-      target: lidnes2
-      source_plate_rotation: narrow 
-      target_plate_rotaiton: narrow
-    comment: TODO - where is lid nest2? check that you're not swapping lids between assay plates!

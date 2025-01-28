@@ -14,8 +14,9 @@ flowdef:
     module: biopf400
     action: transfer
     args:
-      source: bmg_reader.default 
-      target: tekmatic_incubator.default
+      source: bmg_reader.nest
+      target: tekmatic_incubator.nest
+      source_approach: safe_path_bmg
       source_plate_rotation: narrow
       target_plate_rotation: narrow
     comment: Transfer plate with lid from bmg reader to tekmatic incubator
@@ -24,14 +25,18 @@ flowdef:
     module: tekmatic
     action: close
 
+  - name: close bmg
+    module: bio_bmg
+    action: close
+
   - name: run incubation
     module: tekmatic
     action: incubate
     args: 
       temperature: 30.0
       shaker_frequency: 7     # TODO: WHAT SHOULD THE SHAKING Hz BE?
-      wait_for_incubation: True
-      incubation_time: 1800
+      wait_for_incubation_time: True
+      incubation_time: 30   # 1800
     comment: incubate for 30 min at 30 deg C, shaking at 7 Hz
   
   - name: open incubator
