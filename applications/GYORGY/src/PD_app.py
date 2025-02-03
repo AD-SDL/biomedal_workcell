@@ -40,7 +40,7 @@ def main() -> None:
     protocol_directory = app_directory / "protocols"
 
     # workflow paths (run instruments)
-    run_hidex_wf
+    run_hidex_fluorescence_wf
     run_flex_wf
 
     # workflow paths (set up and tear down related)
@@ -57,7 +57,7 @@ def main() -> None:
 
 
     #
-
+    #move to exchange, remove lid, move to flex
     payload = {}
 
     experiment_client.start_run(
@@ -66,3 +66,34 @@ def main() -> None:
     blocking=True,
     simulate=False,
 )
+    #add fluorescence and enzyme
+
+    #move from flex to hidex
+    experiment_client.start_run(
+    flex_to_hidex_wf.resolve(),
+    payload=payload,
+    blocking=True,
+    simulate=False,
+)
+
+    #run hidex to detect fluorescence
+    experiment_client.start_run(
+    run_hidex_fluorescence_wf.resolve(),
+    payload=payload,
+    blocking=True,
+    simulate=False,
+)
+
+    #move from hidex to flex
+
+    #add substrate
+
+    #flex to hidex, kinetic run, 20-30 mins, no lid
+
+    #hidex to flex
+
+    #add 10x stop reaction
+
+    #flex to hidex
+
+    #run hidex?
