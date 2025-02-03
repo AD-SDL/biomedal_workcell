@@ -55,6 +55,7 @@ def main() -> None:
     tear_down_old_substrate_plate_wf = wf_set_up_tear_down_directory / "remove_old_substrate_plate_wf.yaml"
     incubate_read_and_replace_wf = wf_directory / "incubate_read_and_replace_wf.yaml"
     get_new_substrate_plate_wf = wf_set_up_tear_down_directory / "get_new_substrate_plate_wf.yaml"
+    remove_old_substrate_plate_wf = wf_set_up_tear_down_directory / "remove_old_substrate_plate_wf.yaml"
     cleanup_wf = wf_set_up_tear_down_directory / "cleanup_wf.yaml"
 
     # workflow paths (pf400 transfers)
@@ -72,14 +73,15 @@ def main() -> None:
     current_substrate_plate_num = 1
     transfer_in_plate_number = 1
     # total_loops = 24
-    total_loops=1 # TESTING
+    total_loops=4 # TESTING
     # initial payload setup
     payload = {
         "current_ot2_protocol": str(plate_prep_and_first_inoculation_protocol),
         "current_substrate_stack": "tower_deck" + str(current_substrate_stack),
+        "current_stack_safe_path": "safe_path_tower_deck" + str(current_substrate_stack),
         "remove_lid_location": "lidnest_1_wide",
         "bmg_assay_name": "NIDHI", 
-        "assay_plate_ot2_replacement_location": "ot2biobeta.deck1",
+        "assay_plate_ot2_replacement_location": "ot2biobeta_deck1",
         # "assay_plate_lid_location": "lidnest1"
     }
     
@@ -117,6 +119,7 @@ def main() -> None:
                 payload["current_ot2_protocol"] = str(inoculate_between_plates_protocol)
                 current_substrate_stack += 1
                 payload["current_substrate_stack"] = "tower_deck" + str(current_substrate_stack)
+                payload["current_stack_safe_path"] = "safe_path_tower_deck" + str(current_substrate_stack)
 
             else: 
 
@@ -130,12 +133,12 @@ def main() -> None:
 
                 if loop_num % 4 == 3: 
                     # if completing the last within plate transfer for a substrate plate, place plate at old position on ot2 (deck 3)
-                    payload["assay_plate_ot2_replacement_location"] = "ot2biobeta.deck3"
+                    payload["assay_plate_ot2_replacement_location"] = "ot2biobeta_deck3"
                     payload["remove_lid_location"] = "lidnest_2_wide"
                     
                 else: 
                     # otherwise, place current substrate plate at deck 1 in the ot-2
-                    payload["assay_plate_ot2_replacement_location"] = "ot2biobeta.deck1"
+                    payload["assay_plate_ot2_replacement_location"] = "ot2biobeta_deck1"
                     payload["remove_lid_location"] = "lidnest_1_wide"
 
                 payload["source_wells_1"] = [source_wells_list[0]]
@@ -156,57 +159,73 @@ def main() -> None:
         #     simulate=False,
         # )
 
-        # update variable for formatting bmg output filenames
+        # update variable for formatting bmg output filenames DO NOT REARANGE
         if loop_num % 4 == 3 and not loop_num == 0: 
             transfer_in_plate_number = 1
             current_substrate_plate_num += 1
         else:
             transfer_in_plate_number += 1
 
-
-        
-
-
-
         # TESTING
         print(f"{payload}\n")
-
 
         """Note!!!: 
             Human needs to place lid from substrate plate at position 1 on lid_nest_1_wide before the following transfer!"""
 
-        # Transfer to bmg for first reading (a custom transfer)  # TESTED, a couple calibration todos left
-        # experiment_client.start_run(
-        #     move_to_bmg_replace_lid_READ_wf.resolve(),
-        #     payload=payload,
-        #     blocking=True,
-        #     simulate=False,
-        # )
-
-        # TODO: LOOP THESE TWO WORKFLOWS
-        # Transfer from bmg to tekmatic incubator   # WORKING
+        # Transfer to bmg for first reading (a custom transfer)  
         experiment_client.start_run(
-            bmg_to_run_incubator_wf.resolve(),
+            move_to_bmg_replace_lid_READ_wf.resolve(),
             payload=payload,
             blocking=True,
             simulate=False,
         )
 
-        # Transfer from bmg to tekmatic incubator   # TESTED, needs bmg calibration
+        # for i in range (24): 
+        for i in range(2): 
+            # Transfer from bmg to tekmatic incubator   # WORKING
+            experiment_client.start_run(
+                bmg_to_run_incubator_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+            # Transfer from bmg to tekmatic incubator   # TESTED, needs bmg calibration
+            experiment_client.start_run(
+                incubator_to_run_bmg_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+        # after loop is done, return to ot-2 at correct location   # TESTED, needs exchange height and lid nest calibration
+        experiment_client.start_run(
+            remove_lid_move_to_ot2_wf.resolve(),
+            payload=payload,
+            blocking=True,
+            simulate=False,
+        )
+
+        if loop_num % 4 == 3: 
+            print("REMOVE THE OLD SUBSTRATE PLATE")
+            print("GET NEW SUBSTRATE PLATE NOW")
+
+        # TESTING get a new substrate plate
         # experiment_client.start_run(
-        #     incubator_to_run_bmg_wf.resolve(),
+        #     get_new_substrate_plate_wf.resolve(),
+        #     payload=payload,
+        #     blocking=True,
+        #     simulate=False,
+        # )
+    
+        # # TESTING remove the old substrate plate
+        # experiment_client.start_run(
+        #     remove_old_substrate_plate_wf.resolve(),
         #     payload=payload,
         #     blocking=True,
         #     simulate=False,
         # )
 
-        # after loop is done, return to ot-2 at correct location   # TESTED, needs exchange height and lid nest calibration
-        # experiment_client.start_run(
-        #     remove_lid_move_to_ot2_wf.resolve(),
-        #     payload=payload,
-        #     blocking=True,
-        #     simulate=False,
-        # )
 
 
 

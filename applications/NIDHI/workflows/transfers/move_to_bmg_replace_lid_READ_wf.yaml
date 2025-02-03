@@ -10,8 +10,9 @@ flowdef:
     module: biopf400
     action: transfer
     args: 
-      source: ot2biobeta.deck1
+      source: ot2biobeta_deck1
       target: exchange_deck_high_wide
+      target_approach: safe_path_exchange
       source_plate_rotation: wide
       target_plate_rotation: wide
 
@@ -25,6 +26,7 @@ flowdef:
       target_approach: safe_path_exchange
       source_plate_rotation: wide
       target_plate_rotation: wide
+      lid_height: 8
 
   - name: Open the BMG plate reader tray
     module: bio_bmg
@@ -35,7 +37,9 @@ flowdef:
     action: transfer
     args: 
       source: exchange_deck_low_narrow
-      target: bmg_reader.nest
+      target: bmg_reader_nest
+      source_approach: safe_path_exchange
+      target_approach: safe_path_bmg
       source_plate_rotation: narrow
       target_plate_rotation: narrow
 

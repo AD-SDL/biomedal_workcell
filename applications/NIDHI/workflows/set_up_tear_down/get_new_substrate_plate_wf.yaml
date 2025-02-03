@@ -3,27 +3,44 @@ author: Casey Stone
 info: Workflow for using PF400 to transfer new substrate plate to the OT-2
 version: '0.1'
 
-# TODO: TEST
-
 flowdef:
-  - name: remove lid
-    module: biopf400
-    action: remove_lid
-    args: 
-      source: payload.current_substrate_stack  # TODO: REPLACE WITH STACK NAME!
-      target: lidstorage.nest1   # TODO: REPLACE WITH LID NEST NAME
-      source_plate_rotation: wide
-      target_plate_roation: wide
-    comment: Removes lid before transfer to OT-2 
-
   - name: transfer
     module: biopf400
     action: transfer
     args:
-      source: payload.current_substrate_stack  # TODO: REPLACE WITH STACK NAME!
-      target: ot2biobeta.deck1
+      source: payload.current_substrate_stack
+      target: exchange_deck_low_narrow
+      source_approach: payload.current_stack_safe_path 
+      target_approach: safe_path_exchange
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+  - name: remove lid
+    module: biopf400
+    action: remove_lid
+    args: 
+      source: exchange_deck_low_wide 
+      target: lidnest_1_wide
+      source_approach: safe_path_exchange
+      target_approach: safe_path_lidnest_1   
       source_plate_rotation: wide
       target_plate_rotation: wide
-    comment: Get a new substrate plate from stack, place on OT-2
+      lid_height: 8
+    comment: Remove lid from the new substrate plate to lid nest 1
+
+  - name: Transfer new substrate plate with lid off to ot2biobeta_deck1
+    module: biopf400
+    action: transfer
+    args: 
+      source: exchange_deck_high_wide
+      target: ot2biobeta_deck1
+      source_approach: safe_path_exchange
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+    
+
+
+
+
 
 

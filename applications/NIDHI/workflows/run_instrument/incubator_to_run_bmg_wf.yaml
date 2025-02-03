@@ -6,20 +6,21 @@ metadata:
   version: 0.1
 
 flowdef:
-  # - name: open bmg
-  #   module: bio_bmg
-  #   action: open
+  - name: open bmg
+    module: bio_bmg
+    action: open
 
-  # - name: transfer
-  #   module: biopf400
-  #   action: transfer
-  #   args:
-  #     source: tekmatic_incubator.nest
-  #     target: bmg_reader.nest
-  #     source_approach: safe_path_tekmatic
-  #     source_plate_rotation: narrow
-  #     target_plate_rotation: narrow
-  #   comment: Transfer plate with lid from tekmatic incubator to bmg reader
+  - name: transfer
+    module: biopf400
+    action: transfer
+    args:
+      source: tekmatic_incubator_nest
+      target: bmg_reader_nest
+      source_approach: safe_path_tekmatic
+      target_approach: safe_path_bmg
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfer plate with lid from tekmatic incubator to bmg reader
 
   - name: close bmg
     module: bio_bmg
