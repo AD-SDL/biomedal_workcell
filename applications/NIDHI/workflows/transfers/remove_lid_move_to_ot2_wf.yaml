@@ -32,7 +32,7 @@ flowdef:
       source: exchange_deck_low_wide 
       target: payload.remove_lid_location
       source_approach: safe_path_exchange
-      target_approach: safe_path_lidnest_1   # TODO: change based on which lid nest
+      target_approach: payload.remove_lid_safe_path   # TODO: change based on which lid nest
       source_plate_rotation: wide
       target_plate_rotation: wide
       lid_height: 8
