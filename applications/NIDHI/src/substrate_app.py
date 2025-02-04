@@ -72,8 +72,10 @@ def main() -> None:
     current_substrate_stack = 1
     current_substrate_plate_num = 1
     transfer_in_plate_number = 1
+    reading_number_in_plate = 1
+
     # total_loops = 24
-    total_loops=4 # TESTING
+    total_loops=24 # TESTING
     # initial payload setup
     payload = {
         "current_ot2_protocol": str(plate_prep_and_first_inoculation_protocol),
@@ -96,8 +98,8 @@ def main() -> None:
         # add current loop_num variable to payload
         payload["loop_num"] = loop_num
         print(f"CURRENT LOOP #: {loop_num}")   # TESTING
-        payload["bmg_data_output_name"] = f"{current_substrate_plate_num}_{transfer_in_plate_number}.txt"
-        print(payload["bmg_data_output_name"])  # TESTING
+        payload["bmg_data_output_name"] = f"{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
+        # print(payload["bmg_data_output_name"])  # TESTING
         
 
         if loop_num == 0: # very first cycle 
@@ -149,9 +151,8 @@ def main() -> None:
                 payload["destination_wells_2"] = [destination_wells_list[1]]
                 payload["destination_wells_3"] = [destination_wells_list[2]]
 
-
-
-        # # Run the current OT-2 protocol
+        # RUN THE EXPERIMENTAL WORKFLOWS ---------------
+        # Run the current OT-2 protocol
         # experiment_client.start_run(
         #     run_ot2_wf.resolve(),
         #     payload=payload,
@@ -162,69 +163,83 @@ def main() -> None:
         # update variable for formatting bmg output filenames DO NOT REARANGE
         if loop_num % 4 == 3 and not loop_num == 0: 
             transfer_in_plate_number = 1
+            reading_number_in_plate = 1
             current_substrate_plate_num += 1
         else:
             transfer_in_plate_number += 1
 
         # TESTING
-        print(f"{payload}\n")
+        print(f"Payload before run: {payload}\n") 
 
         """Note!!!: 
             Human needs to place lid from substrate plate at position 1 on lid_nest_1_wide before the following transfer!"""
 
         # Transfer to bmg for first reading (a custom transfer)  
-        experiment_client.start_run(
-            move_to_bmg_replace_lid_READ_wf.resolve(),
-            payload=payload,
-            blocking=True,
-            simulate=False,
-        )
+        # TESTING
+        print("Running ot2 to READ bmg")
+        # experiment_client.start_run(
+        #     move_to_bmg_replace_lid_READ_wf.resolve(),
+        #     payload=payload,
+        #     blocking=True,
+        #     simulate=False,
+        # )
+        reading_number_in_plate += 1
+        payload["bmg_data_output_name"] = f"{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
+        print(payload["bmg_data_output_name"])  # TESTING
 
         # for i in range (24): 
-        for i in range(2): 
+        for i in range(24): 
+            # TESTING
+            print("running bmg to tekmatic")
             # Transfer from bmg to tekmatic incubator   # WORKING
-            experiment_client.start_run(
-                bmg_to_run_incubator_wf.resolve(),
-                payload=payload,
-                blocking=True,
-                simulate=False,
-            )
-
+            # experiment_client.start_run(
+            #     bmg_to_run_incubator_wf.resolve(),
+            #     payload=payload,
+            #     blocking=True,
+            #     simulate=False,
+            # )
+            
+            print("running tekmatic to READ bmg")
             # Transfer from bmg to tekmatic incubator   # TESTED, needs bmg calibration
-            experiment_client.start_run(
-                incubator_to_run_bmg_wf.resolve(),
-                payload=payload,
-                blocking=True,
-                simulate=False,
-            )
+            # experiment_client.start_run(
+            #     incubator_to_run_bmg_wf.resolve(),
+            #     payload=payload,
+            #     blocking=True,
+            #     simulate=False,
+            # )
+            reading_number_in_plate += 1
+            payload["bmg_data_output_name"] = f"{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
+            print(payload["bmg_data_output_name"])  # TESTING
 
         # after loop is done, return to ot-2 at correct location   # TESTED, needs exchange height and lid nest calibration
-        experiment_client.start_run(
-            remove_lid_move_to_ot2_wf.resolve(),
-            payload=payload,
-            blocking=True,
-            simulate=False,
-        )
-
-        if loop_num % 4 == 3: 
-            print("REMOVE THE OLD SUBSTRATE PLATE")
-            print("GET NEW SUBSTRATE PLATE NOW")
-
-        # TESTING get a new substrate plate
         # experiment_client.start_run(
-        #     get_new_substrate_plate_wf.resolve(),
+        #     remove_lid_move_to_ot2_wf.resolve(),
         #     payload=payload,
         #     blocking=True,
         #     simulate=False,
         # )
-    
-        # # TESTING remove the old substrate plate
-        # experiment_client.start_run(
-        #     remove_old_substrate_plate_wf.resolve(),
-        #     payload=payload,
-        #     blocking=True,
-        #     simulate=False,
-        # )
+
+        # if loop_num % 4 == 3: 
+            
+        #     if not loop_num == 3:
+        #         experiment_client.start_run(
+        #             remove_old_substrate_plate_wf.resolve(),
+        #             payload=payload,
+        #             blocking=True,
+        #             simulate=False,
+        #         )
+            
+        #     experiment_client.start_run(
+        #         get_new_substrate_plate_wf.resolve(),
+        #         payload=payload,
+        #         blocking=True,
+        #         simulate=False,
+        #     )
+
+        # transfer_in_plate_number += 1
+
+
+
 
 
 
