@@ -40,18 +40,20 @@ def main() -> None:
     protocol_directory = app_directory / "protocols"
 
     # workflow paths (run instruments)
-    run_hidex_fluorescence_wf
-    run_flex_wf
+    run_hidex_wf = wf_run_instrument_directory / "run_hidex.yaml"
+    run_flex_wf = wf_run_instrument_directory / "run_flex.yaml"
 
     # workflow paths (set up and tear down related)
 
     # workflow paths (pf400 transfers)
     remove_lid_move_to_flex = wf_transfers_directory / "remove_lid_move_to_flex.yaml"
-    flex_to_hidex_wf
-    hidex_to_flex_wf
+    flex_to_hidex_wf = wf_transfers_directory / "flex_to_hidex_wf.yaml"
+    hidex_to_flex_wf = wf_transfers_directory / "hidex_to_flex_wf.yaml"
 
     # protocol paths (for OT-Flex)
     fluorescence_and_enzyme
+    substrate
+    stop_reaction
 
     # important variables 
 
@@ -67,6 +69,12 @@ def main() -> None:
     simulate=False,
 )
     #add fluorescence and enzyme
+    experiment_client.start_run(
+    run_flex_wf.resolve(),
+    payload=payload,
+    blocking=True,
+    simulate=False,
+)
 
     #move from flex to hidex
     experiment_client.start_run(
@@ -78,22 +86,64 @@ def main() -> None:
 
     #run hidex to detect fluorescence
     experiment_client.start_run(
-    run_hidex_fluorescence_wf.resolve(),
+    run_hidex_wf.resolve(),
     payload=payload,
     blocking=True,
     simulate=False,
 )
 
     #move from hidex to flex
+    experiment_client.start_run(
+    hidex_to_flex_wf.resolve(),
+    payload=payload,
+    blocking=True,
+    simulate=False,
+)
 
     #add substrate
-
-    #flex to hidex, kinetic run, 20-30 mins, no lid
-
-    #hidex to flex
-
-    #add 10x stop reaction
+    experiment_client.start_run(
+    run_flex_wf.resolve(),
+    payload=payload,
+    blocking=True,
+    simulate=False,
+)
 
     #flex to hidex
+    experiment_client.start_run(
+    flex_to_hidex_wf.resolve(),
+    payload=payload,
+    blocking=True,
+    simulate=False,
+)
+    #kinetic run, 20-30 mins, no lid
+    experiment_client.start_run(
+    run_hidex_wf.resolve(),
+    payload=payload,
+    blocking=True,
+    simulate=False,
+)
+    #hidex to flex
+    experiment_client.start_run(
+    hidex_to_flex_wf.resolve(),
+    payload=payload,
+    blocking=True,
+    simulate=False,
+)
+
+    #add 10x stop reaction
+    experiment_client.start_run(
+    run_flex_wf.resolve(),
+    payload=payload,
+    blocking=True,
+    simulate=False,
+)
+
+    #flex to hidex
+    experiment_client.start_run(
+    flex_to_hidex_wf.resolve(),
+    payload=payload,
+    blocking=True,
+    simulate=False,
+)
 
     #run hidex?

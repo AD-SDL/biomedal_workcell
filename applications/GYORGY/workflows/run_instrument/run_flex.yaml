@@ -1,0 +1,32 @@
+name: Run OT-Flex
+author: Abe Stroka
+info: Workflow for running one OT-Flex protocol from payload
+version: '0.1'
+
+
+flowdef:
+  - name: Run OT-Flex protocol
+    module: otflexbio1
+    action: run_protocol
+    args: 
+      foo: bar
+    files:
+      protocol: #TODO: make protocol file, and verify
+    comment: Run OT-Flex protocol
+
+  # - name: Run Flex
+  #   module: ot2biobeta
+  #   action: run_protocol
+  #   args: 
+  #     # source_wells_list: payload.source_wells_list
+  #     # destination_wells_list: payload.destination_wells_list
+  #     source_wells_1: payload.source_wells_1
+  #     source_wells_2: payload.source_wells_2
+  #     source_wells_3: payload.source_wells_3
+  #     destination_wells_1: payload.destination_wells_1
+  #     destination_wells_2: payload.destination_wells_2
+  #     destination_wells_3: payload.destination_wells_3
+  #     use_existing_resources: payload.use_existing_resources
+  #   files:
+  #     protocol: payload.current_ot2_protocol
+  #   comment: Run the current OT-2 protocol

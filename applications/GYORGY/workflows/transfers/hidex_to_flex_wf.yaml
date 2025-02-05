@@ -1,0 +1,40 @@
+name: Hidex to Flex A
+author: Abe Stroka
+info: Moves plate from hidex to flex position A
+version: '0.1'
+
+
+flowdef:
+  - name: open_hidex
+    module: hidex_geraldine
+    action: open
+    args: 
+      foo: bar
+    comment: opens hidex
+
+  - name: transfer
+    module: biopf400
+    action: transfer
+    args: 
+      source: hidex_geraldine_high_nest
+      target: exchange_deck_high_narrow
+      source_plate_rotation: narrow
+      target_plate_roation: narrow
+    comment: moves plate from exchange to hidex
+
+  - name: transfer
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_low_narrow
+      target: otflex.deckA
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: place olate on exchange
+
+  - name: close_hidex
+    module: hidex_geraldine
+    action: close
+    args: 
+      foo: bar
+    comment: closes hidex
