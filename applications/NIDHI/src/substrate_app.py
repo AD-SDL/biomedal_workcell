@@ -29,6 +29,10 @@ def main() -> None:
         campaign=campaign,
     )
 
+    # TESTING
+    experiment_id = experiment_client.experiment.experiment_id
+    # print(experiment_id)   # TESTING
+
     # DEFINING PATHS AND VARIABLES
     # directory paths
     app_directory = Path(__file__).parent.parent
@@ -48,7 +52,6 @@ def main() -> None:
     incubate_read_and_replace_wf = wf_directory / "incubate_read_and_replace_wf.yaml"
     get_new_substrate_plate_wf = wf_set_up_tear_down_directory / "get_new_substrate_plate_wf.yaml"
     remove_old_substrate_plate_wf = wf_set_up_tear_down_directory / "remove_old_substrate_plate_wf.yaml"
-    cleanup_wf = wf_set_up_tear_down_directory / "cleanup_wf.yaml"
 
     # workflow paths (pf400 transfers)
     remove_lid_move_to_ot2_wf = wf_transfers_directory / "remove_lid_move_to_ot2_wf.yaml"
@@ -67,8 +70,8 @@ def main() -> None:
     reading_number_in_plate = 1
 
     # total_loops = 24
-    total_loops=24 # TESTING  24 for real experiment
-    
+    total_loops=10 # TESTING  24 for real experiment
+
     # initial payload setup
     payload = {
         "current_ot2_protocol": str(plate_prep_and_first_inoculation_protocol),
@@ -90,7 +93,7 @@ def main() -> None:
         # add current loop_num variable to payload
         payload["loop_num"] = loop_num
         print(f"\nCURRENT LOOP #: {loop_num}")   # TESTING
-        payload["bmg_data_output_name"] = f"{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
+        payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
         
         if loop_num == 0: # very first cycle 
             print("FIRST LOOP") # TESTING
@@ -111,9 +114,6 @@ def main() -> None:
                 # set current ot-2 transfer as BETWEEN plate transfer 
                 print("BETWEEN PLATE TRANSFER")  # TESTING
                 payload["current_ot2_protocol"] = str(inoculate_between_plates_protocol)
-                current_substrate_stack += 1
-                payload["current_substrate_stack"] = "tower_deck" + str(current_substrate_stack)
-                payload["current_stack_safe_path"] = "safe_path_tower_deck" + str(current_substrate_stack)
 
             else: 
                 
@@ -144,18 +144,29 @@ def main() -> None:
                 payload["destination_wells_2"] = [destination_wells_list[1]]
                 payload["destination_wells_3"] = [destination_wells_list[2]]
 
-
         #*  RUN THE WORKFLOWS ------------------------------------------------------------------------------------------
         # Run the current OT-2 protocol
-        experiment_client.start_run(
-            run_ot2_wf.resolve(),
-            payload=payload,
-            blocking=True,
-            simulate=False,
-        )
+        # experiment_client.start_run(
+        #     run_ot2_wf.resolve(),
+        #     payload=payload,
+        #     blocking=True,
+        #     simulate=False,
+        # )
+        print("RUNNING OT2")
+
+        if loop_num % 4 == 0 and not loop_num == 0: 
+            experiment_client.start_run(
+                remove_old_substrate_plate_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            current_substrate_stack += 1
+            payload["current_substrate_stack"] = "tower_deck" + str(current_substrate_stack)
+            payload["current_stack_safe_path"] = "safe_path_tower_deck" + str(current_substrate_stack)
 
         # TESTING
-        print(f"Payload before run: {payload}\n") 
+        # print(f"Payload before run: {payload}\n") 
 
         """Note!!!: 
             Human needs to place lid from substrate plate at position 1 on lid_nest_1_wide before the following transfer!"""
@@ -168,10 +179,10 @@ def main() -> None:
             simulate=False,
         )
         reading_number_in_plate += 1
-        payload["bmg_data_output_name"] = f"{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
+        payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
         print(payload["bmg_data_output_name"])  # TESTING
  
-        for i in range(24):  # 24 for total run
+        for i in range(1):  # TESTING 24 for total run
             # Transfer from bmg to tekmatic incubator   # WORKING
             experiment_client.start_run(
                 bmg_to_run_incubator_wf.resolve(),
@@ -188,7 +199,7 @@ def main() -> None:
                 simulate=False,
             )
             reading_number_in_plate += 1
-            payload["bmg_data_output_name"] = f"{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
+            payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
             print(payload["bmg_data_output_name"])  # TESTING
 
         # after loop is done, return to ot-2 at correct location   # TESTED, needs exchange height and lid nest calibration
@@ -198,18 +209,9 @@ def main() -> None:
             blocking=True,
             simulate=False,
         )
-
-        # TODO: Test this!
-        if loop_num % 4 == 2 and not loop_num == 2: 
-                experiment_client.start_run(
-                    remove_old_substrate_plate_wf.resolve(),
-                    payload=payload,
-                    blocking=True,
-                    simulate=False,
-                )
         
+        # prep for next round (between plate transfer) by getting a new substrate plate
         if loop_num % 4 == 3: 
-            # get a new substrate plate i
             experiment_client.start_run(
                 get_new_substrate_plate_wf.resolve(),
                 payload=payload,
@@ -217,7 +219,7 @@ def main() -> None:
                 simulate=False,
             )
 
-        # format variables in prep for next round
+        # # format variables in prep for next round
         reading_number_in_plate = 1
 
         if loop_num % 4 == 3 and not loop_num == 0: 
@@ -226,7 +228,7 @@ def main() -> None:
         else:
             transfer_in_plate_number += 1
 
-        # increase the loop number
+        # # increase the loop number
         loop_num += 1
 
 
