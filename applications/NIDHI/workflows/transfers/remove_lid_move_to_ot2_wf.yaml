@@ -6,10 +6,6 @@ metadata:
   version: 0.1
 
 flowdef:
-  # - name: Open the BMG plate reader tray
-  #   module: bio_bmg
-  #   action: open
-
   - name: Transfer plate with lid from from bmg to exchange
     module: biopf400
     action: transfer
@@ -32,7 +28,7 @@ flowdef:
       source: exchange_deck_low_wide 
       target: payload.remove_lid_location
       source_approach: safe_path_exchange
-      target_approach: payload.remove_lid_safe_path   # TODO: change based on which lid nest
+      target_approach: payload.remove_lid_safe_path 
       source_plate_rotation: wide
       target_plate_rotation: wide
       lid_height: 8

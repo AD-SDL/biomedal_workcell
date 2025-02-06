@@ -9,8 +9,6 @@ flowdef:
     module: ot2biobeta
     action: run_protocol
     args: 
-      # source_wells_list: payload.source_wells_list
-      # destination_wells_list: payload.destination_wells_list
       source_wells_1: payload.source_wells_1
       source_wells_2: payload.source_wells_2
       source_wells_3: payload.source_wells_3

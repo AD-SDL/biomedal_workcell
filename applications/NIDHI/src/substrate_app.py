@@ -10,7 +10,8 @@ from wei.types.experiment_types import CampaignDesign, ExperimentDesign
 def main() -> None:
     """Runs the Substrate Experiment Application"""
 
-    # INITIAL EXPERIMENT SETUP
+    # INITIAL EXPERIMENT SETUP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     # define the ExperimentDesign object that will be used to register the experiment
     experiment_design = ExperimentDesign(
         experiment_name="Substrate_Experiment",
@@ -29,11 +30,12 @@ def main() -> None:
         campaign=campaign,
     )
 
-    # TESTING
-    experiment_id = experiment_client.experiment.experiment_id
-    # print(experiment_id)   # TESTING
 
-    # DEFINING PATHS AND VARIABLES
+    # DEFININE PATHS AND VARIABLES ---------------------------------
+
+    # capture the expriment ID 
+    experiment_id = experiment_client.experiment.experiment_id
+
     # directory paths
     app_directory = Path(__file__).parent.parent
     wf_directory = app_directory / "workflows"
@@ -67,10 +69,9 @@ def main() -> None:
     current_substrate_stack = 1
     current_substrate_plate_num = 1
     transfer_in_plate_number = 1
-    reading_number_in_plate = 1
+    reading_number_in_column = 1
 
-    # total_loops = 24
-    total_loops=10 # TESTING  24 for real experiment
+    total_loops = 24   # 24 outer loops in full experiment
 
     # initial payload setup
     payload = {
@@ -83,107 +84,110 @@ def main() -> None:
         "assay_plate_ot2_replacement_location": "ot2biobeta_deck1",
     }
     
-    # RUN THE EXPERIMENT --------------------------------------------
+
+    # EXPERIMENT LOOP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     """ Human needs to set up OT-2 deck before run starts """
 
     while loop_num < total_loops: 
 
-        #* SET UP ALL EXPERIMENTAL VARIABLES
-        # add current loop_num variable to payload
+        # SET UP ALL EXPERIMENTAL VARIABLES ------------------------
         payload["loop_num"] = loop_num
-        print(f"\nCURRENT LOOP #: {loop_num}")   # TESTING
-        payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
+        payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_column}.txt"
+        print(f"\nCURRENT LOOP #: {loop_num}")   # HELPFUL PRINT
         
-        if loop_num == 0: # very first cycle 
-            print("FIRST LOOP") # TESTING
-
+        # If very first cycle, set variables for running the initial ot-2 protocol
+        if loop_num == 0: 
             payload["use_existing_resources"] = False
-            payload["current_ot2_protocol"] = str(plate_prep_and_first_inoculation_protocol) # TODO: Redundant
+            payload["current_ot2_protocol"] = str(plate_prep_and_first_inoculation_protocol) 
 
-        else: # if not the very first cycle
-
-            # decide if continuing from last place in OT-2 tip boxes
+        # If it's not the very first cycle, set variables depending on loop number % 4 
+        else:
+            # Keep track of OT-2 tip usage after loop number 1 (2nd OT-2 protocol)
             if loop_num == 1: 
                 payload["use_existing_resources"] = False
             else: 
                 payload["use_existing_resources"] = True
  
-
+            # Set variables for a BETWEEN plate transfer every 4th round (when loop num % 0 == 4)
+            # This means we've used up all columns in one substrate plate and now need to inoculate between substrate plates into a new substrate plate
             if loop_num % 4 == 0: 
-                # set current ot-2 transfer as BETWEEN plate transfer 
-                print("BETWEEN PLATE TRANSFER")  # TESTING
                 payload["current_ot2_protocol"] = str(inoculate_between_plates_protocol)
+                payload["assay_plate_ot2_replacement_location"] = "ot2biobeta_deck1"  
+                payload["remove_lid_location"] = "lidnest_1_wide"
+                payload["remove_lid_safe_path"] = "safe_path_lidnest_1"
+                print("BETWEEN PLATE TRANSFER")  # HELPFUL PRINT
 
+            # If loop num % 4 is not 0, we are innoculating using columns in the same plate (WITHIN PLATE TRANSFER)
             else: 
-                
-                # set current OT-2 protocol as WITHIN plate transfer
                 payload["current_ot2_protocol"] = str(inoculate_within_plate_protocol)
-                print("WITHIN PLATE TRANSFER")  # TESTING
+                print("WITHIN PLATE TRANSFER")  # HELPFUL PRINT
 
                 # determine inoculation columns based on loop number and add to payload
                 source_wells_list, destination_wells_list = determine_inoculation_columns(loop_num) 
-
-                if loop_num % 4 == 3: 
-                    # if completing the last within plate transfer for a substrate plate, place plate at old position on ot2 (deck 3)
-                    payload["assay_plate_ot2_replacement_location"] = "ot2biobeta_deck3"
-                    payload["remove_lid_location"] = "lidnest_2_wide"
-                    payload["remove_lid_safe_path"] = "safe_path_lidnest_2"
-                    
-                else: 
-                    # otherwise, place current substrate plate at deck 1 in the ot-2
-                    payload["assay_plate_ot2_replacement_location"] = "ot2biobeta_deck1"
-                    payload["remove_lid_location"] = "lidnest_1_wide"
-                    payload["remove_lid_safe_path"] = "safe_path_lidnest_1"
-
                 payload["source_wells_1"] = [source_wells_list[0]]
                 payload["source_wells_2"] = [source_wells_list[1]]
                 payload["source_wells_3"] = [source_wells_list[2]]
-
                 payload["destination_wells_1"] = [destination_wells_list[0]]
                 payload["destination_wells_2"] = [destination_wells_list[1]]
                 payload["destination_wells_3"] = [destination_wells_list[2]]
 
-        #*  RUN THE WORKFLOWS ------------------------------------------------------------------------------------------
-        # Run the current OT-2 protocol
-        # experiment_client.start_run(
-        #     run_ot2_wf.resolve(),
-        #     payload=payload,
-        #     blocking=True,
-        #     simulate=False,
-        # )
-        print("RUNNING OT2")
+                if loop_num % 4 == 3: 
+                    # set variables to replace completely used substrate plate on ot2 deck 3 in preparation for next between plate transfer
+                    payload["assay_plate_ot2_replacement_location"] = "ot2biobeta_deck3"
+                    
+                else: 
+                    # Otherwise, set default to return substrate plate to ot2 deck 1 for prep for next within plate transfer, also set to use lid nest 1
+                    payload["assay_plate_ot2_replacement_location"] = "ot2biobeta_deck1"
+                    payload["remove_lid_location"] = "lidnest_1_wide"
+                    payload["remove_lid_safe_path"] = "safe_path_lidnest_1"
 
+            
+        # DEBUG PRINT
+        # print(f"Payload before run: {payload}\n") 
+
+        # RUN THE EXPERIMENTAL WORKFLOWS ----------------------------------------
+
+        # Run the current OT-2 protocol
+        print(f"Running OT2 protoccol: {payload['current_ot2_protocol']}")  # HELPFUL PRINT
+        experiment_client.start_run(
+            run_ot2_wf.resolve(),
+            payload=payload,
+            blocking=True,
+            simulate=False,
+        )
+        
+        # Remove an old/used substrate plate from ot2 deck 3 if necessary
         if loop_num % 4 == 0 and not loop_num == 0: 
+            print(f"Removing old substrate plate to: {payload['current_substrate_stack']} using {payload['current_stack_safe_path']}")  # HELPFUL PRINT
             experiment_client.start_run(
                 remove_old_substrate_plate_wf.resolve(),
                 payload=payload,
                 blocking=True,
                 simulate=False,
             )
+            # Update variables to reflect the used tower location
             current_substrate_stack += 1
             payload["current_substrate_stack"] = "tower_deck" + str(current_substrate_stack)
             payload["current_stack_safe_path"] = "safe_path_tower_deck" + str(current_substrate_stack)
 
-        # TESTING
-        # print(f"Payload before run: {payload}\n") 
-
-        """Note!!!: 
-            Human needs to place lid from substrate plate at position 1 on lid_nest_1_wide before the following transfer!"""
-
-        # Transfer to bmg for first reading (a custom transfer)  
+        # Transfer from ot2 deck 1 to bmg, replacing the lid in the process, and take first absorbance reading
+        print(f"Moving to bmg, replacing lid FROM {payload['remove_lid_location']} using {payload['remove_lid_safe_path']}, and reading, bmg output file name: {payload['bmg_data_output_name']}")  # HELPFUL PRINT
         experiment_client.start_run(
             move_to_bmg_replace_lid_READ_wf.resolve(),
             payload=payload,
             blocking=True,
             simulate=False,
         )
-        reading_number_in_plate += 1
-        payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
-        print(payload["bmg_data_output_name"])  # TESTING
- 
-        for i in range(1):  # TESTING 24 for total run
-            # Transfer from bmg to tekmatic incubator   # WORKING
+        # Set up variables for next absorbance reading
+        reading_number_in_column += 1
+        payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_column}.txt"
+        
+
+        for i in range(1):  # T24 inner loops in full experiment # TESTING
+
+            # Transfer from bmg to tekmatic incubator and incubate   
+            print("---> Moving to tekmatic and incubating")  # HELPFUL PRINT
             experiment_client.start_run(
                 bmg_to_run_incubator_wf.resolve(),
                 payload=payload,
@@ -191,18 +195,25 @@ def main() -> None:
                 simulate=False,
             )
             
-            # Transfer from bmg to tekmatic incubator   # TESTED, needs bmg calibration
+            # Transfer from tekmatic incubator to bmg and take an absorbance reading  
+            print(f"---> Moving to bmg and reading, bmg output file name: {payload['bmg_data_output_name']}")  # HELPFUL PRINT
             experiment_client.start_run(
                 incubator_to_run_bmg_wf.resolve(),
                 payload=payload,
                 blocking=True,
                 simulate=False,
             )
-            reading_number_in_plate += 1
-            payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_plate}.txt"
-            print(payload["bmg_data_output_name"])  # TESTING
+            # Set up variables for next absorbance reading
+            reading_number_in_column += 1
+            payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_column}.txt"
 
-        # after loop is done, return to ot-2 at correct location   # TESTED, needs exchange height and lid nest calibration
+        # If we've completed all absorbance readings on the last columns of a substrate plate, set variables to replace the lid at the old substrate plate lid location (lid nest 2)
+        if loop_num % 4 == 3: 
+            payload["remove_lid_location"] = "lidnest_2_wide"
+            payload["remove_lid_safe_path"] = "safe_path_lidnest_2"
+
+        # After readings and incubations are complete, return the substrate plate to OT-2 at correct location (deck 1 if columns remaining, deck 3 if all columns used)   
+        print(f"Returning plate to OT-2 deck: {payload['assay_plate_ot2_replacement_location']}, returning lid TO {payload['remove_lid_location']} using {payload['remove_lid_safe_path']}")  # HELPFUL PRINT
         experiment_client.start_run(
             remove_lid_move_to_ot2_wf.resolve(),
             payload=payload,
@@ -210,8 +221,9 @@ def main() -> None:
             simulate=False,
         )
         
-        # prep for next round (between plate transfer) by getting a new substrate plate
-        if loop_num % 4 == 3: 
+        # Get a new (unused) substrate from the stack if necessary
+        if loop_num % 4 == 3 and not loop_num == total_loops - 1:  # new substrate plate not needed on the last round
+            print(f"Getting a new substrate plate from stack: {payload['current_substrate_stack']} using {payload['current_stack_safe_path']}")  # HELPFUL PRINT
             experiment_client.start_run(
                 get_new_substrate_plate_wf.resolve(),
                 payload=payload,
@@ -219,8 +231,8 @@ def main() -> None:
                 simulate=False,
             )
 
-        # # format variables in prep for next round
-        reading_number_in_plate = 1
+        # Format remaining variables for the next round
+        reading_number_in_column = 1   
 
         if loop_num % 4 == 3 and not loop_num == 0: 
             transfer_in_plate_number = 1
@@ -228,12 +240,12 @@ def main() -> None:
         else:
             transfer_in_plate_number += 1
 
-        # # increase the loop number
+        # Increase the loop number
         loop_num += 1
 
 
 
-# HELPER FUNCTIONS
+# HELPER FUNCTION(S) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def determine_inoculation_columns(loop_num): 
     """determine_inoculation_columns
 
@@ -260,9 +272,6 @@ def determine_inoculation_columns(loop_num):
         This means that...
             source_columns = [loop_num % 4, (loop_num % 4) + 4, (loop_num % 4) +8]
             destination_columns = [loop_num % 4, (loop_num % 4) + 4, (loop_num % 4) +8]
-
-    TODOs: 
-        - Protopiler has rows and columns switched for multichannel transfers currently. CHAOS!!!
   
     """
     mod = loop_num % 4
@@ -275,15 +284,12 @@ def determine_inoculation_columns(loop_num):
         source_columns = [mod, mod + 4, mod + 8]
         destination_columns = [mod + 1, mod + 5, mod + 9]
 
-    # TESTING
-    print(source_columns)
-    print(destination_columns)
-
     source_well_list = [[f"{row}{column}" for row in "ABCDEFGH"] for column in source_columns]
     destination_well_list = [[f"{row}{column}" for row in "ABCDEFGH"] for column in destination_columns]
 
-    # return source_wells_dict, destination_wells_dict
     return source_well_list, destination_well_list
+
+
 
 if __name__ == "__main__":
     main()
