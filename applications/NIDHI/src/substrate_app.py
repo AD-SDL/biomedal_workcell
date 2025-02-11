@@ -184,7 +184,7 @@ def main() -> None:
         payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_column}.txt"
         
 
-        for i in range(1):  # T24 inner loops in full experiment # TESTING
+        for i in range(21):  # T21 inner loops in full experiment 
 
             # Transfer from bmg to tekmatic incubator and incubate   
             print("---> Moving to tekmatic and incubating")  # HELPFUL PRINT

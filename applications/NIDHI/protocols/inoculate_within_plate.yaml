@@ -45,7 +45,7 @@ commands:
     command: multi_transfer
     multi_source: current_assay_plate:payload.source_wells_1
     multi_destination: current_assay_plate:payload.destination_wells_1
-    multi_volume: 10
+    multi_volume: 5
     multi_dispense_clearance: 2
     multi_aspirate_clearance: 2
     multi_drop_tip: True
@@ -54,7 +54,7 @@ commands:
     command: multi_transfer
     multi_source: current_assay_plate:payload.source_wells_2
     multi_destination: current_assay_plate:payload.destination_wells_2
-    multi_volume: 10        
+    multi_volume: 5       
     multi_dispense_clearance: 2
     multi_aspirate_clearance: 2
     multi_drop_tip: True
@@ -63,7 +63,7 @@ commands:
     command: multi_transfer
     multi_source: current_assay_plate:payload.source_wells_3
     multi_destination: current_assay_plate:payload.destination_wells_3
-    multi_volume: 10        
+    multi_volume: 5        
     multi_dispense_clearance: 2
     multi_aspirate_clearance: 2
     multi_drop_tip: True

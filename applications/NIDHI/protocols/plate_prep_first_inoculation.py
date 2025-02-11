@@ -51,7 +51,7 @@ def run(protocol: protocol_api.ProtocolContext):
     )
 
     tip_rack_300uL = protocol.load_labware(
-         "opentrons_96_tiprack_300ul", 
+         "opentrons_96_filtertiprack_200ul", 
          location="5",
     )
     tip_rack_20uL = protocol.load_labware(
@@ -101,18 +101,18 @@ def run(protocol: protocol_api.ProtocolContext):
 
     # Inoculate 3 columns (columns 1, 5, and 9) of assay plate 1 from substrate stock plate columns 8, 10, and 12 respectively
     left_pipette_20uL_multi.pick_up_tip()
-    left_pipette_20uL_multi.aspirate(10, substrate_stock["A8"])
-    left_pipette_20uL_multi.dispense(10, substrate_assay_plate_1["A1"])
+    left_pipette_20uL_multi.aspirate(5, substrate_stock["A8"])
+    left_pipette_20uL_multi.dispense(5, substrate_assay_plate_1["A1"])
     left_pipette_20uL_multi.drop_tip()
 
     left_pipette_20uL_multi.pick_up_tip()
-    left_pipette_20uL_multi.aspirate(10, substrate_stock["A10"])
-    left_pipette_20uL_multi.dispense(10, substrate_assay_plate_1["A5"])
+    left_pipette_20uL_multi.aspirate(5, substrate_stock["A10"])
+    left_pipette_20uL_multi.dispense(5, substrate_assay_plate_1["A5"])
     left_pipette_20uL_multi.drop_tip()
 
     left_pipette_20uL_multi.pick_up_tip()
-    left_pipette_20uL_multi.aspirate(10, substrate_stock["A12"])
-    left_pipette_20uL_multi.dispense(10, substrate_assay_plate_1["A9"])
+    left_pipette_20uL_multi.aspirate(5, substrate_stock["A12"])
+    left_pipette_20uL_multi.dispense(5, substrate_assay_plate_1["A9"])
     left_pipette_20uL_multi.drop_tip()
 
 
