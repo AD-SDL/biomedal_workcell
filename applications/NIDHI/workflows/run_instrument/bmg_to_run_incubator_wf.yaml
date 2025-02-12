@@ -5,7 +5,21 @@ metadata:
   info: Workflow for incubating on tekmatic incubator
   version: 0.1
 
+# TODO: TEST RECENT CHANGES
+
 flowdef:
+  - name: Replace lid on plate in bmg nest from lidnest 3 narrow 
+    module: biopf400
+    action: replace_lid
+    args: 
+      source: lidnest_3_narrow
+      target: bmg_reader_nest
+      source_approach: safe_path_lidnest_3
+      target_approach: safe_path_bmg
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+      lid_height: 8
+
   - name: open incubator
     module: tekmatic
     action: open
@@ -43,3 +57,4 @@ flowdef:
     module: tekmatic
     action: open
 
+# ends with tekmatic open and lid on plate

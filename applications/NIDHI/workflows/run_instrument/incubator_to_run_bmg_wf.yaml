@@ -5,6 +5,8 @@ metadata:
   info: Workflow for running an assay on the BMG plate reader
   version: 0.1
 
+# TODO: TEST RECENT CHANGES!
+
 flowdef:
   - name: open bmg
     module: bio_bmg
@@ -21,6 +23,19 @@ flowdef:
       source_plate_rotation: narrow
       target_plate_rotation: narrow
     comment: Transfer plate with lid from tekmatic incubator to bmg reader
+
+  # REMOVE THE LID 
+    - name: Remove lid on plate in bmg nest to lid nest 3
+      module: biopf400
+      action: remove_lid
+      args: 
+        source: bmg_reader_nest 
+        target: lidnest_3_narrow
+        source_approach: safe_path_bmg
+        target_approach: safe_path_lidnest_3
+        source_plate_rotation: narrow
+        target_plate_rotation: narrow
+        lid_height: 8
 
   - name: close bmg
     module: bio_bmg
@@ -40,3 +55,5 @@ flowdef:
   - name: open bmg
     module: bio_bmg
     action: open
+
+  # ends with bmg open and no lid on plate
