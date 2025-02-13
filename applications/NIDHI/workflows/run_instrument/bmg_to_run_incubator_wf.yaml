@@ -5,8 +5,6 @@ metadata:
   info: Workflow for incubating on tekmatic incubator
   version: 0.1
 
-# TODO: TEST RECENT CHANGES
-
 flowdef:
   - name: Replace lid on plate in bmg nest from lidnest 3 narrow 
     module: biopf400
@@ -50,7 +48,7 @@ flowdef:
       temperature: 30.0
       shaker_frequency: 6.6    
       wait_for_incubation_time: True
-      incubation_time: 1800   # 1800 sec is 30 min
+      incubation_time: 1800  # 1800 sec is 30 min   
     comment: incubate for 30 min at 30 deg C, shaking at 7 Hz
   
   - name: open incubator

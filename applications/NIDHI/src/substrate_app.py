@@ -50,14 +50,12 @@ def main() -> None:
     bmg_to_run_incubator_wf = wf_run_instrument_directory / "bmg_to_run_incubator_wf.yaml"
 
     # workflow paths (set up and tear down related)
-    tear_down_old_substrate_plate_wf = wf_set_up_tear_down_directory / "remove_old_substrate_plate_wf.yaml"
-    incubate_read_and_replace_wf = wf_directory / "incubate_read_and_replace_wf.yaml"
     get_new_substrate_plate_wf = wf_set_up_tear_down_directory / "get_new_substrate_plate_wf.yaml"
     remove_old_substrate_plate_wf = wf_set_up_tear_down_directory / "remove_old_substrate_plate_wf.yaml"
 
     # workflow paths (pf400 transfers)
-    remove_lid_move_to_ot2_wf = wf_transfers_directory / "remove_lid_move_to_ot2_wf.yaml"
-    move_to_bmg_replace_lid_READ_wf = wf_transfers_directory / "move_to_bmg_replace_lid_READ_wf.yaml"
+    switch_lid_move_to_ot2_wf = wf_transfers_directory / "switch_lid_move_to_ot2_wf.yaml"
+    move_to_bmg_switch_lid_read_wf = wf_transfers_directory / "move_to_bmg_switch_lid_read_wf.yaml"
     
     # protocol paths (for OT-2)
     plate_prep_and_first_inoculation_protocol = protocol_directory / "plate_prep_first_inoculation.py"
@@ -71,7 +69,7 @@ def main() -> None:
     transfer_in_plate_number = 1
     reading_number_in_column = 1
 
-    total_loops = 24   # 24 outer loops in full experiment
+    total_loops = 20  # CHANGED TO 20 TO USE 5 plates instead of 6!!!! 24 outer loops in full experiment
 
     # initial payload setup
     payload = {
@@ -149,13 +147,14 @@ def main() -> None:
         # RUN THE EXPERIMENTAL WORKFLOWS ----------------------------------------
 
         # Run the current OT-2 protocol
-        print(f"Running OT2 protoccol: {payload['current_ot2_protocol']}")  # HELPFUL PRINT
-        experiment_client.start_run(
-            run_ot2_wf.resolve(),
-            payload=payload,
-            blocking=True,
-            simulate=False,
-        )
+        if not loop_num == 0:   # ADDED FOR 2ND RUN (CHANGE FOR FUTURE RUNS!!!!!!)
+            print(f"Running OT2 protoccol: {payload['current_ot2_protocol']}")  # HELPFUL PRINT
+            experiment_client.start_run(
+                run_ot2_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
         
         # Remove an old/used substrate plate from ot2 deck 3 if necessary
         if loop_num % 4 == 0 and not loop_num == 0: 
@@ -174,7 +173,7 @@ def main() -> None:
         # Transfer from ot2 deck 1 to bmg, replacing the lid in the process, and take first absorbance reading
         print(f"Moving to bmg, replacing lid FROM {payload['remove_lid_location']} using {payload['remove_lid_safe_path']}, and reading, bmg output file name: {payload['bmg_data_output_name']}")  # HELPFUL PRINT
         experiment_client.start_run(
-            move_to_bmg_replace_lid_READ_wf.resolve(),
+            move_to_bmg_switch_lid_read_wf.resolve(),
             payload=payload,
             blocking=True,
             simulate=False,
@@ -182,8 +181,9 @@ def main() -> None:
         # Set up variables for next absorbance reading
         reading_number_in_column += 1
         payload["bmg_data_output_name"] = f"{experiment_id}_{current_substrate_plate_num}_{transfer_in_plate_number}_{reading_number_in_column}.txt"
-        
 
+
+        # INNER LOOP
         for i in range(21):  # T21 inner loops in full experiment 
 
             # Transfer from bmg to tekmatic incubator and incubate   
@@ -215,7 +215,7 @@ def main() -> None:
         # After readings and incubations are complete, return the substrate plate to OT-2 at correct location (deck 1 if columns remaining, deck 3 if all columns used)   
         print(f"Returning plate to OT-2 deck: {payload['assay_plate_ot2_replacement_location']}, returning lid TO {payload['remove_lid_location']} using {payload['remove_lid_safe_path']}")  # HELPFUL PRINT
         experiment_client.start_run(
-            remove_lid_move_to_ot2_wf.resolve(),
+            switch_lid_move_to_ot2_wf.resolve(),
             payload=payload,
             blocking=True,
             simulate=False,

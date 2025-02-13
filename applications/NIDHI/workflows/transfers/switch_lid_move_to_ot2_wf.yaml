@@ -5,8 +5,6 @@ metadata:
   info: Workflow for returning substrate plate to the OT-2 after reading and incubation
   version: 0.1
 
-# TODO: TEST RECENT CHANGES!
-
 flowdef:
   - name: Transfer plate with lid from from bmg to exchange
     module: biopf400
@@ -23,7 +21,7 @@ flowdef:
     module: bio_bmg
     action: close
 
-  # REPLACE LID FROM LID NEST 3 then swap grip and rempove to other wide lid nest location
+  # Swap lid location
   - name: Replace lid on plate at exchange location from lidnest 3
     module: biopf400
     action: replace_lid
