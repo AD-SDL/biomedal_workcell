@@ -5,7 +5,7 @@ services:
   biopf400:
     container_name: biopf400
     image: ghcr.io/ad-sdl/pf400_module
-    command: python -m pf400_rest_node --port 3000 --pf400_ip 146.137.240.33 --pf400_port 10100
+    command: python -m pf400_rest_node --port 3000 --pf400_ip 192.168.0.1 --pf400_port 10100
     restart: unless-stopped
     ports:
       - 3000:3000
