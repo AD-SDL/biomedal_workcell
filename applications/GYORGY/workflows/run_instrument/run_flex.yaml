@@ -8,7 +8,7 @@ flowdef:
   - name: Run OT-Flex protocol
     module: otflexbio1
     action: run_protocol
-    args: 
+    args:
       foo: bar
     files:
       protocol: #TODO: make protocol file, and verify
@@ -17,7 +17,7 @@ flowdef:
   # - name: Run Flex
   #   module: ot2biobeta
   #   action: run_protocol
-  #   args: 
+  #   args:
   #     # source_wells_list: payload.source_wells_list
   #     # destination_wells_list: payload.destination_wells_list
   #     source_wells_1: payload.source_wells_1

@@ -20,14 +20,14 @@ flowdef:
   - name: open_hidex
     module: hidex_geraldine
     action: open
-    args: 
+    args:
       foo: bar
     comment: opens hidex
 
   - name: transfer
     module: biopf400
     action: transfer
-    args: 
+    args:
       source: exchange_deck_high_narrow
       target: hidex_geraldine_high_nest
       source_approach: safe_path_exchange
@@ -39,6 +39,6 @@ flowdef:
   - name: close_hidex
     module: hidex_geraldine
     action: close
-    args: 
+    args:
       foo: bar
     comment: closes hidex

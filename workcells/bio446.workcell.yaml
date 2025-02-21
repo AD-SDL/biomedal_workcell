@@ -67,12 +67,12 @@ modules:
   - name: otflexbio1
     model: Opentrons OT-Flex
     interface: wei_rest_node
-    config: 
+    config:
       rest_node_address: "http://hudson02.cels.anl.gov:3004"
   - name: tekmatic
     model: Tekmatic_single_plate_incubator
     interface: wei_rest_node
-    config: 
+    config:
       rest_node_address: "http://hudson02.cels.anl.gov:3005"
 
 
@@ -86,7 +86,7 @@ locations:
     bio_biometra3.default: [775.356, 66.949, 67.620, 758.671, 77.462, 735.973]
     bio_peeler.default: [606.489, -38.393, 231.287, 433.080, 77.591, -764.287]
     bio_sealer.default: [583.320, -69.616, 233.645, 462.783, 77.802, -368.290]
-    exchange_deck_high_narrow: [638.532, -19.079, 65.561, 732.286, 78.587, 752.820] 
+    exchange_deck_high_narrow: [638.532, -19.079, 65.561, 732.286, 78.587, 752.820]
     exchange_deck_low_narrow: [631.616, -19.079, 65.561, 732.286, 78.587, 752.820]
     exchange_deck_high_wide: [638.243, 4.798, 93.345, 592.047, 122.134, 918.216]
     exchange_deck_low_wide: [631.616, 4.798, 93.345, 592.047, 122.134, 918.216]

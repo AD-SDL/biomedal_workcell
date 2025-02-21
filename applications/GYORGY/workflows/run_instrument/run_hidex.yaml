@@ -8,7 +8,7 @@ flowdef:
   - name: Run hidex protocol
     module: hidex_geraldine
     action: run_protocol
-    args: 
+    args:
       foo: bar
     files:
       protocol: #TODO: make protocol file, and verify

@@ -9,7 +9,7 @@ flowdef:
   - name: Transfer plate without lid to exchange location
     module: biopf400
     action: transfer
-    args: 
+    args:
       source: ot2biobeta_deck1
       target: exchange_deck_high_wide
       target_approach: safe_path_exchange
@@ -20,7 +20,7 @@ flowdef:
   - name: Replace lid on plate at exchange location from lidnest 1
     module: biopf400
     action: replace_lid
-    args: 
+    args:
       source: lidnest_1_wide
       target: exchange_deck_low_wide
       source_approach: safe_path_lidnest_1
@@ -32,10 +32,10 @@ flowdef:
   - name: Remove lid and place at lid nest 3 (narrow)
     module: biopf400
     action: remove_lid
-    args: 
+    args:
       source: exchange_deck_low_narrow
       target: lidnest_3_narrow
-      source_approach: safe_path_exchange 
+      source_approach: safe_path_exchange
       target_approach: safe_path_lidnest_3
       source_plate_rotation: narrow
       target_plate_rotation: narrow
@@ -48,7 +48,7 @@ flowdef:
   - name: Transfer plate without lid to bmg nest
     module: biopf400
     action: transfer
-    args: 
+    args:
       source: exchange_deck_low_narrow
       target: bmg_reader_nest
       source_approach: safe_path_exchange
@@ -63,17 +63,12 @@ flowdef:
   - name: Run BMG Inoculation and reading assay
     module: bio_bmg
     action: run_assay
-    args: 
+    args:
       assay_name: NIDHI
-      data_output_file_name: payload.bmg_data_output_name   
+      data_output_file_name: payload.bmg_data_output_name
 
   - name: Open the BMG plate reader tray
     module: bio_bmg
     action: open
 
   # ends with bmg open and no lid on plate
-
-
-
-
-  

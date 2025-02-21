@@ -45,8 +45,8 @@ def main() -> None:
     # # workflow paths (set up and tear down related)
 
     # # workflow paths (pf400 transfers)
-    remove_lid_move_to_flex = wf_transfers_directory / "remove_lid_move_to_flex.yaml"
-    flex_to_hidex_wf = wf_transfers_directory / "flex_to_hidex_wf.yaml"
+    _ = wf_transfers_directory / "remove_lid_move_to_flex.yaml"
+    _ = wf_transfers_directory / "flex_to_hidex_wf.yaml"
     hidex_to_flex_wf = wf_transfers_directory / "hidex_to_flex_wf.yaml"
 
     # protocol paths (for OT-Flex)
@@ -54,11 +54,10 @@ def main() -> None:
     # substrate
     # stop_reaction
 
-    # important variables 
-
+    # important variables
 
     #
-    #move to exchange, remove lid, move to flex
+    # move to exchange, remove lid, move to flex
     payload = {}
 
     # print("here")
@@ -71,15 +70,15 @@ def main() -> None:
     #     simulate=False,
     # )
 
-    #add fluorescence and enzyme
-#     experiment_client.start_run(
-#     run_flex_wf.resolve(),
-#     payload=payload,
-#     blocking=True,
-#     simulate=False,
-# )
+    # add fluorescence and enzyme
+    #     experiment_client.start_run(
+    #     run_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
-#     #move from flex to hidex  WORKING!
+    #     #move from flex to hidex  WORKING!
     # experiment_client.start_run(
     #     flex_to_hidex_wf.resolve(),
     #     payload=payload,
@@ -87,21 +86,22 @@ def main() -> None:
     #     simulate=False,
     # )
 
-#     #run hidex to detect fluorescence
-#     experiment_client.start_run(
-#     run_hidex_wf.resolve(),
-#     payload=payload,
-#     blocking=True,
-#     simulate=False,
-# )
+    #     #run hidex to detect fluorescence
+    #     experiment_client.start_run(
+    #     run_hidex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
-#     #move from hidex to flex   WORKING!
+    #     #move from hidex to flex   WORKING!
     experiment_client.start_run(
         hidex_to_flex_wf.resolve(),
         payload=payload,
         blocking=True,
         simulate=False,
     )
+
 
 #     #add substrate
 #     experiment_client.start_run(
@@ -149,7 +149,7 @@ def main() -> None:
 #     simulate=False,
 # )
 
-    #run hidex?
+# run hidex?
 
 if __name__ == "__main__":
     main()

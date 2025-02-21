@@ -19,10 +19,10 @@ flowdef:
   - name: remove lid
     module: biopf400
     action: remove_lid
-    args: 
-      source: exchange_deck_low_wide  
-      target: lidnest_1_wide   
-      source_approach: safe_path_exchange 
+    args:
+      source: exchange_deck_low_wide
+      target: lidnest_1_wide
+      source_approach: safe_path_exchange
       target_approach: safe_path_lidnest_1
       source_plate_rotation: wide
       target_plate_rotation: wide

@@ -9,7 +9,7 @@ flowdef:
   - name: Transfer plate with lid from from bmg to exchange
     module: biopf400
     action: transfer
-    args: 
+    args:
       source: bmg_reader_nest
       target: exchange_deck_low_narrow
       source_approach: safe_path_bmg
@@ -25,7 +25,7 @@ flowdef:
   - name: Replace lid on plate at exchange location from lidnest 3
     module: biopf400
     action: replace_lid
-    args: 
+    args:
       source: lidnest_3_narrow
       target: exchange_deck_low_narrow
       source_approach: safe_path_lidnest_3
@@ -34,14 +34,14 @@ flowdef:
       target_plate_rotation: narrow
       lid_height: 8
 
-  - name: Remove lid on plate at exchange location, place at correct lid nest location 
+  - name: Remove lid on plate at exchange location, place at correct lid nest location
     module: biopf400
     action: remove_lid
-    args: 
-      source: exchange_deck_low_wide 
+    args:
+      source: exchange_deck_low_wide
       target: payload.remove_lid_location
       source_approach: safe_path_exchange
-      target_approach: payload.remove_lid_safe_path 
+      target_approach: payload.remove_lid_safe_path
       source_plate_rotation: wide
       target_plate_rotation: wide
       lid_height: 8
@@ -49,10 +49,9 @@ flowdef:
   - name: Transfer plate without lid from exchange to OT-2 (deck 1 or 3 depending on loop)
     module: biopf400
     action: transfer
-    args: 
+    args:
       source: exchange_deck_high_wide
       target: payload.assay_plate_ot2_replacement_location
       source_approach: safe_path_exchange
       source_plate_rotation: wide
       target_plate_rotation: wide
-

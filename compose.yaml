@@ -27,6 +27,6 @@ services:
     image: ghcr.io/ad-sdl/ot2_module
     container_name: otflexbio1
     restart: unless-stopped
-    ports: 
+    ports:
       - 3004:3004
     command: python3 ot2_module/src/ot2_rest_node.py --alias="ot2flexbio1" --port=3004 --ot2_ip=146.137.240.11
