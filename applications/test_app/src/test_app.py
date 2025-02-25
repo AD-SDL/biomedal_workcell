@@ -18,9 +18,12 @@ def main() -> None:
     for i in range(1, 4):
         exp.start_run(
             wf_path.resolve(),
-            payload={"ot2_protocol": f"/home/rpl/biomedal_workcell/applications/test_app/protocols/ot2_{i}.py"},
+            payload={
+                "ot2_protocol": f"/home/rpl/biomedal_workcell/applications/test_app/protocols/ot2_{i}.py"
+            },
             blocking=True,
         )
+
 
 if __name__ == "__main__":
     main()

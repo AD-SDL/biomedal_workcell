@@ -1,0 +1,56 @@
+name: Run the BMG plate reader assay - Substrate App Workflow
+
+metadata:
+  author: Casey Stone
+  info: Workflow for running an assay on the BMG plate reader
+  version: 0.1
+
+flowdef:
+  - name: open bmg
+    module: bio_bmg
+    action: open
+
+  - name: transfer
+    module: biopf400
+    action: transfer
+    args:
+      source: tekmatic_incubator_nest
+      target: bmg_reader_nest
+      source_approach: safe_path_tekmatic
+      target_approach: safe_path_bmg
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfer plate with lid from tekmatic incubator to bmg reader
+
+  - name: Remove lid on plate in bmg nest to lid nest 3
+    module: biopf400
+    action: remove_lid
+    args:
+      source: bmg_reader_nest
+      target: lidnest_3_narrow
+      source_approach: safe_path_bmg
+      target_approach: safe_path_lidnest_3
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+      lid_height: 8
+
+  - name: close bmg
+    module: bio_bmg
+    action: close
+
+  - name: close incubator
+    module: tekmatic
+    action: close
+
+  - name: Run BMG Inoculation and reading assay
+    module: bio_bmg
+    action: run_assay
+    args:
+      assay_name: NIDHI
+      data_output_file_name: payload.bmg_data_output_name
+
+  - name: open bmg
+    module: bio_bmg
+    action: open
+
+  # ends with bmg open and no lid on plate

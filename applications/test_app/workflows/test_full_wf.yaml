@@ -8,7 +8,7 @@ modules:
   - name: biopf400
 
 flowdef:
- - name: Transfer Plate 0
+  - name: Transfer Plate 0
     module: biopf400
     action: transfer
     args:
@@ -57,15 +57,15 @@ flowdef:
       source_plate_rotation: narrow
       target_plate_rotation: narrow
     comment: Transfers a plate from Hidex "Geraldine" to the sealer
-  
+
   - name: Close Hidex II
     module: hidex_geraldine
     action: close
-  
+
   - name: Seal Plate
     module: bio_sealer
     action: seal
-  comment: Seal the Plate
+    comment: Seal the Plate
 
   - name: Transfer Plate III
     module: biopf400
@@ -76,7 +76,7 @@ flowdef:
       source_plate_rotation: narrow
       target_plate_rotation: narrow
     comment: Transfers a plate from sealer to the biometra
-  
+
 
   - name: Run Biometra
     module: bio_biometra3
@@ -84,7 +84,7 @@ flowdef:
     args:
       protocol: 3
     comment: Runs a biometra protocol
-  
+
   - name: Transfer Plate III
     module: biopf400
     action: transfer
@@ -94,11 +94,8 @@ flowdef:
       source_plate_rotation: narrow
       target_plate_rotation: narrow
     comment: Transfers a plate from biometra to the peeler
-  
+
   - name: Peel Plate
     module: bio_peeler
     action: peel
-  comment: Peel the Plate
-
-
-        
+    comment: Peel the Plate

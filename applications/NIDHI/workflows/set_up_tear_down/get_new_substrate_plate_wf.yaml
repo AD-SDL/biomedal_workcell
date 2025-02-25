@@ -1,0 +1,39 @@
+name: Get new substrate plate - Substrate App Workflow
+author: Casey Stone
+info: Workflow for using PF400 to transfer new substrate plate to the OT-2
+version: '0.1'
+
+flowdef:
+  - name: transfer
+    module: biopf400
+    action: transfer
+    args:
+      source: payload.current_substrate_stack
+      target: exchange_deck_low_narrow
+      source_approach: payload.current_stack_safe_path
+      target_approach: safe_path_exchange
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+  - name: remove lid
+    module: biopf400
+    action: remove_lid
+    args:
+      source: exchange_deck_low_wide
+      target: lidnest_1_wide
+      source_approach: safe_path_exchange
+      target_approach: safe_path_lidnest_1
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+      lid_height: 8
+    comment: Remove lid from the new substrate plate to lid nest 1
+
+  - name: Transfer new substrate plate with lid off to ot2biobeta_deck1
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_high_wide
+      target: ot2biobeta_deck1
+      source_approach: safe_path_exchange
+      source_plate_rotation: wide
+      target_plate_rotation: wide

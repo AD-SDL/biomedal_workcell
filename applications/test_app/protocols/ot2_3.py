@@ -10,18 +10,13 @@ metadata = {
 # requirements
 requirements = {"robotType": "OT-2", "apiLevel": "2.19"}
 
+
 # protocol run function
 def run(protocol: protocol_api.ProtocolContext):
     # labware
-    plate = protocol.load_labware(
-        "corning_96_wellplate_360ul_flat", location="1"
-    )
-    reservoir = protocol.load_labware(
-        "nest_12_reservoir_15ml", location="10"
-    )
-    tiprack = protocol.load_labware(
-        "opentrons_96_tiprack_300ul", location="11"
-    )
+    plate = protocol.load_labware("corning_96_wellplate_360ul_flat", location="1")
+    reservoir = protocol.load_labware("nest_12_reservoir_15ml", location="10")
+    tiprack = protocol.load_labware("opentrons_96_tiprack_300ul", location="11")
     tiprack.set_offset(x=-0.7, y=0.3, z=0.0)
 
     # pipettes

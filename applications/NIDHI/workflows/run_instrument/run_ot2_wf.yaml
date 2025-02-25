@@ -1,0 +1,21 @@
+name: Run OT-2 Protocol - Substrate App Workflow
+author: Casey Stone
+info: Workflow for running one OT-2 protocol from payload
+version: '0.1'
+
+
+flowdef:
+  - name: Run OT-2 protocol
+    module: ot2biobeta
+    action: run_protocol
+    args:
+      source_wells_1: payload.source_wells_1
+      source_wells_2: payload.source_wells_2
+      source_wells_3: payload.source_wells_3
+      destination_wells_1: payload.destination_wells_1
+      destination_wells_2: payload.destination_wells_2
+      destination_wells_3: payload.destination_wells_3
+      use_existing_resources: payload.use_existing_resources
+    files:
+      protocol: payload.current_ot2_protocol
+    comment: Run the current OT-2 protocol

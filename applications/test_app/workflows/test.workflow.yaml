@@ -47,7 +47,7 @@ flowdef:
       source_plate_rotation: narrow
       target_plate_rotation: narrow
     comment: Transfers a plate from Hidex "Geraldine" to ot2bioalpha's Deck 1 location
-    
+
   - name: Close Hidex I
     module: hidex_geraldine
     action: close
