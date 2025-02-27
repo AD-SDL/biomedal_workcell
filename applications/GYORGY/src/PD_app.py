@@ -65,12 +65,12 @@ def main() -> None:
     # print("here")
 
     # WORKING!
-    experiment_client.start_run(
-        remove_lid_move_to_flex.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # experiment_client.start_run(
+    #     remove_lid_move_to_flex.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
     payload = {"current_flex_protocol": str(add_enzyme_protocol)}
 
