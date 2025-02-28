@@ -117,7 +117,7 @@ def main() -> None:
                 plate_prep_and_first_inoculation_protocol
             )
 
-        # If it's not the very first cycle, set variables depending on loop number % 4
+        # If it's not the very first cycle, set variables depending on loop number % 3
         else:
             # Keep track of OT-2 tip usage after loop number 1 (2nd OT-2 protocol)
             if loop_num == 1:
@@ -125,7 +125,7 @@ def main() -> None:
             else:
                 payload["use_existing_resources"] = True
 
-            # Set variables for a BETWEEN plate transfer every 4th round (when loop num % 0 == 4)
+            # Set variables for a BETWEEN plate transfer every 3rd round (when loop num % 3 == 0)
             # This means we've used up all columns in one substrate plate and now need to inoculate between substrate plates into a new substrate plate
             if loop_num % 4 == 0:
                 payload["current_ot2_protocol"] = str(inoculate_between_plates_protocol)
@@ -134,7 +134,7 @@ def main() -> None:
                 payload["remove_lid_safe_path"] = "safe_path_lidnest_1"
                 print("BETWEEN PLATE TRANSFER")  # HELPFUL PRINT
 
-            # If loop num % 4 is not 0, we are innoculating using columns in the same plate (WITHIN PLATE TRANSFER)
+            # If loop num % 3 is not 0, we are inoculating using columns in the same plate (WITHIN PLATE TRANSFER)
             else:
                 payload["current_ot2_protocol"] = str(inoculate_within_plate_protocol)
                 print("WITHIN PLATE TRANSFER")  # HELPFUL PRINT
@@ -150,7 +150,7 @@ def main() -> None:
                 payload["destination_wells_2"] = [destination_wells_list[1]]
                 payload["destination_wells_3"] = [destination_wells_list[2]]
 
-                if loop_num % 4 == 3:
+                if loop_num % 3 == 2:
                     # set variables to replace completely used substrate plate on ot2 deck 3 in preparation for next between plate transfer
                     payload["assay_plate_ot2_replacement_location"] = "ot2biobeta_deck3"
 
@@ -178,7 +178,7 @@ def main() -> None:
             )
 
         # Remove an old/used substrate plate from ot2 deck 3 if necessary
-        if loop_num % 4 == 0 and not loop_num == 0:
+        if loop_num % 3 == 0 and not loop_num == 0:
             print(
                 f"Removing old substrate plate to: {payload['current_substrate_stack']} using {payload['current_stack_safe_path']}"
             )  # HELPFUL PRINT
@@ -214,7 +214,9 @@ def main() -> None:
         )
 
         # INNER LOOP
-        for i in range(21):  # T21 inner loops in full experiment
+        for i in range(
+            10
+        ):  # 10 inner loops means transfers/inoculations every 10 hours
             # Transfer from bmg to tekmatic incubator and incubate
             print("---> Moving to tekmatic and incubating")  # HELPFUL PRINT
             experiment_client.start_run(
@@ -241,7 +243,7 @@ def main() -> None:
             )
 
         # If we've completed all absorbance readings on the last columns of a substrate plate, set variables to replace the lid at the old substrate plate lid location (lid nest 2)
-        if loop_num % 4 == 3:
+        if loop_num % 3 == 2:
             payload["remove_lid_location"] = "lidnest_2_wide"
             payload["remove_lid_safe_path"] = "safe_path_lidnest_2"
 
@@ -258,7 +260,7 @@ def main() -> None:
 
         # Get a new (unused) substrate from the stack if necessary
         if (
-            loop_num % 4 == 3 and not loop_num == total_loops - 1
+            loop_num % 3 == 2 and not loop_num == total_loops - 1
         ):  # new substrate plate not needed on the last round
             print(
                 f"Getting a new substrate plate from stack: {payload['current_substrate_stack']} using {payload['current_stack_safe_path']}"
@@ -273,7 +275,7 @@ def main() -> None:
         # Format remaining variables for the next round
         reading_number_in_column = 1
 
-        if loop_num % 4 == 3 and not loop_num == 0:
+        if loop_num % 3 == 2 and not loop_num == 0:
             transfer_in_plate_number = 1
             current_substrate_plate_num += 1
         else:
@@ -297,30 +299,27 @@ def determine_inoculation_columns(loop_num):
         destination_wells ([str]) String list of destination wells
 
     Notes:
-        loop_num % 4 = 1
-            source_columns = [1,5,9]
-            destination_columns = [2,6,10]
-        loop_num % 4 = 2
-            source_columns = [2,6,10]
-            destination_columns = [3,7,11]
-        loop_num % 4 = 3
-            source_columns = [3,7,11]
-            destination_columns = [4,8,12]
+        loop_num % 3 = 1
+            source_columns = [2,5,8]
+            destination_columns = [3,6,9]
+        loop_num % 3 = 2
+            source_columns = [3,6,9]
+            destination_columns = [4,7,10]
 
         This means that...
-            source_columns = [loop_num % 4, (loop_num % 4) + 4, (loop_num % 4) +8]
-            destination_columns = [loop_num % 4, (loop_num % 4) + 4, (loop_num % 4) +8]
+            source_columns = [(loop_num % 3) + 1, (loop_num % 3) + 4, (loop_num % 3) + 7]
+            destination_columns = [(loop_num % 3) + 2, (loop_num % 3) + 5, (loop_num % 3) +8]
 
     """
-    mod = loop_num % 4
+    mod = loop_num % 3
 
-    if mod == 0:
-        source_columns = [4, 8, 12]
-        destination_columns = [1, 5, 9]
+    if mod == 0:  # between plate transfer
+        source_columns = [4, 7, 10]
+        destination_columns = [2, 5, 8]
 
     else:
-        source_columns = [mod, mod + 4, mod + 8]
-        destination_columns = [mod + 1, mod + 5, mod + 9]
+        source_columns = [mod + 1, mod + 4, mod + 7]
+        destination_columns = [mod + 2, mod + 5, mod + 8]
 
     source_well_list = [
         [f"{row}{column}" for row in "ABCDEFGH"] for column in source_columns

@@ -48,11 +48,9 @@ flowdef:
       temperature: 30.0
       shaker_frequency: 6.6
       wait_for_incubation_time: True
-      incubation_time: 1800  # 1800 sec is 30 min
-    comment: incubate for 30 min at 30 deg C, shaking at 7 Hz
+      incubation_time: 3600  # 3600 is one hour
+    comment: incubate for one hour at 30 deg C, shaking at 6.6 Hz
 
   - name: open incubator
     module: tekmatic
     action: open
-
-  # ends with tekmatic open and lid on plate

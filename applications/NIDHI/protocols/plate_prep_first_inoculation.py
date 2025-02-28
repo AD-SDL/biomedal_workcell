@@ -13,12 +13,6 @@ requirements = {"robotType": "OT-2", "apiLevel": "2.12"}
 
 # protocol run function
 def run(protocol: protocol_api.ProtocolContext):
-    # TODOs:
-    # do we need to use a disposal volume for propper liquid transfers?
-    # we may need to change the z height aspirating from source substrate deepwell overtime
-    # do we have enough volume in the substrate deepwell
-    # add labware offsets to each deck position
-
     # * load labware
     substrate_stock = protocol.load_labware(
         "nest_96_wellplate_2ml_deep",
@@ -69,6 +63,10 @@ def run(protocol: protocol_api.ProtocolContext):
     substrate_assay_plate_5.set_offset(x=-0.0, y=0.4, z=0.0)  # pos 10
     substrate_assay_plate_6.set_offset(x=-0.0, y=0.2, z=0.0)  # pos 11
 
+    # variables
+    media_transfer_volume = 180
+    inoculation_volume = 5
+
     # * load pipettes
     left_pipette_20uL_multi = protocol.load_instrument(
         "p20_multi_gen2", mount="left", tip_racks=[tip_rack_20uL]
@@ -87,29 +85,53 @@ def run(protocol: protocol_api.ProtocolContext):
         substrate_assay_plate_5,
         substrate_assay_plate_6,
     ]
+
+    # Transfer 180uL from one column (1-6) of stock plate to columns 2-10 of each substrate plate
     for i in range(len(substrate_assay_plates)):
         source_column = substrate_stock.columns_by_name()[str(i + 1)]
-        destination_columns = substrate_assay_plates[i].columns()
+        destination_columns = substrate_assay_plates[i].columns()[
+            1:10
+        ]  # means columns 2 - 11
         right_pipette_300uL_multi.distribute(
-            150,
+            media_transfer_volume,
             source_column[0],
             [column[0] for column in destination_columns],
             new_tip="once",
-            disposal_volume=0,  # TODO: do we need a disposal volume for propper volume transfer
+            disposal_volume=0,
         )
 
-    # Inoculate 3 columns (columns 1, 5, and 9) of assay plate 1 from substrate stock plate columns 8, 10, and 12 respectively
+    # Transfer 180uL media into outside columns of all substrate plates (columns 1, 11, and 12)
+    for i in range(len(substrate_assay_plates)):
+        destination_columns = [
+            substrate_assay_plates[i].columns()[0],  # column 1
+            substrate_assay_plates[i].columns()[10],  # column 11
+            substrate_assay_plates[i].columns()[11],  # column 12
+        ]
+        source_column = None
+        if i < 3:  # take from stock column 7
+            source_column = substrate_stock.columns_by_name()["7"]  # column 7
+        else:  # take from stock column 8
+            source_column = substrate_stock.columns_by_name()["8"]  # column 8
+        right_pipette_300uL_multi.distribute(
+            media_transfer_volume,
+            source_column[0],
+            [column[0] for column in destination_columns],
+            new_tip="once",
+            disposal_volume=0,
+        )
+
+    # Inoculate 3 columns (columns 2, 5, and 8) of assay plate 1 from substrate stock plate columns 8, 10, and 12 respectively
     left_pipette_20uL_multi.pick_up_tip()
-    left_pipette_20uL_multi.aspirate(5, substrate_stock["A8"])
-    left_pipette_20uL_multi.dispense(5, substrate_assay_plate_1["A1"])
+    left_pipette_20uL_multi.aspirate(inoculation_volume, substrate_stock["A10"])
+    left_pipette_20uL_multi.dispense(inoculation_volume, substrate_assay_plate_1["A2"])
     left_pipette_20uL_multi.drop_tip()
 
     left_pipette_20uL_multi.pick_up_tip()
-    left_pipette_20uL_multi.aspirate(5, substrate_stock["A10"])
-    left_pipette_20uL_multi.dispense(5, substrate_assay_plate_1["A5"])
+    left_pipette_20uL_multi.aspirate(inoculation_volume, substrate_stock["A11"])
+    left_pipette_20uL_multi.dispense(inoculation_volume, substrate_assay_plate_1["A5"])
     left_pipette_20uL_multi.drop_tip()
 
     left_pipette_20uL_multi.pick_up_tip()
-    left_pipette_20uL_multi.aspirate(5, substrate_stock["A12"])
-    left_pipette_20uL_multi.dispense(5, substrate_assay_plate_1["A9"])
+    left_pipette_20uL_multi.aspirate(inoculation_volume, substrate_stock["A12"])
+    left_pipette_20uL_multi.dispense(inoculation_volume, substrate_assay_plate_1["A9"])
     left_pipette_20uL_multi.drop_tip()
