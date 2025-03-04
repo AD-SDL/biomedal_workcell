@@ -84,7 +84,9 @@ def main() -> None:
     transfer_in_plate_number = 1
     reading_number_in_column = 1
 
-    total_loops = 20  # CHANGED TO 20 TO USE 5 plates instead of 6!!!! 24 outer loops in full experiment
+    total_loops = (
+        18  # 18 loops is 6 full plates with three transfers/inoculations per plate
+    )
 
     # initial payload setup
     payload = {
@@ -127,7 +129,7 @@ def main() -> None:
 
             # Set variables for a BETWEEN plate transfer every 3rd round (when loop num % 3 == 0)
             # This means we've used up all columns in one substrate plate and now need to inoculate between substrate plates into a new substrate plate
-            if loop_num % 4 == 0:
+            if loop_num % 3 == 0:
                 payload["current_ot2_protocol"] = str(inoculate_between_plates_protocol)
                 payload["assay_plate_ot2_replacement_location"] = "ot2biobeta_deck1"
                 payload["remove_lid_location"] = "lidnest_1_wide"
@@ -166,18 +168,17 @@ def main() -> None:
         # RUN THE EXPERIMENTAL WORKFLOWS ----------------------------------------
 
         # Run the current OT-2 protocol
-        if not loop_num == 0:  # ADDED FOR 2ND RUN (CHANGE FOR FUTURE RUNS!!!!!!)
-            print(
-                f"Running OT2 protoccol: {payload['current_ot2_protocol']}"
-            )  # HELPFUL PRINT
-            experiment_client.start_run(
-                run_ot2_wf.resolve(),
-                payload=payload,
-                blocking=True,
-                simulate=False,
-            )
+        print(
+            f"Running OT2 protoccol: {payload['current_ot2_protocol']}"
+        )  # HELPFUL PRINT
+        experiment_client.start_run(
+            run_ot2_wf.resolve(),
+            payload=payload,
+            blocking=True,
+            simulate=False,
+        )
 
-        # Remove an old/used substrate plate from ot2 deck 3 if necessary
+        # # Remove an old/used substrate plate from ot2 deck 3 if necessary
         if loop_num % 3 == 0 and not loop_num == 0:
             print(
                 f"Removing old substrate plate to: {payload['current_substrate_stack']} using {payload['current_stack_safe_path']}"
@@ -215,7 +216,7 @@ def main() -> None:
 
         # INNER LOOP
         for i in range(
-            10
+            10  # inoculations every 10 hours
         ):  # 10 inner loops means transfers/inoculations every 10 hours
             # Transfer from bmg to tekmatic incubator and incubate
             print("---> Moving to tekmatic and incubating")  # HELPFUL PRINT

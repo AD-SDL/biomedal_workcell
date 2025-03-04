@@ -70,5 +70,3 @@ flowdef:
   - name: Open the BMG plate reader tray
     module: bio_bmg
     action: open
-
-  # ends with bmg open and no lid on plate

@@ -54,7 +54,7 @@ def run(protocol: protocol_api.ProtocolContext):
     )
 
     # set labware offsets
-    tip_rack_300uL.set_offset(x=0.1, y=0.4, z=-0.5)  # pos 5
+    tip_rack_300uL.set_offset(x=0.4, y=0.4, z=-0.5)  # pos 5   changed from x = 0.1
     tip_rack_20uL.set_offset(x=0.4, y=1.1, z=0.0)  # pos 6
     substrate_assay_plate_1.set_offset(x=-0.0, y=1.2, z=0.0)  # pos 1
     substrate_assay_plate_2.set_offset(x=-0.0, y=1.0, z=0.0)  # pos 7
@@ -101,6 +101,7 @@ def run(protocol: protocol_api.ProtocolContext):
         )
 
     # Transfer 180uL media into outside columns of all substrate plates (columns 1, 11, and 12)
+    right_pipette_300uL_multi.pick_up_tip()
     for i in range(len(substrate_assay_plates)):
         destination_columns = [
             substrate_assay_plates[i].columns()[0],  # column 1
@@ -116,9 +117,10 @@ def run(protocol: protocol_api.ProtocolContext):
             media_transfer_volume,
             source_column[0],
             [column[0] for column in destination_columns],
-            new_tip="once",
+            new_tip="never",  # changed from once for testing
             disposal_volume=0,
         )
+    right_pipette_300uL_multi.drop_tip()
 
     # Inoculate 3 columns (columns 2, 5, and 8) of assay plate 1 from substrate stock plate columns 8, 10, and 12 respectively
     left_pipette_20uL_multi.pick_up_tip()
@@ -133,5 +135,5 @@ def run(protocol: protocol_api.ProtocolContext):
 
     left_pipette_20uL_multi.pick_up_tip()
     left_pipette_20uL_multi.aspirate(inoculation_volume, substrate_stock["A12"])
-    left_pipette_20uL_multi.dispense(inoculation_volume, substrate_assay_plate_1["A9"])
+    left_pipette_20uL_multi.dispense(inoculation_volume, substrate_assay_plate_1["A8"])
     left_pipette_20uL_multi.drop_tip()
