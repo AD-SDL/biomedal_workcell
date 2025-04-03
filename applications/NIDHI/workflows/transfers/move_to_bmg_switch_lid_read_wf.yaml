@@ -60,7 +60,7 @@ flowdef:
     module: bio_bmg
     action: close
 
-  - name: Run BMG Inoculation and reading assay
+  - name: Run BMG Inoculation and reading assay      
     module: bio_bmg
     action: run_assay
     args:

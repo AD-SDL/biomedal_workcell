@@ -22,41 +22,47 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://biopf400:3000"
+    active: True
   - name: ot2bioalpha
     model: Opentrons OT-2
-    active: True
+    active: False 
     interface: wei_rest_node
     config:
       rest_node_address: "http://ot2bioalpha:3001"
   - name: ot2biobeta
     model: Opentrons OT-2
-    active: True
+    active: True  
     interface: wei_rest_node
     config:
       rest_node_address: "http://ot2biobeta:3002"
   - name: hidex_geraldine
     model: Hidex Sense
+    active: False
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2005"
   - name: bio_sealer
     model: A4s Sealer
     interface: wei_rest_node
+    active: False
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2006"
   - name: bio_peeler
     model: XPeel
     interface: wei_rest_node
+    active: False
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2007"
   - name: bio_biometra3
     model: Biometra
     interface: wei_rest_node
+    active: False
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2008"
   - name: bio_biometra4
     model: Biometra
     interface: wei_rest_node
+    active: False
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2009"
   - name: bio_bmg
@@ -64,9 +70,11 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3003"
+    active: True
   - name: otflexbio1
     model: Opentrons OT-Flex
     interface: wei_rest_node
+    active: False
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3004"
   - name: tekmatic
@@ -74,6 +82,7 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3005"
+    active: True  
 
 
 locations:
@@ -107,7 +116,7 @@ locations:
     safe_path_tower_deck3: [854.408, 16.788, 134.302, 655.330, 82.215, -717.111]
     safe_path_tower_deck4: [950.484, 15.527, 136.545, 654.549, 82.169, -715.834]
     safe_path_tower_deck5: [1030.837, 18.536, 134.023, 653.530, 82.174, -712.890]
-    lidnest_1_wide: [374.017, 23.944, 115.144, 671.159, 125.123, -611.851]
+    lidnest_1_wide: [374.370, 23.786, 114.989, 671.470, 125.146, -611.836]   
     lidnest_2_wide: [376.183, 20.493, 112.279, 678.140, 125.006, -410.865]
     lidnest_3_narrow: [376.649, 24.595, 107.940, 675.546, 81.389, -194.121]
     safe_path_lidnest_1: [404.584, 6.928, 143.517, 658.529, 125.193, -608.622]
