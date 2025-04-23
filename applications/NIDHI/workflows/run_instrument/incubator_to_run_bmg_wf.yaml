@@ -1,8 +1,8 @@
-name: Run the BMG plate reader assay - Substrate App Workflow
+name: Transfer to BMG and read absorbance
 
 metadata:
   author: Casey Stone
-  info: Workflow for running an assay on the BMG plate reader
+  info: Workflow for moving to bmg and reading
   version: 0.1
 
 flowdef:
@@ -10,7 +10,7 @@ flowdef:
     module: bio_bmg
     action: open
 
-  - name: transfer
+  - name: transfer to bmg
     module: biopf400
     action: transfer
     args:
@@ -20,9 +20,9 @@ flowdef:
       target_approach: safe_path_bmg
       source_plate_rotation: narrow
       target_plate_rotation: narrow
-    comment: Transfer plate with lid from tekmatic incubator to bmg reader
+    comment: transfer microplate with lid to bmg
 
-  - name: Remove lid on plate in bmg nest to lid nest 3
+  - name: remove lid from plate on bmg
     module: biopf400
     action: remove_lid
     args:
@@ -42,7 +42,7 @@ flowdef:
     module: tekmatic
     action: close
 
-  - name: Run BMG Inoculation and reading assay
+  - name: Run BMG absorbance assay
     module: bio_bmg
     action: run_assay
     args:
@@ -52,5 +52,3 @@ flowdef:
   - name: open bmg
     module: bio_bmg
     action: open
-
-  # ends with bmg open and no lid on plate

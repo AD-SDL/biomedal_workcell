@@ -11,7 +11,7 @@ flowdef:
     args:
       foo: bar
     files:
-      protocol: #TODO: make protocol file, and verify
+      protocol: payload.current_flex_protocol
     comment: Run OT-Flex protocol
 
   # - name: Run Flex
