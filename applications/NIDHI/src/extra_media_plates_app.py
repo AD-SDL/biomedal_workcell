@@ -42,12 +42,12 @@ def main() -> None:
     protocol_directory = app_directory / "protocols"
 
     # workflow paths (run instruments)
-    run_ot2_extra_media_plates_wf = wf_run_instrument_directory / "prep_extra_media_plates_wf.yaml"
+    run_ot2_extra_media_plates_wf = (
+        wf_run_instrument_directory / "prep_extra_media_plates_wf.yaml"
+    )
 
     # protocol paths (for OT-2)
-    prep_extra_media_plates_protocol = (
-        protocol_directory / "prep_extra_media_plates.py"
-    )
+    prep_extra_media_plates_protocol = protocol_directory / "prep_extra_media_plates.py"
 
     # initial payload setup
     payload = {
@@ -60,7 +60,6 @@ def main() -> None:
 
     """ Human needs to set up OT-2 deck before run starts """
 
-
     # Run the current OT-2 protocol
     experiment_client.start_run(
         run_ot2_extra_media_plates_wf.resolve(),
@@ -69,7 +68,6 @@ def main() -> None:
         simulate=False,
     )
 
-       
+
 if __name__ == "__main__":
     main()
-

@@ -19,10 +19,10 @@ def run(protocol: protocol_api.ProtocolContext):
         location="4",
     )
 
-    substrate_assay_plate_1 = protocol.load_labware(
-        "corning_96_wellplate_360ul_flat",
-        location="1",
-    )
+    # substrate_assay_plate_1 = protocol.load_labware(
+    #     "corning_96_wellplate_360ul_flat",
+    #     location="1",
+    # )
     substrate_assay_plate_2 = protocol.load_labware(
         "corning_96_wellplate_360ul_flat",
         location="7",
@@ -91,7 +91,7 @@ def run(protocol: protocol_api.ProtocolContext):
         source_column = substrate_stock.columns_by_name()[str(i + 1)]
         destination_columns = substrate_assay_plates[i].columns()[
             1:10
-        ]  # means columns 2 - 11
+        ]  # means columns 2 - 10
         right_pipette_300uL_multi.distribute(
             media_transfer_volume,
             source_column[0],
@@ -121,4 +121,3 @@ def run(protocol: protocol_api.ProtocolContext):
             disposal_volume=0,
         )
     right_pipette_300uL_multi.drop_tip()
-
