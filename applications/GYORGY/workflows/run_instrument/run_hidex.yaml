@@ -5,11 +5,18 @@ version: '0.1'
 
 
 flowdef:
+  # - name: Run hidex protocol
+  #   module: hidex_geraldine
+  #   action: run_assay
+  #   args:
+  #     foo: bar
+  #   files:
+  #     protocol: "Campaign2_wei_cs" #PD_CFPS
+  #   comment: Run hidex protocol
+
   - name: Run hidex protocol
     module: hidex_geraldine
-    action: run_protocol
+    action: run_assay
     args:
-      foo: bar
-    files:
-      protocol: #TODO: make protocol file, and verify
+      assay_name: "Absorbance"
     comment: Run hidex protocol

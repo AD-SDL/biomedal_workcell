@@ -95,55 +95,40 @@ def main() -> None:
 ###################
 #####################
 
-    payload = {"current_flex_protocol": str(move_from_temp_to_staging_protocol)}
+    # payload = {"current_flex_protocol": str(move_from_temp_to_staging_protocol)}
 
-    # add fluorescence and enzyme
-    experiment_client.start_run(
-        run_flex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
-
-    # #move from flex to hidex
+    # # add fluorescence and enzyme
     # experiment_client.start_run(
-    #     flex_to_hidex_wf.resolve(),
+    #     run_flex_wf.resolve(),
     #     payload=payload,
     #     blocking=True,
     #     simulate=False,
     # )
 
-    #     #run hidex to detect fluorescence
-    #     experiment_client.start_run(
-    #     run_hidex_wf.resolve(),
+
+    # # move from flex to sealer
+    # experiment_client.start_run(
+    #     flex_to_sealer_wf.resolve(),
     #     payload=payload,
     #     blocking=True,
     #     simulate=False,
     # )
 
-    # move from flex to sealer
-    experiment_client.start_run(
-        flex_to_sealer_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # # seal
+    # experiment_client.start_run(
+    #     run_sealer_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
-    # seal
-    experiment_client.start_run(
-        run_sealer_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
-
-    # sealer to hidex
-    experiment_client.start_run(
-        sealer_to_hidex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # # sealer to hidex
+    # experiment_client.start_run(
+    #     sealer_to_hidex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
     # run hidex incubate #TODO: specific file name needed in payload
     experiment_client.start_run(
@@ -189,59 +174,6 @@ def main() -> None:
     )
 
 
-
-    # #     #move from hidex to flex 
-    # experiment_client.start_run(
-    #     hidex_to_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
-
-    # payload = {"current_flex_protocol": str(move_from_staging_protocol)}
-
-#     # add fluorescence and enzyme
-#     experiment_client.start_run(
-#         run_flex_wf.resolve(),
-#         payload=payload,
-#         blocking=True,
-#         simulate=False,
-#     )
-
-#     payload = {"current_flex_protocol": str(add_substrate_protocol)}
-
-#     #add substrate
-#     experiment_client.start_run(
-#         run_flex_wf.resolve(),
-#         payload=payload,
-#         blocking=True,
-#         simulate=False,
-#     )
-
-#     payload = {"current_flex_protocol": str(move_to_staging_2_protocol)}
-
-#     # add fluorescence and enzyme
-#     experiment_client.start_run(
-#         run_flex_wf.resolve(),
-#         payload=payload,
-#         blocking=True,
-#         simulate=False,
-#     )
-
-#     #flex to hidex
-#     experiment_client.start_run(
-#     flex_to_hidex_wf.resolve(),
-#     payload=payload,
-#     blocking=True,
-#     simulate=False,
-# )
-#     #hidex run?
-#     experiment_client.start_run(
-#     run_hidex_wf.resolve(),
-#     payload=payload,
-#     blocking=True,
-#     simulate=False,
-# )
 
 
 if __name__ == "__main__":

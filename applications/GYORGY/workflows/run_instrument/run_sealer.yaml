@@ -6,7 +6,7 @@ version: '0.1'
 
 flowdef:
   - name: Run sealer protocol
-    module: sealer
+    module: bio_sealer
     action: seal
     args:
       foo: bar

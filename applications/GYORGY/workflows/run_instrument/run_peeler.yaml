@@ -6,7 +6,7 @@ version: '0.1'
 
 flowdef:
   - name: Run peeler protocol
-    module: peeler
+    module: bio_peeler
     action: peel
     args:
       foo: bar
