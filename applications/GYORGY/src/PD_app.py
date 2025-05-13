@@ -80,15 +80,20 @@ def main() -> None:
     #     simulate=False,
     # )
 
-    payload = {"current_flex_protocol": str(add_enzyme_protocol)}
+#####################
+###################
+    # payload = {"current_flex_protocol": str(add_enzyme_protocol)}
 
-    # add fluorescence and enzyme
-    experiment_client.start_run(
-        run_flex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # # add fluorescence and enzyme
+    # experiment_client.start_run(
+    #     run_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
+
+###################
+#####################
 
     payload = {"current_flex_protocol": str(move_from_temp_to_staging_protocol)}
 

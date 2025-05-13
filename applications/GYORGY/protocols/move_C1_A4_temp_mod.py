@@ -27,7 +27,8 @@ def run(protocol: protocol_api.ProtocolContext):
     # deck["C1"].set_offset(x=1.0, y=1.6, z=11.0)
     # adapter = module.load_adapter("opentrons_96_flat_bottom_adapter")
 
-    deck["A1"] = protocol.load_trash_bin("A1")
+    # deck["A1"] = protocol.load_trash_bin("A1")
+    deck["D3"] = protocol.load_waste_chute()
 
     pipettes["right"] = protocol.load_instrument("flex_8channel_50", "right", tip_racks=[])
 
