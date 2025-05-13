@@ -1,0 +1,30 @@
+equipment:
+  - name: nest_96_wellplate_100ul_pcr_full_skirt
+    location: A4
+  - name: flex_8channel_50
+    mount: right
+  - name: flex_1channel_1000
+    mount: left
+  - name: nest_96_wellplate_100ul_pcr_full_skirt
+    location: C1
+    alias: dest
+    module: Temperature Module
+    offset: [1, 1.6, 11]
+  - name: trash
+    location: A1
+
+commands:
+
+  - name: move_test
+    command: move_labware 
+    labware: A4
+    destination: C1
+
+metadata:
+  protocolName: Gyorgy Flex move test
+  author: Abe astroka@anl.gov
+  description: pd cfpe assay
+  apiLevel: "2.18"
+
+requirements:
+  robotType: Flex

@@ -1,0 +1,13 @@
+name: Run Peeler
+author: Abe Stroka
+info: Workflow for running the peeler
+version: '0.1'
+
+
+flowdef:
+  - name: Run peeler protocol
+    module: peeler
+    action: peel
+    args:
+      foo: bar
+    comment: Run peeler

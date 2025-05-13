@@ -1,0 +1,13 @@
+name: Run Sealer
+author: Abe Stroka
+info: Workflow for running the sealer
+version: '0.1'
+
+
+flowdef:
+  - name: Run sealer protocol
+    module: sealer
+    action: seal
+    args:
+      foo: bar
+    comment: Run sealer
