@@ -25,7 +25,7 @@ modules:
     active: True
   - name: ot2bioalpha
     model: Opentrons OT-2
-    active: False 
+    active: True
     interface: wei_rest_node
     config:
       rest_node_address: "http://ot2bioalpha:3001"
@@ -83,6 +83,12 @@ modules:
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3005"
     active: True
+  - name: inheco_devID2_floor1
+    model: Inheco single plate incubator shaker
+    interface: wei_rest_node
+    config:
+      rest_node_address: "http://hudson02.cels.anl.gov:3006"
+    active: True
 
 
 
@@ -97,6 +103,9 @@ locations:
     safe_exchange_height: [767.770, 0.265, 175.445, 540.110, 70.521, 543.010]
     safe_exchange_above: [756.457, 3.342, 90.607, 586.714, 70.556, 918.234]
     ot2bioalpha_deck1: [708.132, -49.277, 318.588, 448.364, 78.476, -207.488]
+    ot2bioalpha_deck1_wide: [707.532, -19.349, 310.011, 338.398, 121.835, -257.670]
+    ot2bioalpha_deck3_wide: [707.704, -23.803, 261.289, 391.475, 121.840, -255.627]
+    safe_path_ot2bioalpha: [731.926, 20.189, 248.705, 356.524, 70.515, -257.671]
     ot2biobeta_deck1: [707.171, -18.952, 267.011, 381.434, 122.040, 688.614]
     ot2biobeta_deck3: [706.990, -35.793, 256.701, 408.513, 122.046, 576.262]
     otflex_deckA: [800.149, 22.186, 285.576, 320.182, 81.893, 999.494]
