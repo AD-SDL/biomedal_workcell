@@ -180,7 +180,7 @@ def main() -> None:
         # RUN THE EXPERIMENTAL WORKFLOWS ----------------------------------------
 
         # Run the current OT-2 protocol
-        if loop_num > 0 or run_ot2_on_first_loop:
+        if loop_num > 0 or run_ot2_on_first_loop:   # TESTING
             print(
                 f"Running OT2 protoccol: {payload['current_ot2_protocol']}"
             )  # HELPFUL PRINT

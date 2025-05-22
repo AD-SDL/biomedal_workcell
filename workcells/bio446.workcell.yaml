@@ -22,7 +22,7 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://biopf400:3000"
-    active: True
+    active: False
   - name: ot2bioalpha
     model: Opentrons OT-2
     active: True
@@ -37,7 +37,7 @@ modules:
       rest_node_address: "http://ot2biobeta:3002"
   - name: hidex_geraldine
     model: Hidex Sense
-    active: True
+    active: False
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2005"
@@ -70,7 +70,7 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3003"
-    active: True
+    active: False
   - name: otflexbio1
     model: Opentrons OT-Flex
     interface: wei_rest_node
@@ -82,13 +82,13 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3005"
-    active: True
+    active: False
   - name: inheco_devID2_floor1
     model: Inheco single plate incubator shaker
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3006"
-    active: True
+    active: False
 
 
 
