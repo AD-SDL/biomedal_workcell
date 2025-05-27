@@ -31,7 +31,7 @@ modules:
       rest_node_address: "http://ot2bioalpha:3001"
   - name: ot2biobeta
     model: Opentrons OT-2
-    active: True  
+    active: True
     interface: wei_rest_node
     config:
       rest_node_address: "http://ot2biobeta:3002"
@@ -89,6 +89,12 @@ modules:
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3006"
     active: False
+  - name: sciclops
+    model: Hudson Scilcops Plate Crane
+    interface: wei_rest_node
+    config:
+      rest_node_address: "http://sciclops:3005"
+    active: True
 
 
 
@@ -143,5 +149,5 @@ locations:
     safe_path_lidnest_2: [404.942, 4.432, 142.130, 662.712, 125.164, -389.370]
     safe_path_lidnest_3: [400.040, -4.149, 147.508, 664.154, 81.629, -194.110]
 
-    
-    
+
+

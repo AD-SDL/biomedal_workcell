@@ -5,8 +5,10 @@ from pathlib import Path
 
 from wei import ExperimentClient
 from wei.types.experiment_types import CampaignDesign, ExperimentDesign
+from wei.types.workflow_types import Workflow
 
 from ot2_offsets import ot2biobeta, ot2bioalpha
+import helper_functions
 
 
 def main() -> None:
@@ -51,10 +53,24 @@ def main() -> None:
     # test_protocol = protocol_directory / "TEST.yaml"
     inocualte_protocol = protocol_directory / "inoculate.py"
 
+    # generate first inoculation ot-2 protocol
+    inoculate_protocol_tip_box_location = 4
+    current_ot2 = ot2biobeta
+    inoculate_tip_box_offsets = current_ot2[inoculate_protocol_tip_box_location]
+    ot2_replacement_variables = {
+        "tip_location": inoculate_protocol_tip_box_location,
+        "x": inoculate_tip_box_offsets[0],
+        "y": inoculate_tip_box_offsets[1],
+        "z": inoculate_tip_box_offsets[2],
+    }
+    temp_ot2_file = helper_functions.generate_ot2_protocol(inocualte_protocol, ot2_replacement_variables)
+    print(temp_ot2_file)
+
 
     # initial payload setup
     payload = {
-        "current_ot2_protocol": str(inocualte_protocol),
+        "ot2_node": "ot2biobeta",
+        "current_ot2_protocol": temp_ot2_file,
         "use_existing_resources": False,
     }
 
@@ -63,6 +79,12 @@ def main() -> None:
     # EXPERIMENT LOOP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     """ Human needs to set up OT-2 deck before run starts """
+
+    
+    # workflow = Workflow.from_yaml(run_ot2_wf.resolve())
+    # for step in workflow.flowdef:
+    #     if step.module == "payload.incubator_node":
+    #         step.module = ""
 
     # Run the current OT-2 protocol
     experiment_client.start_run(
