@@ -6,6 +6,8 @@ from pathlib import Path
 from wei import ExperimentClient
 from wei.types.experiment_types import CampaignDesign, ExperimentDesign
 
+from ot2_offsets import ot2biobeta, ot2bioalpha
+
 
 def main() -> None:
     """Runs the OT-2 protocol to create extra media plates"""
@@ -45,11 +47,14 @@ def main() -> None:
     run_ot2_wf = wf_run_instrument_directory / "run_ot2_wf.yaml"
 
     # protocol paths (for OT-2)
-    prep_dispense_media_protocol = protocol_directory / "prep_dispense_media.py"
+    # prep_dispense_media = protocol_directory / "prep_dispense_media.py"
+    # test_protocol = protocol_directory / "TEST.yaml"
+    inocualte_protocol = protocol_directory / "inoculate.py"
+
 
     # initial payload setup
     payload = {
-        "current_ot2_protocol": str(prep_dispense_media_protocol),
+        "current_ot2_protocol": str(inocualte_protocol),
         "use_existing_resources": False,
     }
 
@@ -66,6 +71,7 @@ def main() -> None:
         blocking=True,
         simulate=False,
     )
+
 
 
 
