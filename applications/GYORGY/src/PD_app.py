@@ -73,12 +73,12 @@ def main() -> None:
     # print("here")
 
     # WORKING!
-    # experiment_client.start_run(
-    #     remove_lid_move_to_flex.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    experiment_client.start_run(
+        remove_lid_move_to_flex.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
 #####################
 ###################
@@ -95,40 +95,39 @@ def main() -> None:
 ###################
 #####################
 
-    # payload = {"current_flex_protocol": str(move_from_temp_to_staging_protocol)}
+    payload = {"current_flex_protocol": str(move_from_temp_to_staging_protocol)}
 
-    # # add fluorescence and enzyme
-    # experiment_client.start_run(
-    #     run_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
 
-    # # move from flex to sealer
-    # experiment_client.start_run(
-    #     flex_to_sealer_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    # move from flex to sealer
+    experiment_client.start_run(
+        flex_to_sealer_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
-    # # seal
-    # experiment_client.start_run(
-    #     run_sealer_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    # seal
+    experiment_client.start_run(
+        run_sealer_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
-    # # sealer to hidex
-    # experiment_client.start_run(
-    #     sealer_to_hidex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    # sealer to hidex
+    experiment_client.start_run(
+        sealer_to_hidex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
     # run hidex incubate #TODO: specific file name needed in payload
     experiment_client.start_run(

@@ -1,10 +1,10 @@
 equipment:
   - name: nest_96_wellplate_100ul_pcr_full_skirt
-    location: D2
+    location: C1
     alias: src
     offset: [0, 1.7, 3.9]
   - name: nest_96_wellplate_100ul_pcr_full_skirt
-    location: D1
+    location: B1
     alias: dest
     module: temperature module gen2
     offset: [1, 1.6, 11]
@@ -16,25 +16,25 @@ equipment:
     location: C2
     alias: assay
   - name: nest_96_wellplate_100ul_pcr_full_skirt
-    location: B1
+    location: B2
     alias: staging
   - name: opentrons_flex_96_tiprack_50ul # 50
     location: A3
   - name: opentrons_flex_96_tiprack_50ul
     location: A2
   - name: opentrons_flex_96_tiprack_1000ul
-    location: B2
-  - name: flex_1channel_50
-    mount: left
-  - name: flex_1channel_1000
+    location: C3
+  - name: flex_8channel_50
     mount: right
+  - name: flex_8channel_1000
+    mount: left
   - name: trash
     location: A1
 
 commands:
-  - name: set temp
-    command: temperature_set
-    change_temp: 4
+  # - name: set temp
+  #   command: temperature_set
+  #   change_temp: 4
 # move reservoir from B1 to B3 #TODO maybe omit
   # - name: move_test
   #   command: move_labware
@@ -43,40 +43,38 @@ commands:
 
   ## Distribute cpfe_reagent_vol (18) µL of reagent H src H1 to all destination wells (dest A1, B1, C1, D1)
   - name: cfpe reagent
-    command: transfer
-    source: src:[H1, H1, H1, H1]
-    aspirate_clearance: 2
-    destination: dest:[A1, B1, C1, D1]
-    dispense_clearance: 2
-    volume: [18, 18, 18, 18]
-    mix_cycles: 3
-    mix_volume: 10
-    drop_tip: [false, false, false, true]
+    command: multi_transfer
+    multi_source: src:[[H1], [H1], [H1], [H1]] #TODO:
+    multi_aspirate_clearance: 2
+    multi_destination: dest:[[A1], [B1], [C1], [D1]]
+    multi_dispense_clearance: 2
+    multi_volume: 18
+    multi_mix_cycles: 3
+    multi_mix_volume: 10
 
   #Transfer dna_vol (2) µL of DNA to corresponding wells src[A1, B1, C1, D1] to dest[A1, B1, C1, D1]
   - name: dna
-    command: transfer
-    source: src:[A1, B1, C1, D1]
-    aspirate_clearance: 2
-    destination: dest:[A1, B1, C1, D1]
-    dispense_clearance: 2
-    volume: [2, 2, 2, 2]
-    mix_cycles: 3
-    mix_volume: 15
-    drop_tip: [true, true, true, true]
+    command: multi_transfer
+    multi_source: src:[[A1, B1, C1, D1]]
+    multi_aspirate_clearance: 2
+    multi_destination: dest:[[A1, B1, C1, D1]]
+    multi_dispense_clearance: 2
+    multi_volume: 2
+    multi_mix_cycles: 3
+    multi_mix_volume: 15
 
   # move from temp module to staging
-  - name: move dest from temp module to staging
-    command: move_labware
-    labware: D1 #TODO
-    destination: A4
+  # - name: move dest from temp module to staging
+  #   command: move_labware
+  #   labware: B1 #TODO
+  #   destination: A4
 
 #incubate plate
 
 
 
 metadata:
-  protocolName: Gyorgy Flex test 1
+  protocolName: Gyorgy Flex test 1 multi
   author: Abe astroka@anl.gov
   description: pd cfpe assay
   apiLevel: "2.18"
