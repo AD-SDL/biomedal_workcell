@@ -2,6 +2,9 @@
 import tempfile
 from pathlib import Path
 
+from ot2_offsets import ot2biobeta, ot2bioalpha
+from wei.types.workflow_types import Workflow
+
 def generate_ot2_protocol(template_path, replacement_dict: dict) -> str: 
 
     # collect template contents and replace variables
@@ -19,6 +22,34 @@ def generate_ot2_protocol(template_path, replacement_dict: dict) -> str:
 
     return output_file_name
 
+
+def collect_ot2_replacement_variables(payload: dict) -> dict:
+    replacement_dict = {}
+    if payload["ot2_node"] == "ot2bioalpha": 
+        tip_box_location = payload["ot2bioalpha_tip_box_location"]
+        replacement_dict["tip_location"] = tip_box_location
+        replacement_dict["x"] = ot2bioalpha[tip_box_location][0]
+        replacement_dict["y"] = ot2bioalpha[tip_box_location][1]
+        replacement_dict["z"] = ot2bioalpha[tip_box_location][2]
+    elif payload["ot2_node"] == "ot2biobeta": 
+        tip_box_location = payload["ot2biobeta_tip_box_location"]
+        replacement_dict["tip_location"] = tip_box_location
+        replacement_dict["x"] = ot2biobeta[tip_box_location][0]
+        replacement_dict["y"] = ot2biobeta[tip_box_location][1]
+        replacement_dict["z"] = ot2biobeta[tip_box_location][2]
+    else: 
+        print("TESTING: unable to collect ot2 replacement variables")
+    return replacement_dict
+
+
+def replace_wf_node_names(workflow: Path, payload: dict): 
+    edited_wf = Workflow.from_yaml(workflow.resolve())
+    for step in edited_wf.flowdef:
+        if step.module == "payload.incubator_node":
+            step.module = payload["incubator_node"]
+        if step.module == "payload.ot2_node": 
+            step.module = payload["ot2_node"]
+    return edited_wf
 
 
 # TESTING

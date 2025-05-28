@@ -6,7 +6,7 @@ version: '0.1'
 
 flowdef:
   - name: Run OT-2 protocol
-    module: ot2biobeta
+    module: payload.ot2_node
     action: run_protocol
     args:
       use_existing_resources: False
