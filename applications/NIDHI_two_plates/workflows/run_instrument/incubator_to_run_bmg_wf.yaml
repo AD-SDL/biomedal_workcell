@@ -5,36 +5,17 @@ metadata:
   info: Workflow for moving to bmg and reading
   version: 0.1
 
+# TODO: TEST
 flowdef:
   - name: open incubator 
-    module: payload.incubator_node   # TODO!!!
+    module: payload.incubator_node
     action: open
 
-
-
-
-  # - name: open bmg
-  #   module: bio_bmg
-  #   action: open
-
-  # - name: transfer to bmg
-  #   module: biopf400
-  #   action: transfer
-  #   args:
-  #     source: payload.incubator_location_name
-  #     target: bmg_reader_nest
-  #     source_approach: safe_path_inheco_dev2
-  #     target_approach: safe_path_bmg
-  #     source_plate_rotation: narrow
-  #     target_plate_rotation: narrow
-  #   comment: transfer microplate with lid to bmg
-
-  # transfer plate with lid to exchange
   - name: transfer to exchange
     module: biopf400
     action: transfer
     args:
-      source: payload.incubator_location_name    # TODO
+      source: payload.incubator_location_name  
       target: exchange_deck_low_narrow
       source_approach: safe_path_inheco_dev2
       target_approach: safe_path_exchange
@@ -47,16 +28,18 @@ flowdef:
     action: remove_lid
     args: 
       source: exchange
-      target: payload.lid_location    # TODO
-      plate: Falcon_96_well
+      target: payload.lid_location  
 
-  # Transfer plate without lid from exchange to bmg
+  - name: open bmg
+    module: bio_bmg
+    action: open
+
   - name: transfer to bmg
     module: biopf400
     action: transfer
     args:
       source: exchange_deck_low_narrow
-      target: bmg_nest
+      target: bmg_reader_nest
       source_approach: safe_path_exchange
       target_approach: safe_path_bmg
       source_plate_rotation: narrow
@@ -68,15 +51,15 @@ flowdef:
     action: close
 
   - name: close incubator
-    module: payload.incubator_node   # TODO
+    module: payload.incubator_node
     action: close
 
-  - name: Run BMG absorbance assay
-    module: bio_bmg
-    action: run_assay
-    args:
-      assay_name: NIDHI
-      data_output_file_name: payload.bmg_data_output_name
+  # - name: Run BMG absorbance assay
+  #   module: bio_bmg
+  #   action: run_assay
+  #   args:
+  #     assay_name: NIDHI
+  #     data_output_file_name: payload.bmg_data_output_name
 
   - name: open bmg
     module: bio_bmg

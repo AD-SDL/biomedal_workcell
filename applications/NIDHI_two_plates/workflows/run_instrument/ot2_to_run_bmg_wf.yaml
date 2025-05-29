@@ -34,16 +34,16 @@ flowdef:
       source_plate_rotation: narrow
       target_plate_rotation: narrow
 
-  - name: Close the bmg door
+  - name: Close the BMG reader tray
     module: bio_bmg
     action: close
-
-  - name: Run BMG Inoculation and reading assay
-    module: bio_bmg
-    action: run_assay
-    args:
-      assay_name: NIDHI
-      data_output_file_name: payload.bmg_data_output_name
+      
+  # - name: Run BMG Inoculation and reading assay
+  #   module: bio_bmg
+  #   action: run_assay
+  #   args:
+  #     assay_name: NIDHI
+  #     data_output_file_name: payload.bmg_data_output_name
 
   - name: Open the BMG plate reader tray
     module: bio_bmg
