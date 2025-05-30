@@ -37,7 +37,7 @@ flowdef:
     action: transfer
     args:
       source: exchange_deck_low_narrow
-      target: payload.incubator_location_name
+      target: payload.incubator_location
       source_approach: safe_path_exchange
       target_approach: safe_path_inheco_dev2
       source_plate_rotation: narrow

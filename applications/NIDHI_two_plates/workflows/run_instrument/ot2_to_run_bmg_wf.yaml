@@ -16,9 +16,9 @@ flowdef:
     module: biopf400
     action: transfer
     args:
-      source: payload.ot2_location_name  
+      source: payload.ot2_location  
       target: exchange_deck_high_wide
-      source_approach: payload.ot2_safe_path_name
+      source_approach: payload.ot2_safe_path
       target_approach: safe_path_exchange
       source_plate_rotation: wide
       target_plate_rotation: wide
@@ -38,12 +38,12 @@ flowdef:
     module: bio_bmg
     action: close
       
-  # - name: Run BMG Inoculation and reading assay
-  #   module: bio_bmg
-  #   action: run_assay
-  #   args:
-  #     assay_name: NIDHI
-  #     data_output_file_name: payload.bmg_data_output_name
+  - name: Run BMG Inoculation and reading assay
+    module: bio_bmg
+    action: run_assay
+    args:
+      assay_name: NIDHI
+      data_output_file_name: payload.bmg_data_output_name
 
   - name: Open the BMG plate reader tray
     module: bio_bmg

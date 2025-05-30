@@ -1,0 +1,103 @@
+name: Return old substrate plate to OT-2 - Substrate App Workflow
+
+metadata:
+  author: Casey Stone
+  info: Return old substrate plate to specified OT-2
+  version: 0.1
+
+# TODO: TEST!
+
+flowdef:
+  - name: Open the BMG plate reader tray
+    module: bio_bmg
+    action: open
+
+  - name: Transfer plate with lid from from bmg to exchange
+    module: biopf400
+    action: transfer
+    args:
+      source: bmg_reader_nest
+      target: exchange_deck_low_narrow
+      source_approach: safe_path_bmg
+      target_approach: safe_path_exchange
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+  - name: Close the BMG plate reader tray
+    module: bio_bmg
+    action: close
+
+  # Swap lid location
+  - name: Replace lid on plate at exchange location from lidnest 3
+    module: biopf400
+    action: replace_lid
+    args:
+      source: lidnest_3_narrow
+      target: exchange_deck_low_narrow
+      source_approach: safe_path_lidnest_3
+      target_approach: safe_path_exchange
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+      lid_height: 8
+
+  - name: Remove lid on plate at exchange location, place at correct lid nest location
+    module: biopf400
+    action: remove_lid
+    args:
+      source: exchange_deck_low_wide
+      target: payload.remove_lid_location
+      source_approach: safe_path_exchange
+      target_approach: payload.remove_lid_safe_path
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+      lid_height: 8
+
+  - name: Transfer plate without lid from exchange to OT-2 (deck 1 or 3 depending on loop)
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_high_wide
+      target: payload.assay_plate_ot2_replacement_location
+      source_approach: safe_path_exchange
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+  # - name: Open the BMG plate reader tray
+  #   module: bio_bmg
+  #   action: open
+
+  # - name: Transfer plate without lid to exchange location
+  #   module: biopf400
+  #   action: transfer
+  #   args:
+  #     source: payload.ot2_location_name  
+  #     target: exchange_deck_high_wide
+  #     source_approach: payload.ot2_safe_path_name
+  #     target_approach: safe_path_exchange
+  #     source_plate_rotation: wide
+  #     target_plate_rotation: wide
+
+  # - name: Transfer plate without lid to bmg nest
+  #   module: biopf400
+  #   action: transfer
+  #   args:
+  #     source: exchange_deck_low_narrow
+  #     target: bmg_reader_nest
+  #     source_approach: safe_path_exchange
+  #     target_approach: safe_path_bmg
+  #     source_plate_rotation: narrow
+  #     target_plate_rotation: narrow
+
+  # - name: Close the BMG reader tray
+  #   module: bio_bmg
+  #   action: close
+      
+  # # - name: Run BMG Inoculation and reading assay
+  # #   module: bio_bmg
+  # #   action: run_assay
+  # #   args:
+  # #     assay_name: NIDHI
+  # #     data_output_file_name: payload.bmg_data_output_name
+
+  # - name: Open the BMG plate reader tray
+  #   module: bio_bmg
+  #   action: open

@@ -32,7 +32,7 @@ def main() -> None:
         campaign=campaign,
     )
 
-    # DEFININE PATHS AND VARIABLES ---------------------------------
+    # DEFINE PATHS AND VARIABLES ---------------------------------
 
     # capture the expriment ID
     experiment_id = experiment_client.experiment.experiment_id
