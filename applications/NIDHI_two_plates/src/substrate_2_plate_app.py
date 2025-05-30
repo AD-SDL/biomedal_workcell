@@ -167,13 +167,16 @@ def main() -> None:
         f"{experiment_label}_exp1_{timestamp_now}_{experiment_id}_{exp1_plate_num}_{exp1_reading_num_in_plate}.txt"
     )
     # ot2 to bmg
-    experiment_client.start_run(
+    run_info = experiment_client.start_run(
         ot2_to_run_bmg_wf.resolve(),
         payload=payload,
         blocking=True,
         simulate=False,
     )
     exp1_reading_num_in_plate += 1
+
+    # TESTING: How to get timestamp from bmg reading
+    # run_info.steps[-2].end_time   # TODO
 
     # bmg to inheco incubator
     edited_to_inheco_wf = helper_functions.replace_wf_node_names(
