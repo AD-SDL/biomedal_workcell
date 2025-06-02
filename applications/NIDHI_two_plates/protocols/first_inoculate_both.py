@@ -74,8 +74,6 @@ def run(protocol: protocol_api.ProtocolContext):
         destination_columns, 
         new_tip="always",
         disposal_volume = 0, 
-        # mix_before=(3, 20), # mix 3 times with 20ul before transfer?
-        # mix_after=(3, 20)  # mix 3 times with 20ul after transfer?
     )
 
     # Second half of substrate plate 1
@@ -88,8 +86,6 @@ def run(protocol: protocol_api.ProtocolContext):
         destination_columns, 
         new_tip="always",
         disposal_volume = 0, 
-        # mix_before=(3, 20), # mix 3 times with 20ul before transfer?
-        # mix_after=(3, 20)  # mix 3 times with 20ul after transfer?
     )
 
     # First half of substrate plate 2
@@ -103,8 +99,6 @@ def run(protocol: protocol_api.ProtocolContext):
         destination_columns, 
         new_tip="always",
         disposal_volume = 0, 
-        # mix_before=(3, 20), # mix 3 times with 20ul before transfer?
-        # mix_after=(3, 20)  # mix 3 times with 20ul after transfer?
     )
 
     # Second half of substrate plate 2
@@ -117,7 +111,5 @@ def run(protocol: protocol_api.ProtocolContext):
         destination_columns, 
         new_tip="always",
         disposal_volume = 0, 
-        # mix_before=(3, 20), # mix 3 times with 20ul before transfer?
-        # mix_after=(3, 20)  # mix 3 times with 20ul after transfer?
     )
 

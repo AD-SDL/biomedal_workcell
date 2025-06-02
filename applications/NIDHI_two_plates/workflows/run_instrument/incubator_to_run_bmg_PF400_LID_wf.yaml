@@ -15,7 +15,7 @@ flowdef:
     module: biopf400
     action: transfer
     args:
-      source: payload.incubator_location_name  
+      source: payload.incubator_location
       target: exchange_deck_low_narrow
       source_approach: safe_path_inheco_dev2
       target_approach: safe_path_exchange
@@ -59,12 +59,12 @@ flowdef:
     module: payload.incubator_node
     action: close
 
-  # - name: Run BMG absorbance assay
-  #   module: bio_bmg
-  #   action: run_assay
-  #   args:
-  #     assay_name: NIDHI
-  #     data_output_file_name: payload.bmg_data_output_name
+  - name: Run BMG absorbance assay
+    module: bio_bmg
+    action: run_assay
+    args:
+      assay_name: NIDHI
+      data_output_file_name: payload.bmg_data_output_name
 
   - name: open bmg
     module: bio_bmg

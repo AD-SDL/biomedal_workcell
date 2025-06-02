@@ -6,6 +6,11 @@ metadata:
   version: 0.1
 
 flowdef:
+  # open bmg just in case
+  - name: open bmg
+    module: bio_bmg
+    action: open
+
   # transfer from bmg to exchange  
   - name: Transfer plate without lid from bmg to exchange
     module: biopf400

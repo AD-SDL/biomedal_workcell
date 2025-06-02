@@ -10,16 +10,19 @@ from wei.types.workflow_types import Workflow
 from ot2_offsets import ot2biobeta, ot2bioalpha
 import helper_functions
 import time
+import csv
 from datetime import datetime
 
 
 
 """
 TODO:
-- stack 2 to exchange looked rough, recalibrate!
+- FIX SLEEP TIMES -> How long to sleep after plate 1 stops circulating. Check inner and outer loops.
+- alter inoculation protocol to only drop tip the first transfer but replace tips the rest of the transfers
 - why does the pf400 move before sciclops remove lid is done?
 - does incubator prevent other communication during a incubation if counting down?
 - why is ot2bioalpha not connecting?
+- recalibrate bmg nest (small dropping sound needs to be fixed)
 - inheco logging
 - how to return accurate timestamps from bmg readings?
 
@@ -59,6 +62,7 @@ def main() -> None:
     wf_directory = app_directory / "workflows"
     wf_run_instrument_directory = wf_directory / "run_instrument"
     wf_set_up_tear_down_directory = wf_directory / "set_up_tear_down"
+    wf_transfers_directory = wf_directory / "transfers"
     protocol_directory = app_directory / "protocols"
 
     # workflow paths (run instruments)
@@ -67,15 +71,20 @@ def main() -> None:
     ot2_to_run_bmg_wf = wf_run_instrument_directory / "ot2_to_run_bmg_wf.yaml"
     bmg_to_run_incubator_wf = wf_run_instrument_directory / "bmg_to_run_incubator_wf.yaml"
     incubator_to_run_bmg_wf = wf_run_instrument_directory / "incubator_to_run_bmg_wf.yaml"
+    incubator_to_run_bmg_PF400_LID_wf = wf_run_instrument_directory / "incubator_to_run_bmg_PF400_LID_wf.yaml"
     get_new_plate_wf = wf_set_up_tear_down_directory / "get_new_plate_wf.yaml"
+    replace_ot2_old_wf = wf_transfers_directory / "replace_ot2_old_wf.yaml"
+    remove_old_substrate_plate_wf = wf_set_up_tear_down_directory / "remove_old_substrate_plate_wf.yaml"
+    at_end_bmg_to_trash_wf = wf_set_up_tear_down_directory / "at_end_bmg_to_trash_wf.yaml"
+
 
     # protocol paths (for OT-2)
     first_inoculate_both_protocol = protocol_directory / "first_inoculate_both.py"
-    inocualte_protocol = protocol_directory / "inoculate.py"
+    inoculate_protocol = protocol_directory / "inoculate.py"
 
     # experiment 1: incubation = 1 hr cycles, transfers every 10 hours
     exp1_variables = {
-        "incubation_seconds": 30,   # TESTING
+        "incubation_seconds": 720,   # TESTING
         "lid_location": "lidnest1",
         "ot2_node": "ot2biobeta",
         "ot2_new_plate_location": "ot2biobeta_deck1_wide", 
@@ -90,7 +99,7 @@ def main() -> None:
 
     # experiment 2: incubation = 2 hr cycles, transfers every 20 hours
     exp2_variables = {
-        "incubation_seconds": 60,   # TESTING
+        "incubation_seconds": 200,   # TESTING
         "lid_location": "lidnest2",
         "ot2_node": "ot2bioalpha",
         "ot2_new_plate_location": "ot2bioalpha_deck1_wide", 
@@ -104,6 +113,7 @@ def main() -> None:
     }
 
     # other variables (for loop tracking)
+    csv_data_direcory = "/home/rpl/workspace/Nidhi_data"
     experiment_label = "2a"
     transfer_loop_num = 0       # outer loop
     incubation_loop_num = 0     # inner loop
@@ -111,8 +121,11 @@ def main() -> None:
     exp2_reading_num_in_plate = 1
     exp1_plate_num = 1
     exp2_plate_num = 1
+    exp1_into_incubator_time = None
+    exp2_into_incubator_time = None
     total_transfers = 20
     continue_exp1 = True
+    continue_exp2 = True
 
     # initial payload setup  (experiment 1 focused at start)
     payload = {
@@ -125,6 +138,7 @@ def main() -> None:
         "incubator_node": exp1_variables["incubator_node"],
         "incubator_location": exp1_variables["incubator_location"],
         "incubation_seconds": exp1_variables["incubation_seconds"],  
+        "trash_stack": exp1_variables["trash_stack"],
         "current_ot2_protocol": None,    # defined later
         "use_existing_resources": False,
         "bmg_assay_name": "NIDHI", 
@@ -159,12 +173,10 @@ def main() -> None:
         simulate=False,
     )
 
-    # 3.) WFs: Transfer experiment 1 plate to bmg, read, then place into incubator -- Done WITH SOME TODO s
-    # TODO: collect accurate timestamp from bmg  --> where to report this if data filename has to be specified first
-
+    # 3.) WFs: Transfer experiment 1 plate to bmg, read, then place into incubator -- Done
     timestamp_now = int(datetime.now().timestamp())
     payload["bmg_data_output_name"] = (
-        f"{experiment_label}_exp1_{timestamp_now}_{experiment_id}_{exp1_plate_num}_{exp1_reading_num_in_plate}.txt"
+        f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{exp1_plate_num}_{exp1_reading_num_in_plate}.txt"
     )
     # ot2 to bmg
     run_info = experiment_client.start_run(
@@ -175,8 +187,13 @@ def main() -> None:
     )
     exp1_reading_num_in_plate += 1
 
-    # TESTING: How to get timestamp from bmg reading
-    # run_info.steps[-2].end_time   # TODO
+    # write utc bmg timestamp to csv data file
+    helper_functions.write_timestamps_to_csv(
+        csv_directory_path=csv_data_direcory,
+        experiment_id=experiment_id,
+        bmg_filename=payload["bmg_data_output_name"],
+        accurate_timestamp=run_info.steps[4].end_time,  # index 4 = bmg reading
+    )
 
     # bmg to inheco incubator
     edited_to_inheco_wf = helper_functions.replace_wf_node_names(
@@ -190,28 +207,35 @@ def main() -> None:
         simulate=False,
     )
 
-    # # capture incubation start time
+    # capture incubation start time
     exp1_into_incubator_time = time.time()
     print(f"experiment 1: incubation started at {exp1_into_incubator_time}")  # TESTING
 
-    # # 4.) WFs: Transfer experiment 2 plate to bmg, read, then place into incubator -- Done 
-    # # update payload variables
+    # 4.) WFs: Transfer experiment 2 plate to bmg, read, then place into incubator -- Done 
+    # update payload variables
     payload["ot2_location"] = exp1_variables["ot2_old_plate_location"]   # ok that this says exp1!
     payload["lid_location"] = exp2_variables["lid_location"]
     payload["incubator_node"] = exp2_variables["incubator_node"]
     payload["incubator_location"] = exp2_variables["incubator_location"]
     payload["incubation_seconds"] = exp2_variables["incubation_seconds"]
     
-    # ot2 to bmg
+    # # ot2 to bmg
     timestamp_now = int(datetime.now().timestamp())
     payload["bmg_data_output_name"] = (
-        f"{experiment_label}_exp2_{timestamp_now}_{experiment_id}_{exp2_plate_num}_{exp2_reading_num_in_plate}.txt"
+        f"{experiment_label}_{timestamp_now}_{experiment_id}_exp2_{exp2_plate_num}_{exp2_reading_num_in_plate}.txt"
     )
     experiment_client.start_run(
         ot2_to_run_bmg_wf.resolve(),
         payload=payload,
         blocking=True,
         simulate=False,
+    )
+    # write utc bmg timestamp to csv data file
+    helper_functions.write_timestamps_to_csv(
+        csv_directory_path=csv_data_direcory,
+        experiment_id=experiment_id,
+        bmg_filename=payload["bmg_data_output_name"],
+        accurate_timestamp=run_info.steps[4].end_time,  # index 4 = bmg reading
     )
     exp2_reading_num_in_plate += 1
 
@@ -233,24 +257,28 @@ def main() -> None:
     transfer_loop_num += 1
 
     # sleep until experiment 1 plate is ready for next reading (1 hr total)
-    # TODO: imporove this! 
     while time.time() - exp1_into_incubator_time < exp1_variables["incubation_seconds"]: 
-        print(f"will continue in... {time.time() - exp1_into_incubator_time}")
+        print(f"will continue in... {int(exp1_variables["incubation_seconds"]-(time.time() - exp1_into_incubator_time))} seconds")
         time.sleep(5) # 5 seconds
 
     """Now that both experiment plates are in the incubator, 
         we can start the both the outer transfers loop and
         the inner incubation loop."""
     
+    # LOOP START -----------------------------------------------------------
 
     # TESTING
     incubation_loop_num = 8
+    # continue_exp1 = False
+    exp1_plate_num = 20
+    transfer_loop_num = 2
 
     while exp1_plate_num < 21:   # TODO: What should this number be?
-        while incubation_loop_num < 10: # Inner loop, each loop ~ 1 hr
+        while incubation_loop_num < 10: # Inner loop, each loop ~ 1 hr  -- DONE
 
-            # TESTING
-            print(f"incubation_loop_num: {incubation_loop_num}")
+            """NOTEs: 
+                - ~ 8 min to remove, read, and replace
+            """
 
             if continue_exp1: 
                 # 5.) WFs: Transfer experiment 1 plate from incubator, to bmg, read, and return to incubator
@@ -265,34 +293,33 @@ def main() -> None:
                 payload["incubator_node"] = exp1_variables["incubator_node"]
                 payload["incubator_location"] = exp1_variables["incubator_location"]
                 payload["incubation_seconds"] = exp1_variables["incubation_seconds"]
-                
+
+
                 # inheco incubator to bmg
                 timestamp_now = int(datetime.now().timestamp())
                 payload["bmg_data_output_name"] = (
-                    f"{experiment_label}_exp1_{timestamp_now}_{experiment_id}_{exp1_plate_num}_{exp1_reading_num_in_plate}.txt"
+                    f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{exp1_plate_num}_{exp1_reading_num_in_plate}.txt"
                 )
+                # TESTING
+                print("payload before reading plate 1")
+                print(payload)
+
                 edited_to_bmg_wf = helper_functions.replace_wf_node_names(
                     workflow=incubator_to_run_bmg_wf, 
                     payload=payload
                 )
-                experiment_client.start_run(
+                run_info = experiment_client.start_run(
                     edited_to_bmg_wf,
                     payload=payload,
                     blocking=True,
                     simulate=False,
                 )
-                exp1_reading_num_in_plate += 1
-
-                # bmg to inheco incubator
-                edited_to_inheco_wf = helper_functions.replace_wf_node_names(
-                    workflow=bmg_to_run_incubator_wf, 
-                    payload=payload
-                )
-                experiment_client.start_run(
-                    edited_to_inheco_wf,
-                    payload=payload,
-                    blocking=True,
-                    simulate=False,
+                # write utc bmg timestamp to csv data file
+                helper_functions.write_timestamps_to_csv(
+                    csv_directory_path=csv_data_direcory,
+                    experiment_id=experiment_id,
+                    bmg_filename=payload["bmg_data_output_name"],
+                    accurate_timestamp=run_info.steps[7].end_time,  # index 7 = bmg reading
                 )
                 exp1_reading_num_in_plate += 1
 
@@ -324,7 +351,7 @@ def main() -> None:
                 # inheco incubator to bmg
                 timestamp_now = int(datetime.now().timestamp())
                 payload["bmg_data_output_name"] = (
-                    f"{experiment_label}_exp2_{timestamp_now}_{experiment_id}_{exp2_plate_num}_{exp2_reading_num_in_plate}.txt"
+                    f"{experiment_label}_{timestamp_now}_{experiment_id}_exp2_{exp2_plate_num}_{exp2_reading_num_in_plate}.txt"
                 )
                 edited_to_bmg_wf = helper_functions.replace_wf_node_names(
                     workflow=incubator_to_run_bmg_wf, 
@@ -335,6 +362,13 @@ def main() -> None:
                     payload=payload,
                     blocking=True,
                     simulate=False,
+                )
+                # write utc bmg timestamp to csv data file
+                run_info = helper_functions.write_timestamps_to_csv(
+                    csv_directory_path=csv_data_direcory,
+                    experiment_id=experiment_id,
+                    bmg_filename=payload["bmg_data_output_name"],
+                    accurate_timestamp=run_info.steps[7].end_time,  # index 7 = bmg reading
                 )
                 exp2_reading_num_in_plate += 1
 
@@ -351,298 +385,408 @@ def main() -> None:
                 )
 
             # sleep until experiment 1 incubation time is complete
+            # TODO: HOW LONG TO SLEEP IF EXP 1 NOT RUNNING ANYMORE?
             while (time.time() - exp1_into_incubator_time) < exp1_variables["incubation_seconds"]: 
-                print(f"will continue in... {time.time() - exp1_into_incubator_time}")
+                print(f"will continue in... {int(exp1_variables["incubation_seconds"]-(time.time() - exp1_into_incubator_time))} seconds")
                 time.sleep(5)
-
-
-            # # TESTING
-            # print(f"experiment 1 plate num: {exp1_plate_num}")
-            # print(f"experiment 2 plate num: {exp2_plate_num}")
 
             incubation_loop_num += 1
 
-        exp1_plate_num += 1
-        exp2_plate_num += 1
+        # TRANSFERS HANDLING --------------------------------------------
+        """One loop in the transfers loop (outer loop, is roughly 
+            10 hours or 10 incubation loops (inner loops)"""
+        
+        # TRASH exp 1 plate 20  --> DONE
+        if exp1_plate_num == 20:    
+            """means final incubaton cycle on experiment 1 plate is complete. 
+                Need to complete the final absorbance reading on the final
+                plate in experiment 1."""
+            # TODO: replace with variables (total loop #?)
+            continue_exp1 = False
+
+            # change variables
+            payload["lid_location"] = exp1_variables["lid_location"]
+            payload["incubator_node"] = exp1_variables["incubator_node"]
+            payload["incubator_location"] = exp1_variables["incubator_location"]
+            payload["incubation_seconds"] = exp1_variables["incubation_seconds"]
+            payload["trash_stack"] = exp1_variables["trash_stack"]
+
+            # inheco incubator to bmg
+            timestamp_now = int(datetime.now().timestamp())
+            payload["bmg_data_output_name"] = (
+                f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{exp1_plate_num}_{exp1_reading_num_in_plate}.txt"
+            )
+            edited_to_bmg_wf = helper_functions.replace_wf_node_names(
+                workflow=incubator_to_run_bmg_wf, 
+                payload=payload
+            )
+            run_info = experiment_client.start_run(
+                edited_to_bmg_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            # write utc bmg timestamp to csv data file
+            helper_functions.write_timestamps_to_csv(
+                csv_directory_path=csv_data_direcory,
+                experiment_id=experiment_id,
+                bmg_filename=payload["bmg_data_output_name"],
+                accurate_timestamp=run_info.steps[7].end_time,  # index 7 = bmg reading
+            )
+            exp1_reading_num_in_plate += 1
+
+            # bmg to trash stack   # TODO: TEST!
+            experiment_client.start_run(
+                at_end_bmg_to_trash_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+
+        if continue_exp1: 
+            # set up variables 
+            payload["ot2_node"] = exp1_variables["ot2_node"]
+            payload["ot2_location"] = exp1_variables["ot2_old_plate_location"]   # is this right?
+            payload["ot2_safe_path"] = exp1_variables["ot2_safe_path"]
+            payload["stack"] = exp1_variables["new_stack"]
+            payload["lid_location"] = exp1_variables["lid_location"]
+            payload["tip_box_location"] = exp1_variables["tip_box_location"]
+            payload["incubator_node"] = exp1_variables["incubator_node"]
+            payload["incubator_location"] = exp1_variables["incubator_location"]
+            payload["incubation_seconds"] = exp1_variables["incubation_seconds"]
+
+            # inheco incubator to bmg (BUT REPLACE LID ON PF400 lidnest 3 narrow)  -- DONE
+            timestamp_now = int(datetime.now().timestamp())
+            payload["bmg_data_output_name"] = (
+                f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{exp1_plate_num}_{exp1_reading_num_in_plate}.txt"
+            )
+            edited_to_bmg_wf = helper_functions.replace_wf_node_names(
+                workflow=incubator_to_run_bmg_PF400_LID_wf, 
+                payload=payload
+            )
+            run_info = experiment_client.start_run(
+                edited_to_bmg_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            # write utc bmg timestamp to csv data file
+            helper_functions.write_timestamps_to_csv(
+                csv_directory_path=csv_data_direcory,
+                experiment_id=experiment_id,
+                bmg_filename=payload["bmg_data_output_name"],
+                accurate_timestamp=run_info.steps[7].end_time,  # index 7 = bmg reading
+            )
+            exp1_reading_num_in_plate += 1
+
+            # bmg to OLD OT-2 location -- DONE
+            experiment_client.start_run(
+                replace_ot2_old_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+            # # get a new plate from the stack -- DONE
+            payload["ot2_location"] = exp1_variables["ot2_new_plate_location"]
+            payload["ot2_safe_path"] = exp1_variables["ot2_safe_path"]
+            edited_get_new_plate_wf = helper_functions.replace_wf_node_names(
+                workflow=get_new_plate_wf, 
+                payload=payload
+            )
+            experiment_client.start_run(
+                edited_get_new_plate_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+            # run ot2 inoculation protocol  -- DONE
+            ot2_replacement_variables = helper_functions.collect_ot2_replacement_variables(payload)
+            temp_ot2_file_str = helper_functions.generate_ot2_protocol(inoculate_protocol, ot2_replacement_variables)
+            payload["current_ot2_protocol"] = temp_ot2_file_str
+
+            edited_ot2_wf = helper_functions.replace_wf_node_names(
+                workflow=run_ot2_wf, 
+                payload=payload
+            )
+            experiment_client.start_run(
+                edited_ot2_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+            # increase variables
+            exp1_plate_num += 1
+            exp1_variables["tip_box_location"] += 1
+            
+            # reset variables if necessary
+            exp1_reading_num_in_plate = 1
+            if exp1_variables["tip_box_location"] == 12:   
+                exp1_variables["tip_box_location"] = 4
+
+            # ot2 to bmg (new plate)  -- DONE
+            payload["ot2_location"] = exp1_variables["ot2_new_plate_location"]
+            timestamp_now = int(datetime.now().timestamp())
+            payload["bmg_data_output_name"] = (
+                f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{exp1_plate_num}_{exp1_reading_num_in_plate}.txt"
+            )
+            run_info = experiment_client.start_run(
+                ot2_to_run_bmg_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            exp1_reading_num_in_plate += 1
+
+            # write utc bmg timestamp to csv data file
+            helper_functions.write_timestamps_to_csv(
+                csv_directory_path=csv_data_direcory,
+                experiment_id=experiment_id,
+                bmg_filename=payload["bmg_data_output_name"],
+                accurate_timestamp=run_info.steps[4].end_time,  # index 4 = bmg reading
+            )
+
+            # bmg to inheco incubator   -- DONE
+            payload["incubator_node"] = exp1_variables["incubator_node"]  # redundant but feels safer
+            payload["incubator_location"] = exp1_variables["incubator_location"]
+            payload["incubation_seconds"] = exp1_variables["incubation_seconds"]
+            edited_to_inheco_wf = helper_functions.replace_wf_node_names(
+                workflow=bmg_to_run_incubator_wf, 
+                payload=payload
+            )
+            experiment_client.start_run(
+                edited_to_inheco_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            exp1_into_incubator_time = time.time()
+
+            # remove the old plate to trash stack -- DONE
+            payload["trash_stack"] = exp1_variables["trash_stack"]
+            payload["ot2_location"] = exp1_variables["ot2_old_plate_location"]
+            edited_old_to_trash_wf = helper_functions.replace_wf_node_names(
+                workflow=remove_old_substrate_plate_wf, 
+                payload=payload
+            )
+            experiment_client.start_run(
+                edited_old_to_trash_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+        # trash experiment 2 plate if complete
+        if exp2_plate_num == 20: 
+            """means final incubaton cycle on experiment 2 plate is complete. 
+                Need to complete the final absorbance reading on the final
+                plate in experiment 2."""
+            # TODO: replace with variables (total loop #?)
+            continue_exp2 = False
+
+            # change variables
+            # payload["ot2_location"] = exp1_variables["ot2_new_plate_location"]   # needed?
+            payload["lid_location"] = exp2_variables["lid_location"]
+            payload["incubator_node"] = exp2_variables["incubator_node"]
+            payload["incubator_location"] = exp2_variables["incubator_location"]
+            payload["incubation_seconds"] = exp2_variables["incubation_seconds"]
+            payload["trash_stack"] = exp2_variables["trash_stack"]
+
+            # inheco incubator to bmg
+            timestamp_now = int(datetime.now().timestamp())
+            payload["bmg_data_output_name"] = (
+                f"{experiment_label}_{timestamp_now}_{experiment_id}_exp2_{exp2_plate_num}_{exp2_reading_num_in_plate}.txt"
+            )
+            edited_to_bmg_wf = helper_functions.replace_wf_node_names(
+                workflow=incubator_to_run_bmg_wf, 
+                payload=payload
+            )
+            run_info = experiment_client.start_run(
+                edited_to_bmg_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            # write utc bmg timestamp to csv data file
+            helper_functions.write_timestamps_to_csv(
+                csv_directory_path=csv_data_direcory,
+                experiment_id=experiment_id,
+                bmg_filename=payload["bmg_data_output_name"],
+                accurate_timestamp=run_info.steps[7].end_time,  # index 7 = bmg reading
+            )
+            exp2_reading_num_in_plate += 1
+
+            # bmg to trash stack  
+            experiment_client.start_run(
+                at_end_bmg_to_trash_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+        if transfer_loop_num % 2 == 0 and continue_exp2:
+            """Only transfer exp 2 every 20 hours, one transfer loop = ~10 hrs"""
+            
+            # set up variables 
+            payload["ot2_node"] = exp2_variables["ot2_node"]
+            payload["ot2_location"] = exp2_variables["ot2_old_plate_location"]   
+            payload["ot2_safe_path"] = exp2_variables["ot2_safe_path"]
+            payload["stack"] = exp2_variables["new_stack"]
+            payload["lid_location"] = exp2_variables["lid_location"]
+            payload["tip_box_location"] = exp2_variables["tip_box_location"]
+            payload["incubator_node"] = exp2_variables["incubator_node"]
+            payload["incubator_location"] = exp2_variables["incubator_location"]
+            payload["incubation_seconds"] = exp2_variables["incubation_seconds"]
+
+            # inheco incubator to bmg (BUT REPLACE LID ON PF400 lidnest 3 narrow)  -- DONE
+            timestamp_now = int(datetime.now().timestamp())
+            payload["bmg_data_output_name"] = (
+                f"{experiment_label}_{timestamp_now}_{experiment_id}_exp2_{exp2_plate_num}_{exp2_reading_num_in_plate}.txt"
+            )
+            edited_to_bmg_wf = helper_functions.replace_wf_node_names(
+                workflow=incubator_to_run_bmg_PF400_LID_wf, 
+                payload=payload
+            )
+            run_info = experiment_client.start_run(
+                edited_to_bmg_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            # write utc bmg timestamp to csv data file
+            helper_functions.write_timestamps_to_csv(
+                csv_directory_path=csv_data_direcory,
+                experiment_id=experiment_id,
+                bmg_filename=payload["bmg_data_output_name"],
+                accurate_timestamp=run_info.steps[7].end_time,  # index 7 = bmg reading
+            )
+            exp2_reading_num_in_plate += 1
+
+            # bmg to OLD OT-2 location -- DONE
+            experiment_client.start_run(
+                replace_ot2_old_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+            # get a new plate from the stack  -- DONE
+            payload["ot2_location"] = exp2_variables["ot2_new_plate_location"]
+            payload["ot2_safe_path"] = exp2_variables["ot2_safe_path"]
+            edited_get_new_plate_wf = helper_functions.replace_wf_node_names(
+                workflow=get_new_plate_wf, 
+                payload=payload
+            )
+            experiment_client.start_run(
+                edited_get_new_plate_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+            # # run ot2 inoculation protocol -- TODO
+            # # TODO: GET OT2BIOALPHA WORKING
+            # ot2_replacement_variables = helper_functions.collect_ot2_replacement_variables(payload)
+            # temp_ot2_file_str = helper_functions.generate_ot2_protocol(inoculate_protocol, ot2_replacement_variables)
+            # payload["current_ot2_protocol"] = temp_ot2_file_str
+
+            # edited_ot2_wf = helper_functions.replace_wf_node_names(
+            #     workflow=run_ot2_wf, 
+            #     payload=payload
+            # )
+            # experiment_client.start_run(
+            #     edited_ot2_wf,
+            #     payload=payload,
+            #     blocking=True,
+            #     simulate=False,
+            # )
+
+            # increase variables
+            exp2_plate_num += 1
+            exp2_variables["tip_box_location"] += 1
+            
+            # reset variables if necessary
+            exp2_reading_num_in_plate = 1
+            if exp2_variables["tip_box_location"] == 12:   
+                exp2_variables["tip_box_location"] = 4
+
+            # ot2 to bmg (new plate) -- DONE
+            payload["ot2_location"] = exp2_variables["ot2_new_plate_location"]
+            timestamp_now = int(datetime.now().timestamp())
+            payload["bmg_data_output_name"] = (
+                f"{experiment_label}_{timestamp_now}_{experiment_id}_exp2_{exp2_plate_num}_{exp2_reading_num_in_plate}.txt"
+            )
+            run_info = experiment_client.start_run(
+                ot2_to_run_bmg_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            exp2_reading_num_in_plate += 1
+
+            # write utc bmg timestamp to csv data file
+            helper_functions.write_timestamps_to_csv(
+                csv_directory_path=csv_data_direcory,
+                experiment_id=experiment_id,
+                bmg_filename=payload["bmg_data_output_name"],
+                accurate_timestamp=run_info.steps[4].end_time,  # index 4 = bmg reading
+            )
+
+            # bmg to inheco incubator  -- DONE
+            payload["incubator_node"] = exp2_variables["incubator_node"]  # redundant but feels safer
+            payload["incubator_location"] = exp2_variables["incubator_location"]
+            payload["incubation_seconds"] = exp2_variables["incubation_seconds"]
+            edited_to_inheco_wf = helper_functions.replace_wf_node_names(
+                workflow=bmg_to_run_incubator_wf, 
+                payload=payload
+            )
+            experiment_client.start_run(
+                edited_to_inheco_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            exp2_into_incubator_time = time.time()
+
+            # remove the old plate to trash stack  -- DONE
+            payload["trash_stack"] = exp2_variables["trash_stack"]
+            payload["ot2_location"] = exp2_variables["ot2_old_plate_location"]
+            edited_old_to_trash_wf = helper_functions.replace_wf_node_names(
+                workflow=remove_old_substrate_plate_wf, 
+                payload=payload
+            )
+            experiment_client.start_run(
+                edited_old_to_trash_wf,
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+
+        # sleep until experiment 1 incubation time is complete
+        if continue_exp1: 
+            while (time.time() - exp1_into_incubator_time) < exp1_variables["incubation_seconds"]: 
+                print(f"will continue in... {int(exp1_variables["incubation_seconds"]-(time.time() - exp1_into_incubator_time))} seconds")
+                time.sleep(5)
+        # else:    
+        #     # TODO: HOW LONG TO SLEEP IN THIS CASE?
+        #     if continue_exp2: 
+        #         while (time.time() - exp2_into_incubator_time) < exp1_variables["incubation_seconds"]: 
+        #             print(f"will continue in... {int(exp2_variables["incubation_seconds"]-(time.time() - exp1_into_incubator_time))} seconds")
+        #             time.sleep(5)
+
+
+        transfer_loop_num += 1
+
+
+
+
+
+
 
     
-
-    
-
-     
-    
-
-    
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # TESTING generate first inoculation ot-2 protocol and update payload
-    # ot2_replacement_variables = helper_functions.collect_ot2_replacement_variables(payload)
-    # temp_ot2_file = helper_functions.generate_ot2_protocol(inocualte_protocol, ot2_replacement_variables)
-    # payload["current_ot2_protocol"] = temp_ot2_file
-
-    # print(payload)
-
-    # EXPERIMENT LOOP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    """Human needs to set up all labware before run"""
-    
-    # # Prep ot2biobeta for first inoculation protocol  # WORKING
-    # experiment_client.start_run(
-    #     setup_for_first_inoculation_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
-
-    # # Run first innoculation OT-2 protocol   # WORKING, TODO: test full OT-2 protocol
-    # payload["current_ot2_protocol"] = str(first_inoculate_both_protocol)
-    # edited_ot2_wf = helper_functions.replace_wf_node_names(
-    #     workflow = run_ot2_wf, 
-    #     payload = payload
-    # )
-    # # experiment_client.start_run(   # Don't run ot2 for testing
-    # #     edited_ot2_wf,
-    # #     payload=payload,
-    # #     blocking=True,
-    # #     simulate=False,
-    # # )
-
-    # # GET BOTH OF THE PLATES INTO THE INCUBATORS
-    # # FRIST PLATE
-    # # Transfer first plate (experiment 1) into bmg for reading   # WORKING # TODO: Lower z height on BMG location
-    # experiment_client.start_run(
-    #     ot2_to_run_bmg_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
-
-    # # Transfer first plate (experiment 1) from BMG to inheco and start incubation   # WORKING
-    # edited_to_inheco_wf = helper_functions.replace_wf_node_names(
-    #     workflow=bmg_to_run_incubator_wf, 
-    #     payload=payload
-    # )
-    # experiment_client.start_run(
-    #     edited_to_inheco_wf,
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
-
-    # # SECOND PLATE
-    # payload["ot2_location_name"] = exp2_ot2_location_name
-    # payload["lid_location"] = exp2_lid_location
-    # payload["incubator_node"] = exp2_incubator_node
-    # payload["incubator_location_name"] = exp2_incubator_location_name
-    # payload["incubation_seconds"] = exp2_incubation_seconds
-
-    # # # Transfer first plate (experiment 2) into bmg for reading   # WORKING # TODO: Lower z height on BMG location
-    # # experiment_client.start_run(
-    # #     ot2_to_run_bmg_wf.resolve(),
-    # #     payload=payload,
-    # #     blocking=True,
-    # #     simulate=False,
-    # # )
-
-    # # Transfer first plate (experiment 2) from BMG to inheco and start incubation   # WORKING
-    # # edited_to_inheco_wf = helper_functions.replace_wf_node_names(
-    # #     workflow=bmg_to_run_incubator_wf, 
-    # #     payload=payload
-    # # )
-    # # experiment_client.start_run(
-    # #     edited_to_inheco_wf,
-    # #     payload=payload,
-    # #     blocking=True,
-    # #     simulate=False,
-    # # )
-
-
-    # # WORKING UNTIL HERE! --------------------------------------------
-
-    # # START READING/INCUBATION LOOP
-    # # set up payload variables
-    # exp1_ot2_location_name = "ot2biobeta_deck3_wide"
-    # exp2_ot2_location_name = "ot2bioalpha_deck3_wide"
-
-    # # FOR EXPERIMENT 1 PLATE  # WORKING
-    # payload["ot2_node"] = exp1_ot2_node
-    # payload["ot2_location_name"] = exp1_ot2_location_name  # when is this needed?
-    # payload["ot2_safe_path_name"] = exp1_ot2_safe_path
-    # payload["lid_location"] = exp1_lid_location
-    # payload["incubator_node"] = exp1_incubator_node
-    # payload["incubator_location_name"] = exp1_incubator_location_name
-    # payload["incubation_seconds"] = exp1_incubation_seconds
-
-    # # # Transfer plate from exp 1 from incubator to bmg for reading   # WORKING  # TODO: recalibrate z height of exchange
-    # edited_to_bmg_wf = helper_functions.replace_wf_node_names(
-    #     workflow=incubator_to_run_bmg_wf, 
-    #     payload=payload
-    # )
-    # experiment_client.start_run(
-    #     edited_to_bmg_wf,
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
-
-    # # # Transfer back into incubator again (REPEAT STEP FROM ABOVE)
-    # # edited_to_inheco_wf = helper_functions.replace_wf_node_names(
-    # #     workflow=bmg_to_run_incubator_wf, 
-    # #     payload=payload
-    # # )
-    # # experiment_client.start_run(
-    # #     edited_to_inheco_wf,
-    # #     payload=payload,
-    # #     blocking=True,
-    # #     simulate=False,
-    # # )
-
-    # # FOR EXPERIMENT 2 PLATE  
-    # # payload["ot2_node"] = exp2_ot2_node
-    # # payload["ot2_location_name"] = exp2_ot2_location_name  # when is this needed?
-    # # payload["ot2_safe_path_name"] = exp2_ot2_safe_path
-    # # payload["lid_location"] = exp2_lid_location
-    # # payload["incubator_node"] = exp2_incubator_node
-    # # payload["incubator_location_name"] = exp2_incubator_location_name
-    # # payload["incubation_seconds"] = exp2_incubation_seconds # for TESTING   (exp 2 inc time)
-
-    
-    # # # Transfer plate from exp 2 from incubator to bmg for reading   # WORKING  # TODO: recalibrate z height of exchange
-    # # edited_to_bmg_wf = helper_functions.replace_wf_node_names(
-    # #     workflow=incubator_to_run_bmg_wf, 
-    # #     payload=payload
-    # # )
-    # # experiment_client.start_run(
-    # #     edited_to_bmg_wf,
-    # #     payload=payload,
-    # #     blocking=True,
-    # #     simulate=False,
-    # # )
-
-    # # # Transfer back into incubator again (REPEAT STEP FROM ABOVE)
-    # # edited_to_inheco_wf = helper_functions.replace_wf_node_names(
-    # #     workflow=bmg_to_run_incubator_wf, 
-    # #     payload=payload
-    # # )
-    # # experiment_client.start_run(
-    # #     edited_to_inheco_wf,
-    # #     payload=payload,
-    # #     blocking=True,
-    # #     simulate=False,
-    # # )
-
-    # # INOCULATION STEPS!!
-    # payload["ot2_node"] = exp1_ot2_node
-    # payload["ot2_location_name"] = exp1_ot2_location_name  # when is this needed?
-    # payload["ot2_safe_path_name"] = exp1_ot2_safe_path
-    # payload["lid_location"] = exp1_lid_location
-    # payload["incubator_node"] = exp1_incubator_node
-    # payload["incubator_location_name"] = exp1_incubator_location_name
-    # payload["incubation_seconds"] = exp1_incubation_seconds # for TESTING  
-
-    # # # Get a new plate from stack   # WORKS
-    # # edited_get_new_plate_wf = helper_functions.replace_wf_node_names(
-    # #     workflow=get_new_plate_wf, 
-    # #     payload=payload
-    # # )
-    # # experiment_client.start_run(
-    # #     edited_get_new_plate_wf,
-    # #     payload=payload,
-    # #     blocking=True,
-    # #     simulate=False,
-    # # )
-
-    # # Transfer a plate from the bmg to old position on ot2
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # # RUN OT-2
-    # # edit workflow for current incubator and ot2 nodes
-    # run_ot2_wf = Workflow.from_yaml(run_ot2_wf.resolve())
-    # for step in run_ot2_wf.flowdef:
-    #     if step.module == "payload.incubator_node":
-    #         step.module = ""
-    #     if step.module == "payload.ot2_node": 
-    #         step.module = payload["ot2_node"]
-
-    # # # TESTING
-    # # for step in run_ot2_wf: 
-    # #     print(step)
-
-    # # Run the current OT-2 protocol
-    # run_info = experiment_client.start_run(
-    #     run_ot2_wf,
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
-
-    # print(run_info)
-
-
-
-
-
 
 if __name__ == "__main__":
     main()

@@ -28,9 +28,9 @@ flowdef:
     action: transfer
     args:
       source: exchange_deck_high_wide
-      target: payload.ot2_new_plate_location
+      target: payload.ot2_location
       source_approach: safe_path_exchange
-      target_approach: payload.ot2_safe_path_name
+      target_approach: payload.ot2_safe_path
       source_plate_rotation: wide
       target_plate_rotation: wide
     comment: Transfer new substrate plate from exchange to OT-2 
