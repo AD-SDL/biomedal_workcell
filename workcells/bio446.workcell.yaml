@@ -28,7 +28,7 @@ modules:
     active: True
     interface: wei_rest_node
     config:
-      rest_node_address: "http://ot2bioalpha:3001"
+      rest_node_address: "http://172.18.0.1:3001"
   - name: ot2biobeta
     model: Opentrons OT-2
     active: True

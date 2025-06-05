@@ -18,6 +18,7 @@ from datetime import datetime
 """
 TODO:
 - FIX SLEEP TIMES -> How long to sleep after plate 1 stops circulating. Check inner and outer loops.
+- Improve comments (continue with numbering steps)
 - alter inoculation protocol to only drop tip the first transfer but replace tips the rest of the transfers
 - why does the pf400 move before sciclops remove lid is done?
 - does incubator prevent other communication during a incubation if counting down?

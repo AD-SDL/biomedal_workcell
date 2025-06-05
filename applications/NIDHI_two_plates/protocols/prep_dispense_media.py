@@ -45,14 +45,14 @@ def run(protocol: protocol_api.ProtocolContext):
         location="6",
     )
 
-    # set labware offsets
-    tip_rack_300uL.set_offset(x=0.4, y=1.1, z=0.0)  # pos 6
-    substrate_stock.set_offset(x=-0.0, y=0.3, z=0.0)  # pos 4
-    substrate_assay_plate_1.set_offset(x=-0.0, y=1.0, z=0.0)  # pos 7
-    substrate_assay_plate_2.set_offset(x=-0.0, y=0.0, z=0.0)  # pos 8
-    substrate_assay_plate_3.set_offset(x=-0.0, y=0.3, z=0.0)  # pos 9
-    substrate_assay_plate_4.set_offset(x=-0.0, y=0.4, z=0.0)  # pos 10
-    substrate_assay_plate_5.set_offset(x=-0.0, y=0.2, z=0.0)  # pos 11
+    # set labware offsets (updated for new offsets 6/5/25)
+    tip_rack_300uL.set_offset(x=-0.2, y=1.1, z=0.0)  # pos 6
+    substrate_stock.set_offset(x=0.0, y=0.3, z=0.0)  # pos 4
+    substrate_assay_plate_1.set_offset(x=0.0, y=1.0, z=0.0)  # pos 7
+    substrate_assay_plate_2.set_offset(x=0.0, y=1.0, z=0.0)  # pos 8
+    substrate_assay_plate_3.set_offset(x=0.0, y=0.3, z=0.0)  # pos 9
+    substrate_assay_plate_4.set_offset(x=0.3, y=1.0, z=0.0)  # pos 10
+    substrate_assay_plate_5.set_offset(x=0.0, y=0.9, z=0.0)  # pos 11
 
     # variables
     media_transfer_volume = 180

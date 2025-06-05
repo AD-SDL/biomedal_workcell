@@ -46,15 +46,36 @@ def run(protocol: protocol_api.ProtocolContext):
     )
 
     # COMMANDS ------------------
-    # Inoculate new substrate plate from old substrate plate 
+    """Inoculate new substrate plate from old substrate plate"""
+
+    # define variables
     source_columns = substrate_assay_plate_old.columns()[0:12]   # means all columns 1-12
     destination_columns = substrate_assay_plate_new.columns()[0:12]  # means all columns 1-12
+
+    # trash the tips from the first transfer
+    left_pipette_20uL_multi.pick_up_tip()
     left_pipette_20uL_multi.transfer(
-        inoculation_volume, 
-        source_columns, 
-        destination_columns, 
-        new_tip="always",
-        disposal_volume = 0, 
+        inoculation_volume,
+        source_columns[0], 
+        destination_columns[0], 
+        new_tip="never",
+        disposal_volume = 0,
     )
+    left_pipette_20uL_multi.drop_tip()
+
+    # return the tips from the rest of the transfers to conserve trash space
+    for i in range(1, len(source_columns)):  # (1,12) means columns 2-12
+        left_pipette_20uL_multi.pick_up_tip()
+        left_pipette_20uL_multi.transfer(
+            inoculation_volume,
+            source_columns[i], 
+            destination_columns[i], 
+            new_tip = "never",
+            disposal_volume = 0
+        )
+        left_pipette_20uL_multi.return_tip()
+
+
+
 
 
