@@ -43,3 +43,8 @@ flowdef:
       target: payload.trash_stack
       has_lid: True
     comment: Transfer plate from exchange to trash stack
+
+  - name: Close the BMG plate reader tray
+    module: bio_bmg
+    action: close
+    

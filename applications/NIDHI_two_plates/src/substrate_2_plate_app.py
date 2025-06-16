@@ -17,15 +17,9 @@ from datetime import datetime
 
 """
 TODO:
-- FIX SLEEP TIMES -> How long to sleep after plate 1 stops circulating. Check inner and outer loops.
-- Improve comments (continue with numbering steps)
-- alter inoculation protocol to only drop tip the first transfer but replace tips the rest of the transfers
 - why does the pf400 move before sciclops remove lid is done?
 - does incubator prevent other communication during a incubation if counting down?
-- why is ot2bioalpha not connecting?
 - recalibrate bmg nest (small dropping sound needs to be fixed)
-- inheco logging
-- how to return accurate timestamps from bmg readings?
 
 """
 
@@ -85,7 +79,7 @@ def main() -> None:
 
     # experiment 1: incubation = 1 hr cycles, transfers every 10 hours
     exp1_variables = {
-        "incubation_seconds": 3600,   # 60 minutes (1 hr) = 3600 seconds
+        "incubation_seconds": 3600,  # 60 minutes (1 hr) = 3600 seconds
         "lid_location": "lidnest1",
         "ot2_node": "ot2biobeta",
         "ot2_new_plate_location": "ot2biobeta_deck1_wide", 
@@ -100,7 +94,7 @@ def main() -> None:
 
     # experiment 2: incubation = 2 hr cycles, transfers every 20 hours
     exp2_variables = {
-        "incubation_seconds": 7200,   # 120 minutes (2 hrs) = 7200 seconds 
+        "incubation_seconds": 7200,  # 120 minutes (2 hrs) = 7200 seconds 
         "lid_location": "lidnest2",
         "ot2_node": "ot2bioalpha",
         "ot2_new_plate_location": "ot2bioalpha_deck1_wide", 
@@ -262,7 +256,7 @@ def main() -> None:
     payload["bmg_data_output_name"] = (
         f"{experiment_label}_{timestamp_now}_{experiment_id}_exp2_{exp2_plate_num}_{exp2_reading_num_in_plate}.txt"
     )
-    experiment_client.start_run(
+    run_info = experiment_client.start_run(
         ot2_to_run_bmg_wf.resolve(),
         payload=payload,
         blocking=True,
@@ -331,13 +325,13 @@ def main() -> None:
     # TESTING: 
     print("\nSTARTING LOOPS")
 
-    while exp2_plate_num < 21:   
+    while exp2_plate_num < 21: 
 
         # TESTING
         print(f"\nOUTER LOOP (exp2 plate number) AT TOP = {exp2_plate_num}")
 
         print("\tINNER LOOP")
-        while incubation_loop_num < 9: # Inner loop, each loop ~ 1 hr  -- DONE
+        while incubation_loop_num < 9: 
 
             """NOTEs: 
                 - ~ 8 min to remove, read, and replace
@@ -431,7 +425,7 @@ def main() -> None:
                     workflow=incubator_to_run_bmg_wf, 
                     payload=payload
                 )
-                experiment_client.start_run(
+                run_info = experiment_client.start_run(
                     edited_to_bmg_wf,
                     payload=payload,
                     blocking=True,
@@ -443,7 +437,7 @@ def main() -> None:
                 print(f"\t\tbmg data filename: {payload['bmg_data_output_name']}")
 
                 # write utc bmg timestamp to csv data file
-                run_info = helper_functions.write_timestamps_to_csv(
+                helper_functions.write_timestamps_to_csv(
                     csv_directory_path=csv_data_direcory,
                     experiment_id=experiment_id,
                     bmg_filename=payload["bmg_data_output_name"],
@@ -625,6 +619,8 @@ def main() -> None:
             print(f"\n\t\tbmg to old ot2 location: {payload["ot2_node"]}, {payload["ot2_location"]}, {payload["ot2_safe_path"]}")  # TESTING
 
             # get a new plate from the stack
+            payload["ot2_location"] = exp1_variables["ot2_new_plate_location"]
+            payload["ot2_safe_path"] = exp1_variables["ot2_safe_path"]
             edited_get_new_plate_wf = helper_functions.replace_wf_node_names(
                 workflow=get_new_plate_wf, 
                 payload=payload
@@ -994,7 +990,7 @@ def main() -> None:
                     workflow=incubator_to_run_bmg_wf, 
                     payload=payload
                 )
-                experiment_client.start_run(
+                run_info = experiment_client.start_run(
                     edited_to_bmg_wf,
                     payload=payload,
                     blocking=True,
@@ -1006,7 +1002,7 @@ def main() -> None:
                 print(f"\t\tbmg data filename: {payload['bmg_data_output_name']}")
 
                 # write utc bmg timestamp to csv data file
-                run_info = helper_functions.write_timestamps_to_csv(
+                helper_functions.write_timestamps_to_csv(
                     csv_directory_path=csv_data_direcory,
                     experiment_id=experiment_id,
                     bmg_filename=payload["bmg_data_output_name"],
