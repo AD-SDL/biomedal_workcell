@@ -21,10 +21,10 @@ def run(protocol: protocol_api.ProtocolContext):
         "nest_96_wellplate_2ml_deep",
         location="4",
     )
-    culture_stock_2 = protocol.load_labware(
-        "nest_96_wellplate_2ml_deep",
-        location="6",
-    )
+    # culture_stock_2 = protocol.load_labware(
+    #     "nest_96_wellplate_2ml_deep",
+    #     location="6",
+    # )
 
     # load substrate plates
     substrate_assay_plate_1 = protocol.load_labware(
@@ -48,7 +48,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     # set labware offsets (updated to new offsets 6/5/25)
     culture_stock_1.set_offset(x=-0.0, y=0.3, z=0.0)  # pos 4
-    culture_stock_2.set_offset(x=-0.2, y=1.1, z=0.0)  # pos 6
+    # culture_stock_2.set_offset(x=-0.2, y=1.1, z=0.0)  # pos 6
     tip_rack_1_20uL.set_offset(x=-0.0, y=1.0, z=0.0)  # pos 7
     tip_rack_2_20uL.set_offset(x=-0.0, y=0.3, z=0.0)  # pos 9
     substrate_assay_plate_1.set_offset(x=0.0,y=2.0,z=0.0)  # pos 1
@@ -91,7 +91,7 @@ def run(protocol: protocol_api.ProtocolContext):
     # First half of substrate plate 2
     """dispense 5ul from each column 2-6 of stock plate 2
         into columns 7-11 of substrate plate 2, mixing before and after transfer"""
-    source_columns = culture_stock_2.columns()[1:6]   # means column 2-6
+    source_columns = culture_stock_1.columns()[1:6]   # means column 2-6
     destination_columns = substrate_assay_plate_2.columns()[1:6]    # means column 2-6
     left_pipette_20uL_multi.transfer(
         inoculation_volume, 

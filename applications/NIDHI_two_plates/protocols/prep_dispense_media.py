@@ -13,6 +13,10 @@ requirements = {"robotType": "OT-2", "apiLevel": "2.12"}
 
 # protocol run function
 def run(protocol: protocol_api.ProtocolContext):
+
+    # pattern is 1, 4, 7, 10
+    tip_start_column = 4
+
     # * load labware
     substrate_stock = protocol.load_labware(
         "nest_96_wellplate_2ml_deep",
@@ -72,12 +76,14 @@ def run(protocol: protocol_api.ProtocolContext):
         substrate_assay_plate_5,
     ]
 
+    # pick up first tip 
+    right_pipette_300uL_multi.pick_up_tip(tip_rack_300uL["A" + str(tip_start_column)])
+
     # Dispense blanks into column 1 of all substrate plates
-    right_pipette_300uL_multi.pick_up_tip()
     destination_columns = [plate.columns()[0] for plate in substrate_assay_plates]
     right_pipette_300uL_multi.distribute(
         media_transfer_volume, 
-        substrate_stock.columns()[5],
+        substrate_stock.columns()[0],  # take from column 1
         destination_columns, 
         new_tip="never", 
         disposal_volume = 0,
@@ -87,28 +93,36 @@ def run(protocol: protocol_api.ProtocolContext):
     destination_columns = [plate.columns()[11] for plate in substrate_assay_plates]
     right_pipette_300uL_multi.distribute(
         media_transfer_volume, 
-        substrate_stock.columns()[11],
+        substrate_stock.columns()[11],  # take from column 12
         destination_columns, 
         new_tip="never", 
         disposal_volume = 0,
     )
+
+    # trash first tip
     right_pipette_300uL_multi.drop_tip()
 
+    # pick up second tip
+    right_pipette_300uL_multi.pick_up_tip(tip_rack_300uL["A" + str(tip_start_column + 1)])
+
     # Dispense stock media into first half of each substrate plate
-    right_pipette_300uL_multi.pick_up_tip()
     for i in range(5): 
         destination_columns = substrate_assay_plates[i].columns()[1:6]   # means columns 2-6
         right_pipette_300uL_multi.distribute(
             media_transfer_volume,
-            substrate_stock.columns()[i],
+            substrate_stock.columns()[i+1],  # should be column 2-6
             [column[0] for column in destination_columns],
             new_tip = "never", 
             disposal_volume = 0,
         )
+
+    # trash seconds tip
     right_pipette_300uL_multi.drop_tip()
 
+    # pick up third tip 
+    right_pipette_300uL_multi.pick_up_tip(tip_rack_300uL["A" + str(tip_start_column + 2)])
+
     # Dispense stock media into second half of each substrate plate
-    right_pipette_300uL_multi.pick_up_tip()
     for i in range(5): 
         destination_columns = substrate_assay_plates[i].columns()[6:11]   # means columns 7-11
         right_pipette_300uL_multi.distribute(
@@ -118,4 +132,6 @@ def run(protocol: protocol_api.ProtocolContext):
             new_tip = "never", 
             disposal_volume = 0,
         )
+
+    # drop third tip
     right_pipette_300uL_multi.drop_tip()
