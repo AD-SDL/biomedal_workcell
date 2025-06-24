@@ -1,0 +1,51 @@
+name: Run the Tekmatic incubator - Substrate App Workflow
+
+metadata:
+  author: Casey Stone
+  info: Workflow for GyorgyDemo
+  version: 0.1
+
+flowdef:
+  # - name: Transfer from stack 5 to exchange
+  #   module: biopf400
+  #   action: transfer
+  #   args:
+  #     source: tower_deck5
+  #     target: exchange_deck_low_narrow
+  #     source_approach: safe_path_tower_deck5
+  #     target_approach: safe_path_exchange
+  #     source_plate_rotation: narrow
+  #     target_plate_rotation: narrow
+  #     grab_offset: 55
+  #     approach_height_offset: 100
+      
+  # - name: Transfer from exchange to OT-Flex
+  #   module: biopf400
+  #   action: transfer
+  #   args:
+  #     source: exchange_deck_low_narrow
+  #     target: otflex_deckB
+  #     source_approach: safe_path_exchange
+  #     target_approach: safe_path_flexB
+  #     source_plate_rotation: narrow
+  #     target_plate_rotation: narrow
+  #     grab_offset: 55
+  #     approach_height_offset: 100
+
+  - name: Transfer from tower 5 to OT-Flex deck B
+    module: biopf400
+    action: transfer
+    args:
+      source: tower_deck5
+      target: otflex_deckB
+      source_approach: safe_path_tower_deck5
+      target_approach: safe_path_flexB
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+      grab_offset: 55
+      approach_height_offset: 100
+
+
+
+
+
