@@ -45,15 +45,15 @@ modules:
   - name: bio_sealer
     model: A4s Sealer
     interface: wei_rest_node
-    active: False
+    active: True
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:2006"
+      rest_node_address: "http://batman.cels.anl.gov:2006"
   - name: bio_peeler
     model: XPeel
     interface: wei_rest_node
-    active: False
+    active: True
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:2007"
+      rest_node_address: "http://batman.cels.anl.gov:2007"
   - name: bio_biometra3_96
     model: Biometra
     interface: wei_rest_node
@@ -123,10 +123,15 @@ locations:
     hidex_geraldine_high_nest: [695.710, 34.270, 90.468, 682.956, 78.417, -455.409]
     hidex_geraldine_low_nest: [688.105, 34.164, 90.435, 683.614, 82.034, -455.416]
     safe_path_hidex: [749.110, -2.968, 141.991, 667.548, 78.523, -455.415]
-    bio_biometra3_nest: [771.805, 22.966, 104.685, 679.275, 125.006, 397.562]
+    bio_biometra3_nest: [778.805, 22.966, 104.685, 679.275, 125.006, 397.562]  # updated 06/26/25
     safe_path_biometra3: [816.492, -2.854, 139.086, 670.723, 125.012, 397.524]
-    sealer_nest: [579.268, 10.442, 273.717, 343.318, 81.014, -916.524]
-    safe_path_sealer: [691.115, 35.094, 259.197, 334.417, 81.008, -917.181]
+    # sealer_nest: [579.268, 10.442, 273.717, 343.318, 81.014, -916.524]
+    # safe_path_sealer: [691.115, 35.094, 259.197, 334.417, 81.008, -917.181]
+    # peeler_nest: [601.976, -2.619, 238.879, 392.002, 80.990, -959.450]
+    # safe_path_peeler: [682.514, 36.770, 219.243, 373.479, 81.008, -959.448]
+    # sealer_nest: [578.329, 13.807, 270.290, 344.673, 80.756, -917.165]
+    sealer_nest: [584.329, 13.807, 270.290, 344.673, 80.756, -917.165]
+    safe_path_sealer: [[691.115, 35.094, 259.197, 334.417, 81.008, -917.181], [650.329, 13.807, 270.290, 344.673, 80.756, -917.165]]
     peeler_nest: [601.976, -2.619, 238.879, 392.002, 80.990, -959.450]
     safe_path_peeler: [682.514, 36.770, 219.243, 373.479, 81.008, -959.448]
     bmg_reader_nest: [610.277, 8.035, 107.426, 691.801, 82.004, 917.639]

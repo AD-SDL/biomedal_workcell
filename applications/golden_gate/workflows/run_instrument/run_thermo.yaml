@@ -6,10 +6,10 @@ version: '0.1'
 
 flowdef:
   - name: Run thermocycler protocol
-    module: thermocycler_96
+    module: bio_biometra3_96
     action: run_protocol
     args:
       foo: bar
     files:
-      protocol: #TODO: make protocol file, and verify
+      protocol: 1  # TODO: What is the number of the Golden Gate thermocycler protocol
     comment: Run hidex protocol
