@@ -1,4 +1,5 @@
 from opentrons import protocol_api
+from opentrons.protocol_api import SINGLE
 
 metadata = {
     'protocolName': 'Golden Gate Assembly',
@@ -19,13 +20,20 @@ def run(protocol: protocol_api.ProtocolContext):
     tiprack_50 = protocol.load_labware(
         load_name="opentrons_flex_96_tiprack_50ul", location="A2", 
     )
+
     tiprack_200 = protocol.load_labware(
-        load_name="opentrons_flex_96_tiprack_200ul", location="C3"
+        load_name="opentrons_flex_96_tiprack_200ul", location="A3"
     )
 
+
+
     # Pipettes
-    p50 = protocol.load_instrument('flex_1channel_50', mount='right', tip_racks=[tiprack_50])
-    p1000 = protocol.load_instrument('flex_1channel_1000', mount='left', tip_racks=[tiprack_200])
+    p50 = protocol.load_instrument('flex_8channel_50', mount='right', tip_racks=[tiprack_50])
+    p1000 = protocol.load_instrument('flex_8channel_1000', mount='left', tip_racks=[tiprack_200])
+
+    p50.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_50])
+    p1000.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_200])
+
 
     # load trash bin
     _ = protocol.load_trash_bin("D1")
