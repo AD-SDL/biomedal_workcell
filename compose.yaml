@@ -30,3 +30,13 @@ services:
     ports:
       - 3004:3004
     command: python3 ot2_module/src/ot2_rest_node.py --alias="ot2flexbio1" --port=3004 --ot2_ip=146.137.240.11
+  sciclops:
+    image: ghcr.io/ad-sdl/hudson_platecrane_module:dev
+    container_name: sciclops
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /dev:/dev
+    ports:
+      - 3005:3005
+    command: python3 hudson_platecrane_module/src/sciclops_rest_node.py --alias="sciclops" --port=3005
