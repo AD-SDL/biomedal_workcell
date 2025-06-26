@@ -1,0 +1,15 @@
+name: Run Hidex
+author: Abe Stroka
+info: Workflow for running one thermocycler protocol from payload
+version: '0.1'
+
+
+flowdef:
+  - name: Run thermocycler protocol
+    module: thermocycler_96
+    action: run_protocol
+    args:
+      foo: bar
+    files:
+      protocol: #TODO: make protocol file, and verify
+    comment: Run hidex protocol
