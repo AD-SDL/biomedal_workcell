@@ -97,8 +97,6 @@ modules:
       rest_node_address: "http://sciclops:3005"
     active: True
 
-
-
 locations:
   biopf400:
     safe_home: [989.443, -2.007, 174.876, 542.366, 70.574, -843.897]
@@ -155,6 +153,3 @@ locations:
     safe_path_lidnest_1: [404.584, 6.928, 143.517, 658.529, 125.193, -608.622]
     safe_path_lidnest_2: [404.942, 4.432, 142.130, 662.712, 125.164, -389.370]
     safe_path_lidnest_3: [400.040, -4.149, 147.508, 664.154, 81.629, -194.110]
-
-
-

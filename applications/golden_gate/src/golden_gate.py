@@ -67,9 +67,8 @@ def main() -> None:
 
     # TODO: transfer plate into Flex: move to exchange (from where?), remove lid, move to flex
 
-    # TODO: rewrite to use 8 channel pipettes
     # TODO: TEST
-    # # add fluorescence and enzyme
+    # add fluorescence and enzyme
     # experiment_client.start_run(
     #     run_flex_wf.resolve(),
     #     payload=payload,
@@ -103,7 +102,7 @@ def main() -> None:
     #     blocking=True,
     #     simulate=False,
     # )
-    
+
     #TODO: make thermocycler file and add to payload
     # move thermo to flex
     # experiment_client.start_run(

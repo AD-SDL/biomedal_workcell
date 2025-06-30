@@ -13,8 +13,8 @@ def run(protocol: protocol_api.ProtocolContext):
     # Labware
     source_plate = protocol.load_labware('nest_96_wellplate_200ul_flat', 'B1')
     pcr_plate = protocol.load_labware('nest_96_wellplate_100ul_pcr_full_skirt', 'B2')
-    mastermix_tube = protocol.load_labware('opentrons_24_aluminumblock_nest_1.5ml_snapcap', 'B3') #TODO change
-    water_reservoir = protocol.load_labware('nest_12_reservoir_15ml', 'C1')
+    mastermix_tube = protocol.load_labware('nest_12_reservoir_15ml', 'B3') #TODO change
+    water_reservoir = protocol.load_labware('nest_12_reservoir_15ml', 'A1')
     dna = protocol.load_labware('nest_96_wellplate_100ul_pcr_full_skirt', 'C2')
 
     tiprack_50 = protocol.load_labware(
@@ -36,7 +36,8 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
     # load trash bin
-    _ = protocol.load_trash_bin("D1")
+    # _ = protocol.load_trash_bin("D1")
+    chute = protocol.load_waste_chute()
 
 
     # DNA Dilution Table
