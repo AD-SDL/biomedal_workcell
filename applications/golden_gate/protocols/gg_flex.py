@@ -78,7 +78,7 @@ def run(protocol: protocol_api.ProtocolContext):
     #mastermix_tube['A1']
 
     #12 µL master mix to each reaction well
-    for i in range(3):
+    for pair in assemblies:
         dest = pcr_plate.wells_by_name()[pair["dest"]]
         p50.transfer(12, mastermix_tube.wells_by_name()['A1'], dest, mix_after=(2, 10))
 
