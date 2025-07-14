@@ -15,10 +15,12 @@ def run(protocol: protocol_api.ProtocolContext):
     pcr_plate = protocol.load_labware('nest_96_wellplate_100ul_pcr_full_skirt', 'B2')
     mastermix_tube = protocol.load_labware('nest_12_reservoir_15ml', 'B3') #TODO change
     water_reservoir = protocol.load_labware('nest_12_reservoir_15ml', 'A1')
-    dna = protocol.load_labware('nest_96_wellplate_100ul_pcr_full_skirt', 'C2')
+    temp_mod = protocol.load_module(module_name="temperature module gen2", location="C1")
+    temp_adapter = temp_mod.load_adapter("opentrons_96_well_aluminum_block")
+    dna = temp_adapter.load_labware('nest_96_wellplate_100ul_pcr_full_skirt')
 
     tiprack_50 = protocol.load_labware(
-        load_name="opentrons_flex_96_tiprack_50ul", location="A2", 
+        load_name="opentrons_flex_96_tiprack_50ul", location="A2",
     )
 
     tiprack_200 = protocol.load_labware(
@@ -39,6 +41,7 @@ def run(protocol: protocol_api.ProtocolContext):
     # _ = protocol.load_trash_bin("D1")
     chute = protocol.load_waste_chute()
 
+    #TODO: set temperature
 
     # DNA Dilution Table
     plasmids = [
@@ -76,7 +79,6 @@ def run(protocol: protocol_api.ProtocolContext):
 
     #12 µL master mix to each reaction well
     for i in range(3):
-        dest = pcr_plate.wells()[i]
+        dest = pcr_plate.wells_by_name()[pair["dest"]]
         p50.transfer(12, mastermix_tube.wells_by_name()['A1'], dest, mix_after=(2, 10))
 
-    protocol.comment("Golden Gate Assembly prep complete. Transfer tubes to thermocycler and run CRL program.")
