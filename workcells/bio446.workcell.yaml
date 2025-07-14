@@ -11,7 +11,7 @@ config:
   redis_port: 6379
   clear_workflow_runs: false
   reset_locations: false
-  update_interval: 5.0
+  update_interval: 10.0
   use_diaspora: false
   log_level: 20 # INFO level, see https://docs.python.org/3/library/logging.html#levels for a list of levels
   cold_start_delay: 5
@@ -75,7 +75,7 @@ modules:
   - name: otflexbio1
     model: Opentrons OT-Flex
     interface: wei_rest_node
-    active: True
+    active: False
     config:
       rest_node_address: "http://172.18.0.1:3004"
   - name: inheco_devID2_floor0

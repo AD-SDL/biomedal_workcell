@@ -55,7 +55,7 @@ def run(protocol: protocol_api.ProtocolContext):
     substrate_assay_plate_2.set_offset(x=0.0,y=0.5,z=0.0)   # pos 3
 
     # variables
-    inoculation_volume = 5
+    inoculation_volume = 20
 
     # * load pipettes
     left_pipette_20uL_multi = protocol.load_instrument(
