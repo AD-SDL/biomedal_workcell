@@ -47,13 +47,13 @@ modules:
     interface: wei_rest_node
     active: True
     config:
-      rest_node_address: "http://batman.cels.anl.gov:2006"
+      rest_node_address: "http://a4s_sealer_node:2006"
   - name: bio_peeler
     model: XPeel
     interface: wei_rest_node
     active: True
     config:
-      rest_node_address: "http://batman.cels.anl.gov:2007"
+      rest_node_address: "http://brooks_xpeel_node:2007"
   - name: bio_biometra3_96
     model: Biometra
     interface: wei_rest_node
@@ -77,7 +77,7 @@ modules:
     interface: wei_rest_node
     active: True
     config:
-      rest_node_address: "http://172.18.0.1:3004"
+      rest_node_address: "http://otflexbio1:3004"
   - name: inheco_devID2_floor0
     model: Inheco single plate incubator shaker
     interface: wei_rest_node
@@ -145,7 +145,7 @@ locations:
     safe_path_tower_deck1: [672.247, 17.260, 134.825, 653.927, 82.221, -717.291]
     safe_path_tower_deck2: [760.688, 18.372, 133.883, 653.418, 82.186, -716.786]
     safe_path_tower_deck3: [854.408, 16.788, 134.302, 655.330, 82.215, -717.111]
-    safe_path_tower_deck4: [950.484, 15.527, 136.545, 654.549, 82.169, -715.834]   
+    safe_path_tower_deck4: [950.484, 15.527, 136.545, 654.549, 82.169, -715.834]
     safe_path_tower_deck5: [1120.837, 18.536, 134.023, 653.530, 82.174, -712.890]  # higher for tip box transfers
     lidnest_1_wide: [374.370, 23.786, 114.989, 671.470, 125.146, -611.836]
     lidnest_2_wide: [376.183, 20.493, 112.279, 678.140, 125.006, -410.865]
