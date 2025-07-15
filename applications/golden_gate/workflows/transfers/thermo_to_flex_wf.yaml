@@ -6,12 +6,12 @@ version: '0.1'
 
 flowdef:
 #thermocycler to exchange
-  - name: transfer  
+  - name: transfer
     module: biopf400
     action: transfer
     args:
       source: bio_biometra3_nest
-      target: exchange_deck_high_wide 
+      target: exchange_deck_high_wide
       source_approach: safe_path_biometra3
       target_approach: safe_path_exchange
       source_plate_rotation: wide
@@ -19,7 +19,7 @@ flowdef:
     comment: moves plate from biometra 96 thermocycler to exchange
 
 # exchnage to peeler
-  - name: transfer    
+  - name: transfer
     module: biopf400
     action: transfer
     args:
@@ -32,7 +32,7 @@ flowdef:
     comment: transfer to sealer
 
 #peel
-  - name: peel  
+  - name: peel
     module: bio_peeler
     action: peel
     args:
@@ -40,7 +40,7 @@ flowdef:
     comment: peel the pcr plate
 
 # peeler to exchange
-  - name: transfer 
+  - name: transfer
     module: biopf400
     action: transfer
     args:
@@ -53,7 +53,7 @@ flowdef:
     comment: moves plate from exchange to biometra 96 thermocycler
 
 # exchange to flex
-  - name: transfer    
+  - name: transfer
     module: biopf400
     action: transfer
     args:
@@ -64,4 +64,3 @@ flowdef:
       source_plate_rotation: narrow
       target_plate_rotation: narrow
     comment: place plate on flex
-  
