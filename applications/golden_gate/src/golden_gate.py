@@ -51,12 +51,12 @@ def main() -> None:
     # # workflow paths (pf400 transfers)
     remove_lid_move_to_flex = wf_transfers_directory / "remove_lid_move_to_flex.yaml"
     flex_to_thermocycler_wf = wf_transfers_directory / "flex_to_thermo_wf.yaml"
-    thermocycler_to_flex_wf = wf_transfers_directory / "thermocycler_to_flex_wf.yaml"
+    thermocycler_to_flex_wf = wf_transfers_directory / "thermo_to_flex_wf.yaml"
 
     # protocol paths (for OT-Flex)
     run_gg = protocol_directory / "gg_flex.py"
-    move_to_staging_protocol = protocol_directory / "move_to_staging_B1_A4.yaml"
-
+    move_to_staging_protocol = protocol_directory / "move_to_staging_B2_A4.yaml"
+    move_from_staging_protocol = protocol_directory / "move_from_staging_A4_B2.yaml"
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
 
     # important variables
@@ -67,26 +67,25 @@ def main() -> None:
 
     # TODO: transfer plate into Flex: move to exchange (from where?), remove lid, move to flex
 
-    # TODO: TEST
-    # add fluorescence and enzyme
-    # experiment_client.start_run(
-    #     run_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    #run golden gate experiement on flex
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
     payload = {"current_flex_protocol": str(move_to_staging_protocol)}
 
-    # TODO: TEST
-    # experiment_client.start_run(
-    #     run_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    #move gg plate from B2 to A4 staging
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
-    # move from flex to thermo
+    # move from flex to sealer
     experiment_client.start_run(
         flex_to_thermocycler_wf.resolve(),
         payload=payload,
@@ -103,14 +102,24 @@ def main() -> None:
     #     simulate=False,
     # )
 
-    #TODO: make thermocycler file and add to payload
+
     # move thermo to flex
-    # experiment_client.start_run(
-    #     hidex_to_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    experiment_client.start_run(
+        thermocycler_to_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+
+    payload = {"current_flex_protocol": str(move_from_staging_protocol)}
+
+    #move from flex staging A back to flex B2
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
     
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Golden Gate Experiment"""
+"""PCR Experiment Using Golden Gate Products"""
 
 from pathlib import Path
 
@@ -54,8 +54,8 @@ def main() -> None:
     thermocycler_to_flex_wf = wf_transfers_directory / "thermocycler_to_flex_wf.yaml"
 
     # protocol paths (for OT-Flex)
-    run_pcr = protocol_directory / "gg_flex.py"
-    move_to_staging_protocol = protocol_directory / "move_to_staging_B1_A4.yaml"
+    run_pcr = protocol_directory / "pcr_flex.py"
+    move_to_staging_protocol = protocol_directory / "move_to_staging_C1_A4.yaml"
 
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
 
@@ -67,24 +67,24 @@ def main() -> None:
 
     # TODO: transfer plate into Flex: move to exchange (from where?), remove lid, move to flex
 
-    # TODO: TEST
-    # add fluorescence and enzyme
-    # experiment_client.start_run(
-    #     run_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    #run pcr experiment
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
     payload = {"current_flex_protocol": str(move_to_staging_protocol)}
 
-    # TODO: TEST
-    # experiment_client.start_run(
-    #     run_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    #TODO: fix, trash chute
+    # move from C1 to staging A4
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
     # move from flex to thermo
     experiment_client.start_run(
@@ -103,14 +103,7 @@ def main() -> None:
     #     simulate=False,
     # )
 
-    #TODO: make thermocycler file and add to payload
-    # move thermo to flex
-    # experiment_client.start_run(
-    #     hidex_to_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+#TODO: peel at end or keep seal on for further analysis?
 
     
 
