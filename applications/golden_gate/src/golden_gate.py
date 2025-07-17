@@ -54,7 +54,9 @@ def main() -> None:
     thermocycler_to_flex_wf = wf_transfers_directory / "thermo_to_flex_wf.yaml"
 
     # protocol paths (for OT-Flex)
-    run_gg = protocol_directory / "gg_flex.py"
+    # run_gg = protocol_directory / "gg_flex.py"
+    run_gg = protocol_directory / "pd_golden_gate_01.py"
+
     move_to_staging_protocol = protocol_directory / "move_to_staging_B2_A4.py"
     move_from_staging_protocol = protocol_directory / "move_from_staging_A4_B2.py"
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
@@ -68,6 +70,16 @@ def main() -> None:
     # TODO: transfer plate into Flex: move to exchange (from where?), remove lid, move to flex
 
     #run golden gate experiement on flex
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+
+    # payload = {"current_flex_protocol": str(move_to_staging_protocol)}
+
+    # #move gg plate from B2 to A4 staging
     # experiment_client.start_run(
     #     run_flex_wf.resolve(),
     #     payload=payload,
@@ -75,51 +87,41 @@ def main() -> None:
     #     simulate=False,
     # )
 
-    payload = {"current_flex_protocol": str(move_to_staging_protocol)}
-
-    #move gg plate from B2 to A4 staging
-    experiment_client.start_run(
-        run_flex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
-
     # move from flex to sealer to thermo
-    experiment_client.start_run(
-        flex_to_thermocycler_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
-
-    # #run thermo
-    # TODO: figure out biometra protocol number and app closure issue
     # experiment_client.start_run(
-    #     run_thermocycler_wf.resolve(),
+    #     flex_to_thermocycler_wf.resolve(),
     #     payload=payload,
     #     blocking=True,
     #     simulate=False,
     # )
 
+    # # #run thermo
+    # # TODO: figure out biometra protocol number and app closure issue
+    # # experiment_client.start_run(
+    # #     run_thermocycler_wf.resolve(),
+    # #     payload=payload,
+    # #     blocking=True,
+    # #     simulate=False,
+    # # )
 
-    # move thermo to flex
-    experiment_client.start_run(
-        thermocycler_to_flex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
 
-    payload = {"current_flex_protocol": str(move_from_staging_protocol)}
+    # # move thermo to flex
+    # experiment_client.start_run(
+    #     thermocycler_to_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
-    # #move from flex staging A back to flex B2
-    experiment_client.start_run(
-        run_flex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # payload = {"current_flex_protocol": str(move_from_staging_protocol)}
+
+    # # #move from flex staging A back to flex B2
+    # experiment_client.start_run(
+    #     run_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
 
 
