@@ -55,7 +55,7 @@ def main() -> None:
 
     # protocol paths (for OT-Flex)
     run_pcr = protocol_directory / "pcr_flex.py"
-    move_to_staging_protocol = protocol_directory / "move_to_staging_C1_A4.yaml"
+    move_to_staging_protocol = protocol_directory / "move_to_staging_C1_A4.py"
 
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
 
@@ -77,7 +77,6 @@ def main() -> None:
 
     payload = {"current_flex_protocol": str(move_to_staging_protocol)}
 
-    #TODO: fix, trash chute
     # move from C1 to staging A4
     experiment_client.start_run(
         run_flex_wf.resolve(),

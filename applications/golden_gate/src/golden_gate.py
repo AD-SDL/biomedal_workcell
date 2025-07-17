@@ -56,7 +56,7 @@ def main() -> None:
     # protocol paths (for OT-Flex)
     run_gg = protocol_directory / "gg_flex.py"
     move_to_staging_protocol = protocol_directory / "move_to_staging_B2_A4.py"
-    move_from_staging_protocol = protocol_directory / "move_from_staging_A4_B2.yaml"
+    move_from_staging_protocol = protocol_directory / "move_from_staging_A4_B2.py"
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
 
     # important variables
@@ -111,15 +111,15 @@ def main() -> None:
         simulate=False,
     )
 
-    # payload = {"current_flex_protocol": str(move_from_staging_protocol)}
+    payload = {"current_flex_protocol": str(move_from_staging_protocol)}
 
     # #move from flex staging A back to flex B2
-    # experiment_client.start_run(
-    #     run_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
 
 
