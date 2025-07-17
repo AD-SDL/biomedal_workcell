@@ -41,4 +41,4 @@ def run(protocol: protocol_api.ProtocolContext):
     # _ = protocol.load_trash_bin("D1")
     chute = protocol.load_waste_chute()
 
-    protocol.move_labware(labware=pcr_plate, new_location=temp_mod, use_gripper=True)
+    protocol.move_labware(labware=pcr_plate, new_location=temp_adapter, use_gripper=True)
