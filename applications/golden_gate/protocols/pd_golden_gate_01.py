@@ -176,7 +176,7 @@ def run(protocol: protocol_api.ProtocolContext):
     temp_adapter = temp_mod.load_adapter("opentrons_96_well_aluminum_block")
     
     # Set temperature
-    temp_mod.set_temperature(config['temperature'])
+    temp_mod.set_temperature(config['temperature']) #TODO: make seperate, or just set earlier, only 1 hour with plate
     
     # Load source plate initially on A4
     source_plate = protocol.load_labware(config['source_plate_type'], config['source_plate_initial_position'])
@@ -215,7 +215,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
 
-    # Perform combinatorial transfers
+    # Perform combinatorial transfers #TODO: SWAP?  so adding small vols into large quant of master mix
     total_dest_wells = transfer_combinatorial_liquids(
         protocol=protocol,
         source_plate=source_plate, 
