@@ -102,7 +102,7 @@ def transfer_combinatorial_liquids(protocol, source_plate, dest_plate, pipette, 
                 dest_well,
                 new_tip='always'  # Use fresh tip for each transfer
             )
-        dest_well += 1
+        dest_well_number += 1
 
 def add_master_mix_to_combinations(protocol, source_plate, dest_plate, pipette, config):
     """
