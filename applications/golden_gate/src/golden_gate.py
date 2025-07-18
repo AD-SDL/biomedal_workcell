@@ -52,7 +52,7 @@ def main() -> None:
     remove_lid_move_to_flex = wf_transfers_directory / "remove_lid_move_to_flex.yaml"
     flex_to_thermocycler_wf = wf_transfers_directory / "flex_to_thermo_wf.yaml"
     thermocycler_to_flex_wf = wf_transfers_directory / "thermo_to_flex_wf.yaml"
-    flexA_sealer_flexA_wf = wf_transfers_directory / "flexA_sealer_flexA.yaml"
+    flexA_sealer_flexA_wf = wf_transfers_directory / "flexA_sealer_flexA_wf.yaml"
     flexA_sealer_wait_wf = wf_transfers_directory / "flexA_sealer_wf.yaml"
 
     # protocol paths (for OT-Flex)
