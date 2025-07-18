@@ -52,12 +52,15 @@ def main() -> None:
     remove_lid_move_to_flex = wf_transfers_directory / "remove_lid_move_to_flex.yaml"
     flex_to_thermocycler_wf = wf_transfers_directory / "flex_to_thermo_wf.yaml"
     thermocycler_to_flex_wf = wf_transfers_directory / "thermo_to_flex_wf.yaml"
+    flexA_sealer_flexA_wf = wf_transfers_directory / "flexA_sealer_flexA.yaml"
+    flexA_sealer_wait_wf = wf_transfers_directory / "flexA_sealer_wf.yaml"
 
     # protocol paths (for OT-Flex)
     # run_gg = protocol_directory / "gg_flex.py"
     run_gg = protocol_directory / "pd_golden_gate_01.py"
 
-    move_to_staging_protocol = protocol_directory / "move_to_staging_B2_A4.py"
+    move_source_to_staging_protocol = protocol_directory / "move_to_staging_C1_A4.py"
+    move_dest_to_staging_protocol = protocol_directory / "move_to_staging_B2_A4.py"
     move_from_staging_protocol = protocol_directory / "move_from_staging_A4_C1.py"
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
 
@@ -75,18 +78,8 @@ def main() -> None:
 
     # EXPERIMENT STEPS: ----------------------------------------------
 
-    payload = {"current_flex_protocol": str(run_gg)}
-    #run golden gate experiement on flex
-    experiment_client.start_run(
-        run_flex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
-
-    # payload = {"current_flex_protocol": str(move_to_staging_protocol)}
-
-    # #move gg plate from B2 to A4 staging
+    # payload = {"current_flex_protocol": str(run_gg)}
+    # #run golden gate experiement on flex
     # experiment_client.start_run(
     #     run_flex_wf.resolve(),
     #     payload=payload,
@@ -94,13 +87,50 @@ def main() -> None:
     #     simulate=False,
     # )
 
-    # move from flex to sealer to thermo
-    # experiment_client.start_run(
-    #     flex_to_thermocycler_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    #seal and return source plate
+    payload = {"current_flex_protocol": str(move_source_to_staging_protocol)}
+
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+
+    experiment_client.start_run(
+        flexA_sealer_flexA_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+
+    payload = {"current_flex_protocol": str(move_from_staging_protocol)}
+
+    # important variables
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+
+    #seal destination plate (B2) and leave for thermocycling #TODO add thermocycler use
+
+    payload = {"current_flex_protocol": str(move_dest_to_staging_protocol)}
+
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+    experiment_client.start_run(
+        flexA_sealer_wait_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+
 
     # # #run thermo
     # # TODO: figure out biometra protocol number and app closure issue
@@ -129,6 +159,8 @@ def main() -> None:
     #     blocking=True,
     #     simulate=False,
     # )
+
+    #TODO: if no thermo, peel and return to flex
 
 
 
