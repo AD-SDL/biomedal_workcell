@@ -177,29 +177,26 @@ def run(protocol: protocol_api.ProtocolContext):
     temp_adapter = temp_mod.load_adapter("opentrons_96_well_aluminum_block")
 
     # Set temperature
-    temp_mod.set_temperature(config['temperature']) #TODO: make seperate, or just set earlier, only 1 hour with plate
+    # temp_mod.set_temperature(config['temperature']) #TODO: make seperate, or just set earlier, only 1 hour with plate
 
     # Load source plate initially on A4
-    source_plate = protocol.load_labware(config['source_plate_type'], config['source_plate_initial_position'])
+    # source_plate = protocol.load_labware(config['source_plate_type'], config['source_plate_initial_position'])
+    source_plate = temp_adapter.load_labware(config['source_plate_type'])
 
     # Move source plate to temperature module
-    protocol.move_labware(
-        labware=source_plate,
-        new_location=temp_adapter,
-        use_gripper=True
-    )
+    # protocol.move_labware(
+    #     labware=source_plate,
+    #     new_location=temp_adapter,
+    #     use_gripper=True
+    # )
 
     chute = protocol.load_waste_chute()
 
-    # source_plate.set_offset(x=0.40, y=0.50, z=2.40)
-
-    pcr_plate_on_temp = temp_mod.labware
-    pcr_plate_on_temp.set_offset(x=0.40, y=0.50, z=2.40)
+    source_plate.set_offset(x=0.40, y=0.50, z=2.40)
 
 
     # Load destination plate
     dest_plate = protocol.load_labware(config['dest_plate_type'], config['dest_plate_position'])
-
 
 
 
@@ -235,7 +232,7 @@ def run(protocol: protocol_api.ProtocolContext):
         protocol=protocol,
         source_plate=source_plate,
         dest_plate=dest_plate,
-        pipette=p1000,
+        pipette=p50,
         config=config
     )
 

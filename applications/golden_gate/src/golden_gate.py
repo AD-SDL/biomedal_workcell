@@ -58,17 +58,24 @@ def main() -> None:
     run_gg = protocol_directory / "pd_golden_gate_01.py"
 
     move_to_staging_protocol = protocol_directory / "move_to_staging_B2_A4.py"
-    move_from_staging_protocol = protocol_directory / "move_from_staging_A4_B2.py"
+    move_from_staging_protocol = protocol_directory / "move_from_staging_A4_C1.py"
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
 
-    # important variables
-    payload = {"current_flex_protocol": str(run_gg)}
+    #TODO: start at staging, or exchange to be peeled first?
 
+    payload = {"current_flex_protocol": str(move_from_staging_protocol)}
+
+    # important variables
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
     # EXPERIMENT STEPS: ----------------------------------------------
 
-    # TODO: transfer plate into Flex: move to exchange (from where?), remove lid, move to flex
-
+    payload = {"current_flex_protocol": str(run_gg)}
     #run golden gate experiement on flex
     experiment_client.start_run(
         run_flex_wf.resolve(),
