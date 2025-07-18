@@ -42,3 +42,10 @@ services:
     volumes:
       - ~/.wei/redis:/data
     command: redis-server --save 60 1 --loglevel warning
+
+  redis_commander:
+    image: ghcr.io/joeferner/redis-commander
+    ports:
+      - 8081:8081
+    environment:
+      - REDIS_HOST=wei_redis
