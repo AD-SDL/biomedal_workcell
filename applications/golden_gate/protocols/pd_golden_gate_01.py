@@ -77,9 +77,9 @@ def transfer_combinatorial_liquids(protocol, source_plate, dest_plate, pipette, 
     # Generate all possible combinations
     all_combinations = generate_all_combinations(combinations)
 
-    #print(f"Generated {len(all_combinations)} combinations:")
-    #for i, combo in enumerate(all_combinations):
-        #print(f"Destination well {i+1}: Sources {combo}")
+    print(f"Generated {len(all_combinations)} combinations:")
+    for i, combo in enumerate(all_combinations):
+        print(f"Destination well {i+1}: Sources {combo}")
 
     # Perform transfers
     dest_well_number = 1
