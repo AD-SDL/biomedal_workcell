@@ -78,14 +78,14 @@ def main() -> None:
 
     # EXPERIMENT STEPS: ----------------------------------------------
 
-    # payload = {"current_flex_protocol": str(run_gg)}
-    # #run golden gate experiement on flex
-    # experiment_client.start_run(
-    #     run_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    payload = {"current_flex_protocol": str(run_gg)}
+    #run golden gate experiement on flex
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
     #seal and return source plate
     payload = {"current_flex_protocol": str(move_source_to_staging_protocol)}

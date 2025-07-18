@@ -37,7 +37,7 @@ config = {
 
     # Deck positions
     'temp_module_position': 'C1',
-    'source_plate_initial_position': 'A4', # staging
+    'source_plate_initial_position': 'C1',
     'dest_plate_position': 'B2',
     'tip_rack_position_50_01': 'A1',
     'tip_rack_position_200_01': 'A2'
@@ -197,7 +197,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     # Load destination plate
     dest_plate = protocol.load_labware(config['dest_plate_type'], config['dest_plate_position'])
-
+    dest_plate.set_offset(x=0.4, y=0.4, z=0.0)
 
 
     tiprack_50 = protocol.load_labware(

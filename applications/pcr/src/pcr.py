@@ -67,6 +67,14 @@ def main() -> None:
 
     # TODO: transfer plate into Flex: move to exchange (from where?), remove lid, move to flex
 
+    #assume golden gate product sealed on exchange, dna and mm source plate sealed on C1
+
+    #peel gg product, place in flex B2
+
+    #peel source plate, place back on C1
+
+
+
     #run pcr experiment
     experiment_client.start_run(
         run_flex_wf.resolve(),
@@ -75,23 +83,27 @@ def main() -> None:
         simulate=False,
     )
 
-    payload = {"current_flex_protocol": str(move_to_staging_protocol)}
+    #move pcr plate to staging, seal, thermocycle
 
-    # move from C1 to staging A4
-    experiment_client.start_run(
-        run_flex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    #TODO: thermocycling, leave on sealer for now
 
-    # move from flex to thermo
-    experiment_client.start_run(
-        flex_to_thermocycler_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # payload = {"current_flex_protocol": str(move_to_staging_protocol)}
+
+    # # move from C1 to staging A4
+    # experiment_client.start_run(
+    #     run_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
+
+    # # move from flex to thermo
+    # experiment_client.start_run(
+    #     flex_to_thermocycler_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
     # #run thermo
     # TODO: figure out biometra protocol number and app closure issue
