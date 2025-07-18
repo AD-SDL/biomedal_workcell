@@ -191,7 +191,10 @@ def run(protocol: protocol_api.ProtocolContext):
 
     chute = protocol.load_waste_chute()
 
-    source_plate.set_offset(x=0.40, y=0.50, z=2.40)
+    # source_plate.set_offset(x=0.40, y=0.50, z=2.40)
+
+    pcr_plate_on_temp = temp_mod.labware
+    pcr_plate_on_temp.set_offset(x=0.40, y=0.50, z=2.40)
 
 
     # Load destination plate
