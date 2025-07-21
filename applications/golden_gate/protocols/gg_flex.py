@@ -30,7 +30,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
     # Pipettes
-    p50 = protocol.load_instrument('flex_8channel_50', mount='right', tip_racks=[tiprack_50])
+    p50 = protocol.load_instrument('flex_1channel_50', mount='right', tip_racks=[tiprack_50])
     p1000 = protocol.load_instrument('flex_8channel_1000', mount='left', tip_racks=[tiprack_200])
 
     p50.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_50])

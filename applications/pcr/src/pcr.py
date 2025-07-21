@@ -52,15 +52,21 @@ def main() -> None:
     remove_lid_move_to_flex = wf_transfers_directory / "remove_lid_move_to_flex.yaml"
     flex_to_thermocycler_wf = wf_transfers_directory / "flex_to_thermo_wf.yaml"
     thermocycler_to_flex_wf = wf_transfers_directory / "thermocycler_to_flex_wf.yaml"
+    exchange_to_peeler_to_flexA_wf = wf_transfers_directory / "exchange_peeler_flexA_wf.yaml"
+    flexA_peeler_flexA_wf = wf_transfers_directory / "flexA_peeler_flexA.yaml"
+    flexA_sealer_flexA_wf = wf_transfers_directory / "flexA_sealer_flexA_wf.yaml"
 
     # protocol paths (for OT-Flex)
-    run_pcr = protocol_directory / "pcr_flex.py"
-    move_to_staging_protocol = protocol_directory / "move_to_staging_C1_A4.py"
+    run_pcr = protocol_directory / "pd_pcr_01.py"
+    move_source_to_staging_protocol = protocol_directory / "move_to_staging_C1_A4.py"
+    move_from_staging_B2_protocol = protocol_directory / "move_from_staging_A4_B2.py"
+    move_from_staging_C1_protocol = protocol_directory / "move_from_staging_A4_C1.py"
+    move_pcr_to_staging_protocol = protocol_directory / "move_pcr_to_staging.py"
 
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
 
     # important variables
-    payload = {"current_flex_protocol": str(run_pcr)}
+    # payload = {"current_flex_protocol": str(run_pcr)}
 
 
     # EXPERIMENT STEPS: ----------------------------------------------
@@ -69,12 +75,54 @@ def main() -> None:
 
     #assume golden gate product sealed on exchange, dna and mm source plate sealed on C1
 
+
     #peel gg product, place in flex B2
+
+    experiment_client.start_run(
+        exchange_to_peeler_to_flexA_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+
+    payload = {"current_flex_protocol": str(move_from_staging_B2_protocol)}
+
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
     #peel source plate, place back on C1
 
+    payload = {"current_flex_protocol": str(move_source_to_staging_protocol)}
+
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+
+    experiment_client.start_run(
+        flexA_peeler_flexA_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
 
+    payload = {"current_flex_protocol": str(move_from_staging_C1_protocol)}
+
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+
+    payload = {"current_flex_protocol": str(run_pcr)}
     #run pcr experiment
     experiment_client.start_run(
         run_flex_wf.resolve(),
@@ -85,36 +133,24 @@ def main() -> None:
 
     #move pcr plate to staging, seal, thermocycle
 
-    #TODO: thermocycling, leave on sealer for now
+    payload = {"current_flex_protocol": str(move_pcr_to_staging_protocol)}
 
-    # payload = {"current_flex_protocol": str(move_to_staging_protocol)}
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
-    # # move from C1 to staging A4
-    # experiment_client.start_run(
-    #     run_flex_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    experiment_client.start_run(
+        flex_to_thermocycler_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
-    # # move from flex to thermo
-    # experiment_client.start_run(
-    #     flex_to_thermocycler_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
+    #peel pcr plate, return to flex
 
-    # #run thermo
-    # TODO: figure out biometra protocol number and app closure issue
-    # experiment_client.start_run(
-    #     run_thermocycler_wf.resolve(),
-    #     payload=payload,
-    #     blocking=True,
-    #     simulate=False,
-    # )
-
-#TODO: peel at end or keep seal on for further analysis?
 
     
 

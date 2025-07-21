@@ -1,12 +1,13 @@
-name: Flex A to biometra3_96
+name: Flex A to sealer to flex A
 author: Abe Stroka
 info: Moves plate from position A of the flex, to the biometra 96-well themocycler
 version: '0.1'
 
 
 flowdef:
+
   # Transfer from Flex to exchange  - WORKS
-  - name: transfer    
+  - name: transfer
     module: biopf400
     action: transfer
     args:
@@ -19,34 +20,26 @@ flowdef:
     comment: place plate on exchange
 
   # Transfer from exchange to sealer  - WORKS
-  - name: transfer    
+  - name: transfer
     module: biopf400
     action: transfer
     args:
       source: exchange_deck_high_narrow
-      target: sealer_nest
+      target: peeler_nest
       source_approach: safe_path_exchange
-      target_approach: safe_path_sealer
+      target_approach: safe_path_peeler
       source_plate_rotation: narrow
       target_plate_rotation: narrow
     comment: transfer to sealer
 
 
-  - name: seal  
-    module: bio_sealer
-    action: seal
+  - name: peel
+    module: bio_peeler
+    action: peel
     args:
       foo: bar
-    comment: seal the pcr plate
+    comment:  peel the gg plate
 
-
-  # # Open thermocycler
-  # - name: open thermocycler    
-  #   module: bio_biometra3_96
-  #   action: open
-  #   args:
-  #     foo: bar
-  #   comment: open thermocycler
 
 
   # Transfer from sealer to exchange (need to swap grip from narrow to wide)
@@ -55,30 +48,23 @@ flowdef:
     module: biopf400
     action: transfer
     args:
-      source: sealer_nest
+      source: peeler_nest
       target: exchange_deck_high_narrow
-      source_approach: safe_path_sealer
+      source_approach: safe_path_peeler
       target_approach: safe_path_exchange
       source_plate_rotation: narrow
       target_plate_rotation: narrow
-    comment: moves plate from exchange to biometra 96 thermocycler
+    comment: moves plate from exchange to exchange
 
   - name: transfer   # WORKS
     module: biopf400
     action: transfer
     args:
-      source: exchange_deck_high_wide
-      target: bio_biometra3_nest
+      source: exchange_deck_low_narrow
+      target: otflex_deckA
       source_approach: safe_path_exchange
-      target_approach: safe_path_biometra3
-      source_plate_rotation: wide
-      target_plate_rotation: wide
-    comment: moves plate from exchange to biometra 96 thermocycler
+      target_approach: safe_path_flexA
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: moves plate from exchange to flex A
 
-  # # TODO: DON'T RUN. The open thermocycler command doesn't work
-  # - name: close thermocycler  
-  #   module: bio_biometra3_96
-  #   action: close
-  #   args:
-  #     foo: bar
-  #   comment: closes thermocycler

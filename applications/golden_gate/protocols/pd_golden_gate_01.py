@@ -4,7 +4,7 @@ from opentrons.protocol_api import SINGLE
 
 
 metadata = {
-    'protocolName': 'Protein Design CFPE and Assay',
+    'protocolName': 'Protein Design Golden Gate',
     'author': 'LDRD team ',
     'description': 'Golden Gate Assembly for Protein Design',
     'source': 'FlexGB/pd_golden_gate_01.py'
@@ -40,7 +40,8 @@ config = {
     'source_plate_initial_position': 'C1',
     'dest_plate_position': 'B2',
     'tip_rack_position_50_01': 'A1',
-    'tip_rack_position_200_01': 'A2'
+    'tip_rack_position_200_01': 'A2',
+    'reagent_block': 'D1'
 }
 
 

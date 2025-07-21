@@ -1,0 +1,57 @@
+name: Flex A to sealer to flex A
+author: Abe Stroka
+info: Moves plate from position A of the flex, to the biometra 96-well themocycler
+version: '0.1'
+
+
+flowdef:
+
+  # Transfer from exchange to sealer  - WORKS
+  - name: transfer
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_high_narrow
+      target: peeler_nest
+      source_approach: safe_path_exchange
+      target_approach: safe_path_peeler
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: transfer to sealer
+
+
+  - name: peel
+    module: bio_peeler
+    action: peel
+    args:
+      foo: bar
+    comment:  peel the gg plate
+
+
+
+  # Transfer from sealer to exchange (need to swap grip from narrow to wide)
+
+  - name: transfer   # WORKS
+    module: biopf400
+    action: transfer
+    args:
+      source: peeler_nest
+      target: exchange_deck_high_narrow
+      source_approach: safe_path_peeler
+      target_approach: safe_path_exchange
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: moves plate from exchange to exchange
+
+  - name: transfer   # WORKS
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_low_narrow
+      target: otflex_deckA
+      source_approach: safe_path_exchange
+      target_approach: safe_path_flexA
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: moves plate from exchange to flex A
+
