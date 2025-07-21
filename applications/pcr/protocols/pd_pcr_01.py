@@ -47,7 +47,7 @@ config = {
     'pcr_plate_position': 'B3',
     'tip_rack_position_50_01': 'A1',
     'tip_rack_position_200_01': 'A2',
-    'reagent_plate_position': 'D1'
+    'reagent_plate_position': 'C2'
 }
 
 def transfer_water_to_gg(protocol, reagent_plate, gg_plate, pipette, config):
