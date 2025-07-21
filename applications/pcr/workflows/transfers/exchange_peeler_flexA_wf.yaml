@@ -11,7 +11,7 @@ flowdef:
     module: biopf400
     action: transfer
     args:
-      source: exchange_deck_high_narrow
+      source: exchange_deck_low_narrow
       target: peeler_nest
       source_approach: safe_path_exchange
       target_approach: safe_path_peeler
@@ -36,7 +36,7 @@ flowdef:
     action: transfer
     args:
       source: peeler_nest
-      target: exchange_deck_high_narrow
+      target: exchange_deck_low_narrow
       source_approach: safe_path_peeler
       target_approach: safe_path_exchange
       source_plate_rotation: narrow
