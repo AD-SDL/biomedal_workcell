@@ -26,13 +26,13 @@ modules:
     active: True
   - name: ot2bioalpha
     model: Opentrons OT-2
-    active: True
+    active: False
     interface: wei_rest_node
     config:
       rest_node_address: "http://172.18.0.1:3001"
   - name: ot2biobeta
     model: Opentrons OT-2
-    active: True
+    active: False
     interface: wei_rest_node
     config:
       rest_node_address: "http://ot2biobeta:3002"
@@ -83,19 +83,19 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3005"
-    active: True
+    active: False
   - name: inheco_devID2_floor1
     model: Inheco single plate incubator shaker
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3006"
-    active: True
+    active: False
   - name: sciclops
     model: Hudson Scilcops Plate Crane
     interface: wei_rest_node
     config:
       rest_node_address: "http://sciclops:3005"
-    active: True
+    active: False
 
 locations:
   biopf400:

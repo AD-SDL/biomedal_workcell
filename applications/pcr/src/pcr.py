@@ -66,7 +66,7 @@ def main() -> None:
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
 
     # important variables
-    # payload = {"current_flex_protocol": str(run_pcr)}
+    payload = {"current_flex_protocol": str(run_pcr)}
 
 
     # EXPERIMENT STEPS: ----------------------------------------------
@@ -152,7 +152,7 @@ def main() -> None:
     #peel pcr plate, return to flex
 
 
-    
+
 
 if __name__ == "__main__":
     main()
