@@ -193,7 +193,9 @@ def run(protocol: protocol_api.ProtocolContext):
 
     chute = protocol.load_waste_chute()
 
-    source_plate.set_offset(x=0.40, y=0.50, z=2.40)
+    # source_plate.set_offset(x=0.40, y=0.50, z=2.40)
+    source_plate.set_offset(x=0.7, y=0.30, z=0.2)
+
 
 
     # Load destination plate
