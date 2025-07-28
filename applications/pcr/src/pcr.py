@@ -51,6 +51,8 @@ def main() -> None:
     # # workflow paths (pf400 transfers)
     remove_lid_move_to_flex = wf_transfers_directory / "remove_lid_move_to_flex.yaml"
     flex_to_thermocycler_wf = wf_transfers_directory / "flex_to_thermo_wf.yaml"
+    thermo_to_exchange_wf = wf_transfers_directory / "thermo_to_exchange_wf.yaml"
+ 
     thermocycler_to_flex_wf = wf_transfers_directory / "thermocycler_to_flex_wf.yaml"
     exchange_to_peeler_to_flexA_wf = wf_transfers_directory / "exchange_peeler_flexA_wf.yaml"
     flexA_peeler_flexA_wf = wf_transfers_directory / "flexA_peeler_flexA.yaml"
@@ -73,8 +75,15 @@ def main() -> None:
 
     # TODO: transfer plate into Flex: move to exchange (from where?), remove lid, move to flex
 
-    #assume golden gate product sealed on exchange, dna and mm source plate sealed on C1
+    #assume golden gate product sealed on thermo, dna and mm source plate sealed on C1
 
+    #thermo to exchange
+    experiment_client.start_run(
+        thermo_to_exchange_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
     #peel gg product, place in flex B2
 
