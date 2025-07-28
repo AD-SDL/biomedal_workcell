@@ -20,10 +20,10 @@ config = {
     'sybrgreen_volume': 198,
     'pcr_sample_volume': 2,
     'water_volume': 18,
+    'combinations': [[2,18],[3,19],[4,20],[5,21]],
 
     # Master mix and reagent settings
     'pcr_master_mix_well_volume': 100,
-    'water_volume': 20,
     'pcr_master_mix_volume': 24,
     'water_well': 1,
     'master_mix_start_well': 48,
@@ -58,10 +58,23 @@ config = {
 
 #TODO
 
+def calculate_total_combinations(combinations):
+    """Calculate total number of combinations without generating them"""
+    total = 1
+    for sublist in combinations:
+        total *= len(sublist)
+    return total
+
+def generate_all_combinations(combinations):
+    """Generate all possible combinations from the jagged array"""
+    return list(itertools.product(*combinations))
+
 
 def sybrgreen_to_dest(protocol, reagent_plate, sybrgreen_plate, pipette, config):
     sybrgreen_volume = config['sybrgreen_volume']
-    num_samples = config["number_of_pcr_samples"]
+    # num_samples = config["number_of_pcr_samples"]
+    combinations = config['combinations']
+    num_samples = calculate_total_combinations(combinations)
     sybrgreen_well = reagent_plate.wells()[config['sybrgreen_well'] - 1]
 
     for well in range(1, num_samples + 1):
@@ -76,7 +89,9 @@ def sybrgreen_to_dest(protocol, reagent_plate, sybrgreen_plate, pipette, config)
 
 def pcr_to_dest(protocol, pcr_plate, sybrgreen_plate, pipette, config):
     pcr_sample_volume = config['pcr_sample_volume']
-    num_samples = config["number_of_pcr_samples"]
+    # num_samples = config["number_of_pcr_samples"]
+    combinations = config['combinations']
+    num_samples = calculate_total_combinations(combinations)
 
     for well in range(1, num_samples + 1):
         source_well = pcr_plate.wells()[well - 1]
@@ -91,10 +106,47 @@ def pcr_to_dest(protocol, pcr_plate, sybrgreen_plate, pipette, config):
         )
 
 def water_to_pcr_dilution_wells(protocol, pcr_plate, reagent_plate, pipette, config):
-    pass
+    water_volume = config['water_volume']
+    combinations = config['combinations']
+    num_samples = calculate_total_combinations(combinations)
+    columns_to_move = config['columns_to_move_for_dilute']
+    water_well = config['water_well']
+
+    #figure out destination wells
+    wells_to_add = columns_to_move * 8
+    source_well = reagent_plate.wells()[water_well - 1]
+
+    for well in range(1, num_samples + 1):
+        dest_well = pcr_plate.wells()[(well - 1) + wells_to_add]
+        protocol.comment(f"\nTransferring to destination well {dest_well}:")
+        pipette.transfer(
+            water_volume,
+            source_well,
+            dest_well,
+            new_tip='always',  # Use fresh tip for each transfer
+            mix_after = (3, 20)
+        )
 
 def pcr_to_water(protocol, pcr_plate, pipette, config):
-    pass
+    pcr_sample_volume = config['pcr_sample_volume']
+    combinations = config['combinations']
+    num_samples = calculate_total_combinations(combinations)
+    columns_to_move = config['columns_to_move_for_dilute']
+
+    #figure out destination wells
+    wells_to_add = columns_to_move * 8
+
+    for well in range(1, num_samples + 1):
+        source_well = pcr_plate.wells()[well - 1]
+        dest_well = pcr_plate.wells()[(well - 1) + wells_to_add]
+        protocol.comment(f"\nTransferring to destination well {dest_well}:")
+        pipette.transfer(
+            pcr_sample_volume,
+            source_well,
+            dest_well,
+            new_tip='always',  # Use fresh tip for each transfer
+            mix_after = (3, 20)
+        )
 
 
 
@@ -158,5 +210,16 @@ def run(protocol: protocol_api.ProtocolContext):
                 sybrgreen_plate=sybrgreen_plate,
                 pipette=p50,
                 config=config)
+    
+    water_to_pcr_dilution_wells(protocol=protocol,
+                                pcr_plate=pcr_plate,
+                                reagent_plate=reagent_plate,
+                                pipette=p50,
+                                config=config)
+    
+    pcr_to_water(protocol=protocol,
+                 pcr_plate=pcr_plate,
+                 pipette=p50,
+                 config=config)
 
 

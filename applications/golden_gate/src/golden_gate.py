@@ -58,11 +58,23 @@ def main() -> None:
     # protocol paths (for OT-Flex)
     # run_gg = protocol_directory / "gg_flex.py"
     run_gg = protocol_directory / "pd_golden_gate_01.py"
+    cool_block_protocol = protocol_directory / "cool_block_to_4.py"
 
     move_source_to_staging_protocol = protocol_directory / "move_to_staging_C1_A4.py"
     move_dest_to_staging_protocol = protocol_directory / "move_to_staging_B2_A4.py"
     move_from_staging_protocol = protocol_directory / "move_from_staging_A4_C1.py"
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
+    
+    payload = {"current_flex_protocol": str(cool_block_protocol)}
+
+    # important variables
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
+
 
     #TODO: start at staging, or exchange to be peeled first?
 
@@ -125,7 +137,7 @@ def main() -> None:
         simulate=False,
     )
     experiment_client.start_run(
-        flexA_sealer_wait_wf.resolve(),
+        flex_to_thermocycler_wf.resolve(),
         payload=payload,
         blocking=True,
         simulate=False,

@@ -137,7 +137,9 @@ def master_mix_to_pcr_plate(protocol, source_plate, pcr_plate, pipette, config):
 
 def gg_to_pcr_plate(protocol, gg_plate, pcr_plate, pipette, config):
 
-    gg_wells = config['number_of_gg_samples']
+    # gg_wells = config['number_of_gg_samples']
+    combinations = config['combinations']
+    gg_wells = calculate_total_combinations(combinations)
     transfer_volume = config['transfer_volume']
     
     for well in range(1, gg_wells + 1):
