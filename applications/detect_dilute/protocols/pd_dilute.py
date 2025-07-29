@@ -4,9 +4,9 @@ from opentrons.protocol_api import SINGLE
 
 
 metadata = {
-    'protocolName': 'Protein Design PCR',
+    'protocolName': 'Protein Design Dilute',
     'author': 'LDRD team ',
-    'description': 'PCR for Protein Design',
+    'description': 'Dilution and Detection step for Protein Design',
     'source': 'FlexGB/pd_pcr_01.py'
 }
 
@@ -21,6 +21,7 @@ config = {
     'pcr_sample_volume': 2,
     'water_volume': 18,
     'combinations': [[2,18],[3,19],[4,20],[5,21]],
+    "num_controls": 5,
 
     # Master mix and reagent settings
     'pcr_master_mix_well_volume': 100,
@@ -29,6 +30,8 @@ config = {
     'master_mix_start_well': 48,
     'sybrgreen_well': 3,
     'columns_to_move_for_dilute': 6,
+    'control_volume': 20,
+    'pcr_plate_control_column': 9,
 
 
     # Temperature settings
@@ -44,6 +47,7 @@ config = {
     'pipette_type_50': 'flex_8channel_50',
     'tip_rack_type_200_01': 'opentrons_flex_96_tiprack_200ul',
     'pipette_type_1000': 'flex_8channel_1000',
+    'controls_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
 
     # Deck positions
     'temp_module_position': 'C1',
@@ -52,11 +56,11 @@ config = {
     'pcr_plate_position': 'B3',
     'tip_rack_position_50_01': 'A1',
     'tip_rack_position_200_01': 'A2',
-    'reagent_plate_position': 'D1',
-    'sybrgreen_plate_position': 'C2'
+    'reagent_plate_position': 'A3',
+    'sybrgreen_plate_position': 'C2',
+    'controls_plate_position': 'B1'
 }
 
-#TODO
 
 def calculate_total_combinations(combinations):
     """Calculate total number of combinations without generating them"""
@@ -148,6 +152,22 @@ def pcr_to_water(protocol, pcr_plate, pipette, config):
             mix_after = (3, 20)
         )
 
+def controls_to_pcr(protocol, pcr_plate, controls_plate, pipette, config):
+    control_volume = config['control_volume']
+    num_controls = config['num_controls']
+    control_column = config['pcr_plate_control_column']
+
+    starting_dest_well = (control_column - 1) * 8
+
+    for well in range(1, num_controls + 1):
+        source_well = controls_plate.wells()[well-1]
+        dest_well = pcr_plate.wells()[starting_dest_well]
+        pipette.transfer(
+            control_volume,
+            source_well,
+            dest_well,
+            new_tip='always',  # Use fresh tip for each transfer
+        )  
 
 
 def run(protocol: protocol_api.ProtocolContext):
@@ -178,6 +198,8 @@ def run(protocol: protocol_api.ProtocolContext):
     sybrgreen_plate = protocol.load_labware(config['sybrgreen_plate_type'], config['sybrgreen_plate_position'])
 
     reagent_plate = protocol.load_labware(config['reagent_plate_type'], config['reagent_plate_position'])
+
+    controls_plate = protocol.load_labware(config['controls_plate_type'], config['controls_plate_position'])
 
 
     tiprack_50 = protocol.load_labware(
@@ -221,5 +243,11 @@ def run(protocol: protocol_api.ProtocolContext):
                  pcr_plate=pcr_plate,
                  pipette=p50,
                  config=config)
+    
+    controls_to_pcr(protocol=protocol,
+                    pcr_plate=pcr_plate,
+                    controls_plate=controls_plate,
+                    pipette=p50,
+                    config=config)
 
 
