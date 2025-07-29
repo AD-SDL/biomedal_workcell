@@ -337,7 +337,7 @@ def run(protocol):
         load_name=config['tip_rack_type_50_01'], location=config['tip_rack_position_50_01']
     )
 
-    tiprack_50.set_offset(x=-0.5, y=0.3, z=0.0)
+    tiprack_50.set_offset(x=-0.5, y=0.3, z=0.2)
 
     tiprack_200 = protocol.load_labware(
         load_name=config['tip_rack_type_200_01'], location=config['tip_rack_position_200_01']

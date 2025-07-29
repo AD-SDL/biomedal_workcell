@@ -123,12 +123,12 @@ def run(protocol):
     source_plate.set_offset(x=0.4, y=0.4, z=0.0)
 
     reaction_plate = protocol.load_labware(config['reaction_plate_type'], config['reaction_plate_initial_position'])
-    protocol.comment("Moving reaction plate from A4 to temperature module (C1)")
-    protocol.move_labware(
-        labware=reaction_plate,
-        new_location=temp_adapter,
-        use_gripper=True
-    )
+    # protocol.comment("Moving reaction plate from A4 to temperature module (C1)")
+    # protocol.move_labware(
+    #     labware=reaction_plate,
+    #     new_location=temp_adapter,
+    #     use_gripper=True
+    # )
 
 
     # Load tip racks
