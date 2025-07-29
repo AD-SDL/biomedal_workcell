@@ -60,6 +60,7 @@ def main() -> None:
 
     # protocol paths (for OT-Flex)
     run_cfps = protocol_directory / "pd_cfps_03.py"
+    run_cfps_2 = protocol_directory / "pd_cfps_03_2.py"
     move_source_to_staging_protocol = protocol_directory / "move_to_staging_C1_A4.py"
     move_from_staging_B2_protocol = protocol_directory / "move_from_staging_A4_B2.py"
     move_from_staging_C1_protocol = protocol_directory / "move_from_staging_A4_C1.py"
@@ -87,9 +88,22 @@ def main() -> None:
         simulate=False,
     )
 
-    #TODO: break into 2 to seal plate before heating and shaking?
+    # seal reaction plate, return to flex
+    experiment_client.start_run(
+        flexA_sealer_flexA_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
-
+    payload = {"current_flex_protocol": str(run_cfps_2)}
+    #run cell free experiment
+    experiment_client.start_run(
+        run_flex_wf.resolve(),
+        payload=payload,
+        blocking=True,
+        simulate=False,
+    )
 
 
 if __name__ == "__main__":

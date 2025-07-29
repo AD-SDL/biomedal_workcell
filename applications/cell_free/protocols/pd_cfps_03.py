@@ -310,6 +310,7 @@ def run(protocol):
     
     # Load source plate with diluted PCR products on B2
     source_plate = protocol.load_labware(config['source_plate_type'], config['source_plate_position'])
+    source_plate.set_offset(x=0.4, y=0.4, z=0.0)
     
     # Load internal standards plate initially on B4, then move to B3
     internal_standards_plate = protocol.load_labware(config['internal_standards_plate_type'], config['internal_standards_initial_position'])
@@ -319,6 +320,7 @@ def run(protocol):
         new_location=config['internal_standards_final_position'],
         use_gripper=True
     )
+    internal_standards_plate.set_offset(x=0.4, y=0.4, z=0.0)
     
     # Load reaction plate initially on A4, then move to temperature module
     reaction_plate = protocol.load_labware(config['reaction_plate_type'], config['reaction_plate_initial_position'])
@@ -328,6 +330,7 @@ def run(protocol):
         new_location=temp_adapter,
         use_gripper=True
     )
+    reaction_plate.set_offset(x=0.7, y=0.30, z=0.2)
     
     # Load tip racks
     tiprack_50 = protocol.load_labware(
@@ -366,15 +369,15 @@ def run(protocol):
     )
     
     # Transfer internal standards to reaction plate (C1) using 8-channel
-    protocol.comment("=== Transferring Internal Standards to Reaction Plate ===")
-    transfer_internal_standards(
-        protocol=protocol,
-        internal_standards_plate=internal_standards_plate,
-        reaction_plate=reaction_plate,
-        pipette=p50,  # Using 8-channel mode
-        config=config,
-        internal_standards_column=internal_standards_column
-    )
+    # protocol.comment("=== Transferring Internal Standards to Reaction Plate ===")
+    # transfer_internal_standards(
+    #     protocol=protocol,
+    #     internal_standards_plate=internal_standards_plate,
+    #     reaction_plate=reaction_plate,
+    #     pipette=p50,  # Using 8-channel mode
+    #     config=config,
+    #     internal_standards_column=internal_standards_column
+    # )
     
     # Configure pipettes for reagent preparation (p50 stays in 8-channel mode)
     protocol.comment("=== Preparing for reagent assembly (p50 continues in 8-channel mode) ===")
@@ -401,50 +404,50 @@ def run(protocol):
     protocol.comment(f"Setting heater/shaker to {config['heater_shaker_temp']}°C and starting heating")
     shaker_mod.set_target_temperature(config['heater_shaker_temp'])
     
-    # Pause for 5 minutes
-    protocol.comment(f"=== Pausing for {config['pause_duration']} minutes ===")
-    protocol.delay(minutes=config['pause_duration'])
+    # # Pause for 5 minutes
+    # protocol.comment(f"=== Pausing for {config['pause_duration']} minutes ===")
+    # protocol.delay(minutes=config['pause_duration'])
 
-    shaker_mod.open_labware_latch()
+    # shaker_mod.open_labware_latch()
     
-    # Move reaction plate to heater/shaker
-    protocol.comment("Moving reaction plate from A4 to heater/shaker (D1)")
-    protocol.move_labware(
-        labware=reaction_plate,
-        new_location=shaker_adapter,
-        use_gripper=True
-    )
+    # # Move reaction plate to heater/shaker
+    # protocol.comment("Moving reaction plate from A4 to heater/shaker (D1)")
+    # protocol.move_labware(
+    #     labware=reaction_plate,
+    #     new_location=shaker_adapter,
+    #     use_gripper=True
+    # )
 
-    shaker_mod.close_labware_latch()
+    # shaker_mod.close_labware_latch()
     
-    # Start shaking for 3 hours
-    protocol.comment(f"=== Starting shaking at {config['shaking_speed']} rpm for {config['shaking_duration']} minutes (3 hours) ===")
-    shaker_mod.set_and_wait_for_shake_speed(config['shaking_speed'])
-    protocol.delay(minutes=config['shaking_duration'])
+    # # Start shaking for 3 hours
+    # protocol.comment(f"=== Starting shaking at {config['shaking_speed']} rpm for {config['shaking_duration']} minutes (3 hours) ===")
+    # shaker_mod.set_and_wait_for_shake_speed(config['shaking_speed'])
+    # protocol.delay(minutes=config['shaking_duration'])
     
-    # Stop shaking
-    protocol.comment("Stopping shaking")
-    shaker_mod.deactivate_shaker()
+    # # Stop shaking
+    # protocol.comment("Stopping shaking")
+    # shaker_mod.deactivate_shaker()
 
-    shaker_mod.open_labware_latch()
+    # shaker_mod.open_labware_latch()
     
-    # Move reaction plate back to A4
-    protocol.comment("Moving reaction plate from heater/shaker back to A4")
-    protocol.move_labware(
-        labware=reaction_plate,
-        new_location=config['reaction_plate_initial_position'],
-        use_gripper=True
-    )
+    # # Move reaction plate back to A4
+    # protocol.comment("Moving reaction plate from heater/shaker back to A4")
+    # protocol.move_labware(
+    #     labware=reaction_plate,
+    #     new_location=config['reaction_plate_initial_position'],
+    #     use_gripper=True
+    # )
 
-    protocol.comment("=== Protocol Complete ===")
-    protocol.comment(f"Total combinations: {total_combinations}")
-    protocol.comment(f"Internal standards placed in column: {internal_standards_column}")
-    protocol.comment(f"Diluted PCR products transferred from {config['source_plate_position']} to reaction plate")
-    protocol.comment(f"Internal standards plate moved from {config['internal_standards_initial_position']} to {config['internal_standards_final_position']}")
-    protocol.comment(f"PCR transfer volume: {config['pcr_transfer_volume']}µL per well")
-    protocol.comment(f"Reaction assembly completed on temperature module at {config['temperature']}°C")
-    protocol.comment(f"Incubation completed: {config['shaking_duration']} minutes at {config['heater_shaker_temp']}°C with {config['shaking_speed']} rpm shaking")
-    protocol.comment(f"Final reaction plate is staged at {config['reaction_plate_initial_position']}")
+    # protocol.comment("=== Protocol Complete ===")
+    # protocol.comment(f"Total combinations: {total_combinations}")
+    # protocol.comment(f"Internal standards placed in column: {internal_standards_column}")
+    # protocol.comment(f"Diluted PCR products transferred from {config['source_plate_position']} to reaction plate")
+    # protocol.comment(f"Internal standards plate moved from {config['internal_standards_initial_position']} to {config['internal_standards_final_position']}")
+    # protocol.comment(f"PCR transfer volume: {config['pcr_transfer_volume']}µL per well")
+    # protocol.comment(f"Reaction assembly completed on temperature module at {config['temperature']}°C")
+    # protocol.comment(f"Incubation completed: {config['shaking_duration']} minutes at {config['heater_shaker_temp']}°C with {config['shaking_speed']} rpm shaking")
+    # protocol.comment(f"Final reaction plate is staged at {config['reaction_plate_initial_position']}")
 
 
 # Preview what will be transferred using the combinations defined above:
