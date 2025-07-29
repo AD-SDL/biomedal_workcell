@@ -52,7 +52,7 @@ def main() -> None:
     remove_lid_move_to_flex = wf_transfers_directory / "remove_lid_move_to_flex.yaml"
     flex_to_thermocycler_wf = wf_transfers_directory / "flex_to_thermo_wf.yaml"
     thermo_to_exchange_wf = wf_transfers_directory / "thermo_to_exchange_wf.yaml"
- 
+
     thermocycler_to_flex_wf = wf_transfers_directory / "thermocycler_to_flex_wf.yaml"
     exchange_to_peeler_to_flexA_wf = wf_transfers_directory / "exchange_peeler_flexA_wf.yaml"
     flexA_peeler_flexA_wf = wf_transfers_directory / "flexA_peeler_flexA.yaml"
@@ -79,22 +79,22 @@ def main() -> None:
     #assume golden gate product sealed on thermo, dna and mm source plate sealed on C1
 
 
-    payload = {"current_flex_protocol": str(run_cfps)}
-    #run cell free experiment
-    experiment_client.start_run(
-        run_flex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # payload = {"current_flex_protocol": str(run_cfps)}
+    # #run cell free experiment
+    # experiment_client.start_run(
+    #     run_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
-    # seal reaction plate, return to flex
-    experiment_client.start_run(
-        flexA_sealer_flexA_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # # seal reaction plate, return to flex
+    # experiment_client.start_run(
+    #     flexA_sealer_flexA_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
     payload = {"current_flex_protocol": str(run_cfps_2)}
     #run cell free experiment
