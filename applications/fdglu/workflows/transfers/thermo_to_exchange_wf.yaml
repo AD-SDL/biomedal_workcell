@@ -1,0 +1,19 @@
+name: biometra3_96 to exchange
+author: Abe Stroka
+info: Moves plate from thermocycler to exchange
+version: '0.1'
+
+
+flowdef:
+  - name: transfer   # WORKS
+    module: biopf400
+    action: transfer
+    args:
+      source: bio_biometra3_nest
+      target: exchange_deck_high_wide
+      source_approach: safe_path_biometra3
+      target_approach: safe_path_exchange
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+    comment: moves plate from exchange to biometra 96 thermocycler
+
