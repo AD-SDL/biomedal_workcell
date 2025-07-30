@@ -49,7 +49,7 @@ flowdef:
     module: hidex_geraldine
     action: run_assay
     args:
-      assay_name: bar
+      assay_name: "PD_Kinetic"
     comment: close the hidex
 
   - name: open hidex
