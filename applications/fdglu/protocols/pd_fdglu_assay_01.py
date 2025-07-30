@@ -112,7 +112,7 @@ def fdglu_to_dest(protocol, reagent_plate, dest_plate, pipette, config):
     columns_needed = (total_combinations + 7) // 8
     source_col = reagent_plate.columns()[fdglu_col - 1]
     pipette.pick_up_tip()
-    for col_idx in range(columns_needed):
+    for col_idx in range(columns_needed+1):
         dest_col = dest_plate.columns()[col_idx]
         pipette.transfer(
             fdglu_vol,
@@ -128,7 +128,7 @@ def cfps_to_dest(protocol, cfps_plate, dest_plate, pipette, config):
     cfps_vol = config["source_samples_volume"]
     total_combinations = calculate_total_combinations(config['combinations'])
     columns_needed = (total_combinations + 7) // 8
-    for col_idx in range(columns_needed):
+    for col_idx in range(columns_needed+1):
         source_col = cfps_plate.columns()[col_idx]
         dest_col = dest_plate.columns()[col_idx]
         pipette.transfer(
