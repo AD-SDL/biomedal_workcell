@@ -52,7 +52,7 @@ def main() -> None:
     remove_lid_move_to_flex = wf_transfers_directory / "remove_lid_move_to_flex.yaml"
     flex_to_thermocycler_wf = wf_transfers_directory / "flex_to_thermo_wf.yaml"
     thermo_to_exchange_wf = wf_transfers_directory / "thermo_to_exchange_wf.yaml"
- 
+
     thermocycler_to_flex_wf = wf_transfers_directory / "thermocycler_to_flex_wf.yaml"
     exchange_to_peeler_to_flexA_wf = wf_transfers_directory / "exchange_peeler_flexA_wf.yaml"
     flexA_peeler_flexA_wf = wf_transfers_directory / "flexA_peeler_flexA.yaml"
@@ -94,7 +94,7 @@ def main() -> None:
         simulate=False,
     )
 
-    # TODO: Collect the Hidex data from the run info and do something with it
+    # # TODO: Collect the Hidex data from the run info and do something with it
     hidex_file_name = run_info["hist"]["run Hidex"]["action_msg"]
     output_dir = Path.home() / "runs" / run_info["experiment_id"]
     output_dir.mkdir(parents=True, exist_ok=True)

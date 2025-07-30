@@ -38,7 +38,7 @@ modules:
       rest_node_address: "http://ot2biobeta:3002"
   - name: hidex_geraldine
     model: Hidex Sense
-    active: False
+    active: True
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2005"

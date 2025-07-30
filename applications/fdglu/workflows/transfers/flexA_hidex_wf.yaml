@@ -31,7 +31,7 @@ flowdef:
     action: transfer
     args:
       source: exchange_deck_high_narrow
-      target: hidex_nest
+      target: hidex_geraldine_high_nest
       source_approach: safe_path_exchange
       target_approach: safe_path_hidex
       source_plate_rotation: narrow
