@@ -41,3 +41,21 @@ services:
     ports:
       - 3005:3005
     command: python3 hudson_platecrane_module/src/sciclops_rest_node.py --alias="sciclops" --port=3005
+  a4s_sealer_node:
+    image: ghcr.io/ad-sdl/a4s_sealer_module
+    container_name: a4s_sealer_node
+    ports:
+      - 2006:2006
+    command: python -m a4s_sealer_rest_node --port=2006 --device='/dev/ttyUSB0'
+    privileged: true
+    volumes:
+      - /dev:/dev
+  brooks_xpeel_node:
+    image: ghcr.io/ad-sdl/brooks_xpeel_module
+    container_name: brooks_xpeel_node
+    ports:
+      - 2007:2007
+    command: python -m brooks_xpeel_rest_node --port=2007 --device='/dev/ttyUSB1'
+    privileged: true
+    volumes:
+      - /dev:/dev

@@ -33,6 +33,7 @@ def main() -> None:
     experiment_design = ExperimentDesign(
         experiment_name="Substrate_Experiment_Prep_Extra_Media_Plates",
         experiment_description="Experiment application to prep 5 extra media plates for the substrate application",
+        email_addresses=["ryan.lewis@anl.gov", "cstone@anl.gov"],
     )
     # define a campaign object (useful if we want to group many of these substrate experiments together)
     campaign = CampaignDesign(
@@ -147,38 +148,39 @@ def main() -> None:
         placed in SciClops stack2. The OT-2 deck of ot2biobeta should be prepped for 
         first_inoculate_both.py"""
     
-    # WF: Transfer a new plate from each experiment stack to ot2biobeta for first inoculation
-    experiment_client.start_run(
-        setup_for_first_inoculation_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # REMOVED FOR RESTART WITH PAUL (07/08/25)
+    # # WF: Transfer a new plate from each experiment stack to ot2biobeta for first inoculation
+    # experiment_client.start_run(
+    #     setup_for_first_inoculation_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
-    # TESTING
-    print("\nSetting up for first inoculation. New plates from stacks 1 and 2 into ot2biobeta decks 1 and 3")
-    print("\tvariables hardcoded")
-    print(f"\tpayload: {payload}")
+    # # TESTING
+    # print("\nSetting up for first inoculation. New plates from stacks 1 and 2 into ot2biobeta decks 1 and 3")
+    # print("\tvariables hardcoded")
+    # print(f"\tpayload: {payload}")
 
     # WF: Run first_inoculate_both OT-2 protocol 
     payload["current_ot2_protocol"] = str(first_inoculate_both_protocol)
-    edited_ot2_wf = helper_functions.replace_wf_node_names(
-        workflow = run_ot2_wf, 
-        payload = payload
-    )
-    experiment_client.start_run(   
-        edited_ot2_wf,
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # edited_ot2_wf = helper_functions.replace_wf_node_names(
+    #     workflow = run_ot2_wf, 
+    #     payload = payload
+    # )
+    # experiment_client.start_run(   
+    #     edited_ot2_wf,
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
-    # TESTING
-    print("\nRan Inoculate both OT-2 protocol")
-    print(f"\tot2 protocol: {payload["current_ot2_protocol"]}")
-    print("\t\tnot specified yet")
-    print(f"\tot2 node: {payload["ot2_node"]}")
-    print(f"\tpayload: {payload}")
+    # # TESTING
+    # print("\nRan Inoculate both OT-2 protocol")
+    # print(f"\tot2 protocol: {payload["current_ot2_protocol"]}")
+    # print("\t\tnot specified yet")
+    # print(f"\tot2 node: {payload["ot2_node"]}")
+    # print(f"\tpayload: {payload}")
 
     # WFs: Transfer experiment 1 plate to bmg, read, then place into incubator
     # TESTING

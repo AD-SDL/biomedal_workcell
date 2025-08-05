@@ -15,7 +15,7 @@ requirements = {"robotType": "OT-2", "apiLevel": "2.12"}
 def run(protocol: protocol_api.ProtocolContext):
 
     # pattern is 1, 4, 7, 10
-    tip_start_column = 4
+    tip_start_column = 1
 
     # * load labware
     substrate_stock = protocol.load_labware(

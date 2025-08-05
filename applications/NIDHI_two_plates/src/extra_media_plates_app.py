@@ -132,39 +132,39 @@ def main() -> None:
     # initial payload setup  (experiment 1 focused at start)
 
     # # payload variables for ot2biobeta
-    # payload = {   
-    #     "ot2_node": exp1_variables["ot2_node"],
-    #     "ot2_location": exp1_variables["ot2_new_plate_location"],
-    #     "ot2_safe_path": exp1_variables["ot2_safe_path"],
-    #     "tip_box_location": exp1_variables["tip_box_location"],
-    #     "stack": exp1_variables["new_stack"],
-    #     "lid_location": exp1_variables["lid_location"],
-    #     "incubator_node": exp1_variables["incubator_node"],
-    #     "incubator_location": exp1_variables["incubator_location"],
-    #     "incubation_seconds": exp1_variables["incubation_seconds"],  
-    #     "trash_stack": exp1_variables["trash_stack"],
-    #     "current_ot2_protocol": None,    # defined later
-    #     "use_existing_resources": False,
-    #     "bmg_assay_name": "NIDHI", 
-    # }
-
-
-    # payload variables for ot2bioalpha
     payload = {   
-        "ot2_node": exp2_variables["ot2_node"],
-        "ot2_location": exp2_variables["ot2_new_plate_location"],
-        "ot2_safe_path": exp2_variables["ot2_safe_path"],
-        "tip_box_location": exp2_variables["tip_box_location"],
-        "stack": exp2_variables["new_stack"],
-        "lid_location": exp2_variables["lid_location"],
-        "incubator_node": exp2_variables["incubator_node"],
-        "incubator_location": exp2_variables["incubator_location"],
-        "incubation_seconds": exp2_variables["incubation_seconds"],  
-        "trash_stack": exp2_variables["trash_stack"],
+        "ot2_node": exp1_variables["ot2_node"],
+        "ot2_location": exp1_variables["ot2_new_plate_location"],
+        "ot2_safe_path": exp1_variables["ot2_safe_path"],
+        "tip_box_location": exp1_variables["tip_box_location"],
+        "stack": exp1_variables["new_stack"],
+        "lid_location": exp1_variables["lid_location"],
+        "incubator_node": exp1_variables["incubator_node"],
+        "incubator_location": exp1_variables["incubator_location"],
+        "incubation_seconds": exp1_variables["incubation_seconds"],  
+        "trash_stack": exp1_variables["trash_stack"],
         "current_ot2_protocol": None,    # defined later
         "use_existing_resources": False,
         "bmg_assay_name": "NIDHI", 
     }
+
+
+    # # payload variables for ot2bioalpha
+    # payload = {   
+    #     "ot2_node": exp2_variables["ot2_node"],
+    #     "ot2_location": exp2_variables["ot2_new_plate_location"],
+    #     "ot2_safe_path": exp2_variables["ot2_safe_path"],
+    #     "tip_box_location": exp2_variables["tip_box_location"],
+    #     "stack": exp2_variables["new_stack"],
+    #     "lid_location": exp2_variables["lid_location"],
+    #     "incubator_node": exp2_variables["incubator_node"],
+    #     "incubator_location": exp2_variables["incubator_location"],
+    #     "incubation_seconds": exp2_variables["incubation_seconds"],  
+    #     "trash_stack": exp2_variables["trash_stack"],
+    #     "current_ot2_protocol": None,    # defined later
+    #     "use_existing_resources": False,
+    #     "bmg_assay_name": "NIDHI", 
+    # }
 
 
     # EXPERIMENT STEPS: ------------------------------------------------------------------------------
