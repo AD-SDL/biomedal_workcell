@@ -38,29 +38,29 @@ modules:
       rest_node_address: "http://ot2biobeta:3002"
   - name: hidex_geraldine
     model: Hidex Sense
-    active: False
+    active: True
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2005"
   - name: bio_sealer
     model: A4s Sealer
     interface: wei_rest_node
-    active: False
+    active: True
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:2006"
+      rest_node_address: "http://a4s_sealer_node:2006"
   - name: bio_peeler
     model: XPeel
     interface: wei_rest_node
-    active: False
+    active: True
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:2007"
-  - name: bio_biometra3
+      rest_node_address: "http://brooks_xpeel_node:2007"
+  - name: bio_biometra3_96
     model: Biometra
     interface: wei_rest_node
-    active: False
+    active: True
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2008"
-  - name: bio_biometra4
+  - name: bio_biometra4_384
     model: Biometra
     interface: wei_rest_node
     active: False
@@ -77,7 +77,7 @@ modules:
     interface: wei_rest_node
     active: False
     config:
-      rest_node_address: "http://172.18.0.1:3004"
+      rest_node_address: "http://otflexbio1:3004"
   - name: inheco_devID2_floor0
     model: Inheco single plate incubator shaker
     interface: wei_rest_node
