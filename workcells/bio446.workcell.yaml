@@ -11,7 +11,7 @@ config:
   redis_port: 6379
   clear_workflow_runs: false
   reset_locations: false
-  update_interval: 5.0
+  update_interval: 10.0
   use_diaspora: false
   log_level: 20 # INFO level, see https://docs.python.org/3/library/logging.html#levels for a list of levels
   cold_start_delay: 5
@@ -83,19 +83,19 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3005"
-    active: False
+    active: True
   - name: inheco_devID2_floor1
     model: Inheco single plate incubator shaker
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3006"
-    active: False
+    active: True
   - name: sciclops
     model: Hudson Scilcops Plate Crane
     interface: wei_rest_node
     config:
       rest_node_address: "http://sciclops:3005"
-    active: False
+    active: True
 
 locations:
   biopf400:
