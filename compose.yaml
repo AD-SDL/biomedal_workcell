@@ -10,36 +10,37 @@ services:
     ports:
       - 3000:3000
   ot2bioalpha:
-    image: ghcr.io/ad-sdl/ot2_module:dev
+    image: ghcr.io/ad-sdl/ot2_module
+    network_mode: host
     container_name: ot2bioalpha
     restart: unless-stopped
-    ports:
-      - 3001:3001
+    # ports:
+    #   - 3001:3001
     command: python3 ot2_module/src/ot2_rest_node.py --alias="ot2bioalpha" --port=3001 --ot2_ip=169.254.86.133
   ot2biobeta:
-    image: ghcr.io/ad-sdl/ot2_module:dev
+    image: ghcr.io/ad-sdl/ot2_module
     container_name: ot2biobeta
     restart: unless-stopped
     ports:
       - 3002:3002
     command: python3 ot2_module/src/ot2_rest_node.py --alias="ot2biobeta" --port=3002 --ot2_ip=146.137.240.106
   otflexbio1:
-    image: ghcr.io/ad-sdl/ot2_module:dev
+    image: ghcr.io/ad-sdl/ot2_module
     container_name: otflexbio1
     restart: unless-stopped
     ports:
       - 3004:3004
     command: python3 ot2_module/src/ot2_rest_node.py --alias="ot2flexbio1" --port=3004 --ot2_ip=146.137.240.11
-  # sciclops:
-  #   image: ghcr.io/ad-sdl/hudson_platecrane_module:dev
-  #   container_name: sciclops
-  #   restart: unless-stopped
-  #   privileged: true
-  #   volumes:
-  #     - /dev:/dev
-  #   ports:
-  #     - 3005:3005
-  #   command: python3 hudson_platecrane_module/src/sciclops_rest_node.py --alias="sciclops" --port=3005
+  sciclops:
+    image: ghcr.io/ad-sdl/hudson_platecrane_module:dev
+    container_name: sciclops
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /dev:/dev
+    ports:
+      - 3005:3005
+    command: python3 hudson_platecrane_module/src/sciclops_rest_node.py --alias="sciclops" --port=3005
   a4s_sealer_node:
     image: ghcr.io/ad-sdl/a4s_sealer_module
     container_name: a4s_sealer_node
