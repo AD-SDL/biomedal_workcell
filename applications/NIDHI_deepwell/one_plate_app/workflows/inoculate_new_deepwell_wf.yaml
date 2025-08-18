@@ -1,0 +1,9 @@
+# steps: 
+
+# PC: tr new deepwell (stack 1) to exchange
+# PF: tr exchange to peeler
+# P: peel 
+# PF: peeler to exchange
+# PF: exchange to OT2biobeta deck 1
+# OT2: run program 
+#   (tr ____ volume from old deepwell @ deck3 to new deepwell @ deck1)
