@@ -1,0 +1,146 @@
+metadata:
+  author: Autoprotocol
+  info: A PCR protocol written by Autoprotocol
+  name: Test Protocol
+  version: '0.1'
+  apiLevel: "2.12"
+
+requirements:
+  robotType: OT-2
+
+equipment:
+- alias: react_plate
+  location: "3"
+  module: Temperature Module
+  name: nest_96_wellplate_100ul_pcr_full_skirt
+  offset:
+  - 1
+  - 1.6
+  - 11
+- alias: dest_plate
+  location: "1"
+  name: nest_96_wellplate_100ul_pcr_full_skirt
+  offset:
+  - 0
+  - 1.7
+  - 3.9
+- location: "7"
+  name: opentrons_96_tiprack_20ul
+  offset:
+  - 0.2
+  - 0.4
+  - 0
+- name: p20_single_gen2
+  mount: left
+
+commands:
+- command: transfer
+  name: transfer 20 uL qPCR Master Mix from react_plate well A1 to dest_plate wells B2 and B11
+  source: react_plate:[A1, A2, A1, A2]
+  destination: dest_plate:[B2, B11, G2, G11]
+  drop_tip:
+  - true
+  - true
+  - true
+  - true
+  mix_cycles: 0
+  mix_volume: 0
+  volume:
+  - 20
+  - 20
+  - 20
+  - 20
+
+- command: transfer
+  name: transfer 5 uL Nuclease-free Biowater from react_plate well C1 to dest_plate B2 and B11
+  source: react_plate:[C1, C2, C3, C4]
+  destination: dest_plate:[B2, B11, G2, G11]
+  drop_tip:
+  - true
+  - true
+  - true
+  - true
+  mix_cycles: 0
+  mix_volume: 0
+  volume:
+  - 5
+  - 5
+  - 5
+  - 5
+
+- command: transfer
+  name: transfer 5 uL Forward Primer from react_plate D1 to dest_plate B2 and B11
+  source: react_plate:[D1, D1, D1, D1]
+  destination: dest_plate:[B2, B11, G2, G11]
+  drop_tip:
+  - true
+  - true
+  - true
+  - true
+  mix_cycles: 0
+  mix_volume: 0
+  volume:
+  - 5
+  - 5
+  - 5
+  - 5
+
+- command: transfer
+  name: transfer 5 uL of Reverse Primer from react_plate E1 to dest_plate B2 and B11
+  source: react_plate:[E1, E1, E1, E1]
+  destination: dest_plate:[B2, B11, G2, G11]
+  drop_tip:
+  - true
+  - true
+  - true
+  - true
+  mix_cycles: 0
+  mix_volume: 0
+  volume:
+  - 5
+  - 5
+  - 5
+  - 5
+
+- command: transfer
+  name: transfer 5 uL of Template DNA from react_plate H1 to dest_plate B2
+  source: react_plate:[H1, H1]
+  destination: dest_plate:[B2, G2]
+  drop_tip:
+  - true
+  - true
+  mix_cycles: 0
+  mix_volume: 0
+  volume:
+  - 5
+  - 5
+
+- command: transfer
+  name: transfer 5 uL Nuclease-free Biowater from react_plate well C1 to dest_plate B11
+  source: react_plate:[C2, C4]
+  destination: dest_plate:[B11, G11]
+  drop_tip:
+  - true
+  - true
+  mix_cycles: 0
+  mix_volume: 0
+  volume:
+  - 5
+  - 5
+
+- command: transfer
+  name: Mix 10X with pipet set to 36ul
+  source: react_plate:[B2, G2, B11, G11]
+  destination: dest_plate:[B2, G2, B11, G11]
+  drop_tip:
+  - true
+  - true
+  - true
+  - true
+  mix_cycles: 10
+  mix_volume: 20
+  volume:
+  - 1
+  - 1
+  - 1
+  - 1
