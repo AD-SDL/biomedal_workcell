@@ -38,7 +38,7 @@ modules:
       rest_node_address: "http://ot2biobeta:3002"
   - name: hidex_geraldine
     model: Hidex Sense
-    active: True
+    active: False
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2005"
@@ -57,7 +57,7 @@ modules:
   - name: bio_biometra3_96
     model: Biometra
     interface: wei_rest_node
-    active: True
+    active: False
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:2008"
   - name: bio_biometra4_384
@@ -71,11 +71,11 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3003"
-    active: True
+    active: False
   - name: otflexbio1
     model: Opentrons OT-Flex
     interface: wei_rest_node
-    active: False
+    active: True
     config:
       rest_node_address: "http://otflexbio1:3004"
   - name: inheco_devID2_floor0
@@ -83,13 +83,13 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3005"
-    active: True
+    active: False
   - name: inheco_devID2_floor1
     model: Inheco single plate incubator shaker
     interface: wei_rest_node
     config:
       rest_node_address: "http://hudson02.cels.anl.gov:3006"
-    active: True
+    active: False
   - name: sciclops
     model: Hudson Scilcops Plate Crane
     interface: wei_rest_node
