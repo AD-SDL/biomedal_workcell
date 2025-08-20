@@ -29,7 +29,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     deck["1"] = protocol.load_labware("nest_96_wellplate_100ul_pcr_full_skirt", "1")
 
-    deck["1"].set_offset(x=1.2, y=-0.3, z=0.6)
+    deck["1"].set_offset(x=0.9, y=-0.5, z=0.6)
 
     deck["7"] = protocol.load_labware("opentrons_96_tiprack_20ul", "7")
 
@@ -43,7 +43,7 @@ def run(protocol: protocol_api.ProtocolContext):
     ####################
 
     # transfer 20 uL qPCR Master Mix from react_plate well A1 to dest_plate wells B2 and B11
-    pipettes["left"].pick_up_tip(deck["7"].wells()[0])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -58,7 +58,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[1])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -73,7 +73,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[2])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -88,7 +88,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[3])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -105,7 +105,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
     # transfer 5 uL Nuclease-free Biowater from react_plate well C1 to dest_plate B2 and B11
-    pipettes["left"].pick_up_tip(deck["7"].wells()[4])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -120,7 +120,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[5])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -135,7 +135,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[6])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -150,7 +150,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[7])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -167,7 +167,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
     # transfer 5 uL Forward Primer from react_plate D1 to dest_plate B2 and B11
-    pipettes["left"].pick_up_tip(deck["7"].wells()[8])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -197,7 +197,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -212,7 +212,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -229,7 +229,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
     # transfer 5 uL of Reverse Primer from react_plate E1 to dest_plate B2 and B11
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -244,7 +244,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -259,7 +259,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -274,7 +274,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -291,7 +291,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
     # transfer 5 uL of Template DNA from react_plate H1 to dest_plate B2
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -306,7 +306,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -323,7 +323,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
     # transfer 5 uL Nuclease-free Biowater from react_plate well C1 to dest_plate B11
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -338,7 +338,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -355,7 +355,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
     # Mix 10X with pipet set to 36ul
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -372,7 +372,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -389,7 +389,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
@@ -406,7 +406,7 @@ def run(protocol: protocol_api.ProtocolContext):
     pipettes["left"].drop_tip()
 
 
-    pipettes["left"].pick_up_tip(deck["7"].wells()[10])
+    pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
