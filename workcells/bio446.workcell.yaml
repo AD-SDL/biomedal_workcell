@@ -32,16 +32,16 @@ modules:
       rest_node_address: "http://172.18.0.1:3001"
   - name: ot2biobeta
     model: Opentrons OT-2
-    active: True
+    active: False
     interface: wei_rest_node
     config:
       rest_node_address: "http://ot2biobeta:3002"
   - name: hidex_geraldine
     model: Hidex Sense
-    active: False
+    active: True
     interface: wei_rest_node
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:2005"
+      rest_node_address: "http://suestorm.cels.anl.gov:2005"
   - name: bio_sealer
     model: A4s Sealer
     interface: wei_rest_node
@@ -57,45 +57,45 @@ modules:
   - name: bio_biometra3_96
     model: Biometra
     interface: wei_rest_node
-    active: False
+    active: True
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:2008"
+      rest_node_address: "http://suestorm.cels.anl.gov:2008"
   - name: bio_biometra4_384
     model: Biometra
     interface: wei_rest_node
     active: False
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:2009"
+      rest_node_address: "http://suestorm.cels.anl.gov:2009"
   - name: bio_bmg
     model: BMG VANTAstar
     interface: wei_rest_node
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:3003"
+      rest_node_address: "http://suestorm.cels.anl.gov:3003"
     active: False
   - name: otflexbio1
     model: Opentrons OT-Flex
     interface: wei_rest_node
-    active: True
+    active: False
     config:
       rest_node_address: "http://otflexbio1:3004"
   - name: inheco_devID2_floor0
     model: Inheco single plate incubator shaker
     interface: wei_rest_node
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:3005"
+      rest_node_address: "http://suestorm.cels.anl.gov:3005"
     active: False
   - name: inheco_devID2_floor1
     model: Inheco single plate incubator shaker
     interface: wei_rest_node
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:3006"
+      rest_node_address: "http://suestorm.cels.anl.gov:3006"
     active: False
   - name: sciclops
     model: Hudson Scilcops Plate Crane
     interface: wei_rest_node
     config:
       rest_node_address: "http://sciclops:3005"
-    active: True
+    active: False
 
 
 
