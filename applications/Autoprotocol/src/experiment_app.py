@@ -13,7 +13,6 @@ def main() -> None:
     experiment_design = ExperimentDesign(
         experiment_name="Autoprotocol_Experiment",
         experiment_description="autoprotocol experiment",
-        email_addresses=["ryan.lewis@anl.gov", "cstone@anl.gov"],
     )
     # define a campaign object (useful if we want to group many of these substrate experiments together)
     campaign = CampaignDesign(

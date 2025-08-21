@@ -14,164 +14,151 @@ version: '0.1'
 
 flowdef:
 
-# ################################
-# # Run OT-2
-# ################################
-
-# # NO CHANGES - WORKS
-# # We could specify what the protocol is and put it into the payload. Don't have to.
-# # Payload would be defined in the experiment app.
-# - action: run_protocol
-#   name: Run liquid protocol
-#   module: ot2bioalpha
-#   files:
-#     protocol: payload.ot2_protocol # Hardcode a path here?
-
-# # ################################
-# # # Seal
-# # ################################
-
-# # NO CHANGES - WORKS
-# - action: transfer
-#   name: Transfer the destination plate from OT-2 to exchange
-#   module: biopf400
-#   args:
-#     source: ot2bioalpha_deck1_wide
-#     source_approach: safe_path_ot2bioalpha
-#     source_plate_rotation: wide
-#     target: exchange_deck_high_wide
-#     target_approach: safe_path_exchange
-#     target_plate_rotation: wide
-
-# # # ONE CHANGE - exchange grab location changed from low to high
-# - action: transfer
-#   name: Transfer the destination plate from exchange to Sealer
-#   module: biopf400
-#   args:
-#     source: exchange_deck_high_narrow     # CHANGE: was exchange_deck_low_narrow
-#     source_approach: safe_path_exchange
-#     source_plate_rotation: narrow
-#     target: sealer_nest
-#     target_approach: safe_path_sealer
-#     target_plate_rotation: narrow
-
-# # NO CHANGE - WORKS
-# - action: seal
-#   name: Seal the plate
-#   module: bio_sealer
-#   args: {}
-
-# # ################################
-# # # Thermocycler
-# # ################################
-
-# UNTESTED
-- action: open
-  name: Open the lid of the Biometra thermocycler
-  module: bio_biometra3
-  args: {}
-
-# # ONE CHANGE - exchange target location changed from low to high
-# - action: transfer
-#   name: Transfer the destination plate from _ to exchange
-#   module: biopf400
-#   args:
-#     source: sealer_nest
-#     source_approach: safe_path_sealer
-#     source_plate_rotation: narrow
-#     target: exchange_deck_high_narrow  # CHANGE: was exchange_deck_low_narrow
-#     target_approach: safe_path_exchange
-#     target_plate_rotation: narrow
-
-# # ONE CHANGE - exchange source location changed from low to high
-# - action: transfer
-#   name: Transfer the destination plate from exchange to _
-#   module: biopf400
-#   args:
-#     source: exchange_deck_high_wide     # CHANGE: was exchange_deck_low_wide
-#     source_approach: safe_path_exchange
-#     source_plate_rotation: wide
-#     target: bio_biometra3_nest
-#     target_approach: safe_path_biometra3
-#     target_plate_rotation: wide
-
-# # UNTESTED
-# - action: close
-#   name: Close the lid of the Biometra thermocycler
-#   module: bio_biometra3
-#   args: {}
-
-# # UNTESTED
-# - action: run_program
-#   name: Run thermocycling protocol 5 on Biometra thermocycler
-#   module: bio_biometra3
-#   args:
-#     program_number: 5
-
-# # UNTESTED
-# - action: open
-#   name: Open the lid of the Biometra thermocycler
-#   module: bio_biometra3
-#   args: {}
-
-# # ################################
-# # # Peel
-# # ################################
-
-# # ONE CHANGE - exchange deck target changed from low to high
-# - action: transfer
-#   name: Transfer the destination plate from OT-2 to Sealer
-#   module: biopf400
-#   args:
-#     source: bio_biometra3_nest
-#     source_approach: safe_path_biometra3
-#     source_plate_rotation: wide
-#     target: exchange_deck_high_wide   # CHANGE: was exchange_deck_low_wide
-#     target_approach: safe_path_exchange
-#     target_plate_rotation: wide
-
-# # NO CHANGE - WORKS
-# - action: transfer
-#   name: Transfer the destination plate from OT-2 to Sealer
-#   module: biopf400
-#   args:
-#     source: exchange_deck_low_narrow
-#     source_approach: safe_path_exchange
-#     source_plate_rotation: narrow
-#     target: peeler_nest
-#     target_approach: safe_path_peeler
-#     target_plate_rotation: narrow
-
-# # NO CHANGE - WORKS
-# - action: peel
-#   name: Peel the plate
-#   module: bio_peeler
-#   args: {}
-
-# # ################################
-# # # Hidex
-# # ################################
+################################
+# Run OT-2
+################################
 
 # NO CHANGES - WORKS
-# - action: open
-#   name: Open the lid of the Hidex plate reader
-#   module: hidex_geraldine
-#   args: {}
+# We could specify what the protocol is and put it into the payload. Don't have to.
+# Payload would be defined in the experiment app.
+- action: run_protocol
+  name: Run liquid protocol
+  module: ot2bioalpha
+  files:
+    protocol: payload.ot2_protocol # Hardcode a path here?
 
-# # WORKED BUT WE DECIDED TO GO TO EXCHANGE FIRST - see two steps below for revised version
-# # - action: transfer
-# #   name: Transfer the destination plate from Peeler to Hidex
-# #   module: biopf400
-# #   args:
-# #     source: peeler_nest
-# #     source_approach: safe_path_peeler
-# #     source_plate_rotation: narrow
-# #     target: hidex_geraldine_low_nest
-# #     target_approach: safe_path_hidex
-# #     target_plate_rotation: narrow
+# ################################
+# # Seal
+# ################################
 
-# # GOING FROM PEELER TO EXCHANGE, THEN EXCHANGE HIGH TO HIDEX HIGH
-# # WORKS
+# NO CHANGES - WORKS
+- action: transfer
+  name: Transfer the destination plate from OT-2 to exchange
+  module: biopf400
+  args:
+    source: ot2bioalpha_deck1_wide
+    source_approach: safe_path_ot2bioalpha
+    source_plate_rotation: wide
+    target: exchange_deck_high_wide
+    target_approach: safe_path_exchange
+    target_plate_rotation: wide
+
+# # ONE CHANGE - exchange grab location changed from low to high
+- action: transfer
+  name: Transfer the destination plate from exchange to Sealer
+  module: biopf400
+  args:
+    source: exchange_deck_high_narrow     # CHANGE: was exchange_deck_low_narrow
+    source_approach: safe_path_exchange
+    source_plate_rotation: narrow
+    target: sealer_nest
+    target_approach: safe_path_sealer
+    target_plate_rotation: narrow
+
+# NO CHANGE - WORKS
+- action: seal
+  name: Seal the plate
+  module: bio_sealer
+  args: {}
+
+# ################################
+# # Thermocycler
+# ################################
+
+# ONE CHANGE - name change of module
+- action: open
+  name: Open the lid of the Biometra thermocycler
+  module: bio_biometra3_96   # CHANGE: was bio_biometra3
+  args: {}
+
+# ONE CHANGE - exchange target location changed from low to high
+- action: transfer
+  name: Transfer the destination plate from _ to exchange
+  module: biopf400
+  args:
+    source: sealer_nest
+    source_approach: safe_path_sealer
+    source_plate_rotation: narrow
+    target: exchange_deck_high_narrow  # CHANGE: was exchange_deck_low_narrow
+    target_approach: safe_path_exchange
+    target_plate_rotation: narrow
+
+# ONE CHANGE - exchange source location changed from low to high
+- action: transfer
+  name: Transfer the destination plate from exchange to _
+  module: biopf400
+  args:
+    source: exchange_deck_high_wide     # CHANGE: was exchange_deck_low_wide
+    source_approach: safe_path_exchange
+    source_plate_rotation: wide
+    target: bio_biometra3_nest
+    target_approach: safe_path_biometra3
+    target_plate_rotation: wide
+
+# ONE CHANGE - name change of module
+- action: close
+  name: Close the lid of the Biometra thermocycler
+  module: bio_biometra3_96   # CHANGE: was bio_biometra3
+  args: {}
+
+# ONE CHANGE - name change of module
+- action: run_program
+  name: Run thermocycling protocol 5 on Biometra thermocycler
+  module: bio_biometra3_96    # CHANGE: was bio_biometra3
+  args:
+    program_number: 5
+
+# ONE CHANGE - name change of module
+- action: open
+  name: Open the lid of the Biometra thermocycler
+  module: bio_biometra3_96   # CHANGE: was bio_biometra3
+  args: {}
+
+# ################################
+# # Peel
+# ################################
+
+# ONE CHANGE - exchange deck target changed from low to high
+- action: transfer
+  name: Transfer the destination plate from OT-2 to Sealer
+  module: biopf400
+  args:
+    source: bio_biometra3_nest
+    source_approach: safe_path_biometra3
+    source_plate_rotation: wide
+    target: exchange_deck_high_wide   # CHANGE: was exchange_deck_low_wide
+    target_approach: safe_path_exchange
+    target_plate_rotation: wide
+
+# NO CHANGE - WORKS
+- action: transfer
+  name: Transfer the destination plate from OT-2 to Sealer
+  module: biopf400
+  args:
+    source: exchange_deck_low_narrow
+    source_approach: safe_path_exchange
+    source_plate_rotation: narrow
+    target: peeler_nest
+    target_approach: safe_path_peeler
+    target_plate_rotation: narrow
+
+# NO CHANGE - WORKS
+- action: peel
+  name: Peel the plate
+  module: bio_peeler
+  args: {}
+
+# ################################
+# # Hidex
+# ################################
+
+# NO CHANGE - WORKS
+- action: open
+  name: Open the lid of the Hidex plate reader
+  module: hidex_geraldine
+  args: {}
+
+# WORKED BUT WE DECIDED TO GO TO EXCHANGE FIRST - see two steps below for revised version
 # - action: transfer
 #   name: Transfer the destination plate from Peeler to Hidex
 #   module: biopf400
@@ -179,37 +166,50 @@ flowdef:
 #     source: peeler_nest
 #     source_approach: safe_path_peeler
 #     source_plate_rotation: narrow
-#     target: exchange_deck_low_narrow
-#     target_approach: safe_path_exchange
-#     target_plate_rotation: narrow
-
-# # WORKS - could use recalibration of Hidex position
-# - action: transfer
-#   name: Transfer the destination plate from Peeler to Hidex
-#   module: biopf400
-#   args:
-#     source: exchange_deck_high_narrow
-#     source_approach: safe_path_exchange
-#     source_plate_rotation: narrow
-#     target: hidex_geraldine_high_nest
+#     target: hidex_geraldine_low_nest
 #     target_approach: safe_path_hidex
 #     target_plate_rotation: narrow
 
-# # UNTESTED
-# - action: close
-#   name: Close the lid of the Hidex plate reader
-#   module: hidex_geraldine
-#   args: {}
+# GOING FROM PEELER TO EXCHANGE, THEN EXCHANGE HIGH TO HIDEX HIGH
+# WORKS
+- action: transfer
+  name: Transfer the destination plate from Peeler to Hidex
+  module: biopf400
+  args:
+    source: peeler_nest
+    source_approach: safe_path_peeler
+    source_plate_rotation: narrow
+    target: exchange_deck_low_narrow
+    target_approach: safe_path_exchange
+    target_plate_rotation: narrow
 
-# # UNTESTED
-# - action: run_assay
-#   name: Run assay protocol on Hidex plate reader
-#   module: hidex_geraldine
-#   args:
-#     assay_name: "PCR_Final_Results"
+# WORKS - could use recalibration of Hidex position
+- action: transfer
+  name: Transfer the destination plate from Peeler to Hidex
+  module: biopf400
+  args:
+    source: exchange_deck_high_narrow
+    source_approach: safe_path_exchange
+    source_plate_rotation: narrow
+    target: hidex_geraldine_high_nest
+    target_approach: safe_path_hidex
+    target_plate_rotation: narrow
 
-# # UNTESTED
-# - action: open
-#   name: Open the lid of the Hidex plate reader
-#   module: hidex_geraldine
-#   args: {}
+# NO CHANGE - WORKS
+- action: close
+  name: Close the lid of the Hidex plate reader
+  module: hidex_geraldine
+  args: {}
+
+# NO CHANGE - WORKS
+- action: run_assay
+  name: Run assay protocol on Hidex plate reader
+  module: hidex_geraldine
+  args:
+    assay_name: "PCR_Final_Results"
+
+# NO CHANGE - WORKS
+- action: open
+  name: Open the lid of the Hidex plate reader
+  module: hidex_geraldine
+  args: {}
