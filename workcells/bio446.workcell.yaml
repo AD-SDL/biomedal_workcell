@@ -41,7 +41,7 @@ modules:
     active: True
     interface: wei_rest_node
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:2005"
+      rest_node_address: "http://suestorm.cels.anl.gov:2005"
   - name: bio_sealer
     model: A4s Sealer
     interface: wei_rest_node
@@ -59,18 +59,18 @@ modules:
     interface: wei_rest_node
     active: True
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:2008"
+      rest_node_address: "http://suestorm.cels.anl.gov:2008"
   - name: bio_biometra4_384
     model: Biometra
     interface: wei_rest_node
     active: False
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:2009"
+      rest_node_address: "http://suestorm.cels.anl.gov:2009"
   - name: bio_bmg
     model: BMG VANTAstar
     interface: wei_rest_node
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:3003"
+      rest_node_address: "http://suestorm.cels.anl.gov:3003"
     active: True
   - name: otflexbio1
     model: Opentrons OT-Flex
@@ -82,13 +82,13 @@ modules:
     model: Inheco single plate incubator shaker
     interface: wei_rest_node
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:3005"
+      rest_node_address: "http://suestorm.cels.anl.gov:3005"
     active: True
   - name: inheco_devID2_floor1
     model: Inheco single plate incubator shaker
     interface: wei_rest_node
     config:
-      rest_node_address: "http://hudson02.cels.anl.gov:3006"
+      rest_node_address: "http://suestorm.cels.anl.gov:3006"
     active: True
   - name: sciclops
     model: Hudson Scilcops Plate Crane
