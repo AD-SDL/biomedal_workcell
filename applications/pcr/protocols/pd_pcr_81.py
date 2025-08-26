@@ -6,8 +6,8 @@ from opentrons.protocol_api import SINGLE
 metadata = {
     'protocolName': 'Protein Design PCR',
     'author': 'LDRD team ',
-    'description': 'PCR for Protein Design',
-    'source': 'FlexAS/pd_pcr_01.py'
+    'description': 'PCR for Protein Design 81 reagents',
+    'source': 'FlexAS/pd_pcr_81.py'
 }
 
 requirements = {"robotType": "Flex", "apiLevel": "2.20"}
@@ -37,6 +37,8 @@ config = {
     'gg_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
     'reagent_plate_type': 'nest_12_reservoir_15ml',
     'tip_rack_type_50_01': 'opentrons_flex_96_tiprack_50ul',
+    'tip_rack_type_50_02': 'opentrons_flex_96_tiprack_50ul',
+    'tip_rack_type_50_03': 'opentrons_flex_96_tiprack_50ul',
     'pipette_type_50': 'flex_8channel_50',
     'tip_rack_type_200_01': 'opentrons_flex_96_tiprack_200ul',
     'pipette_type_1000': 'flex_8channel_1000',
@@ -47,8 +49,10 @@ config = {
     'fragments_plate_initial_position': 'B1',
     'gg_plate_position': 'C1',
     'pcr_plate_position': 'C2',
-    'tip_rack_position_50_01': 'A1',
-    'tip_rack_position_200_01': 'A2',
+    'tip_rack_position_50_01': 'A2',
+    'tip_rack_position_50_02': 'A3',
+    'tip_rack_position_50_03': 'B2',
+    # 'tip_rack_position_200_01': 'A2',
     'reagent_plate_position': 'A1'
 }
 
@@ -165,15 +169,19 @@ def gg_to_pcr_plate(protocol, gg_plate, pcr_plate, pipette, config):
 
 def run(protocol: protocol_api.ProtocolContext):
     # Load temperature module and adapter
-    temp_mod = protocol.load_module(module_name="temperature module gen2", location=config['temp_module_position'])
-    temp_adapter = temp_mod.load_adapter("opentrons_96_well_aluminum_block")
+    temp_mod_1 = protocol.load_module(module_name="temperature module gen2", location=config['temp_module_01_position'])
+    temp_adapter_1 = temp_mod_1.load_adapter("opentrons_96_well_aluminum_block")
+
+    temp_mod_2 = protocol.load_module(module_name="temperature module gen2", location=config['temp_module_02_position'])
+    temp_adapter_2 = temp_mod_2.load_adapter("opentrons_96_well_aluminum_block")
 
     # Set temperature
-    temp_mod.set_temperature(config['temperature']) #TODO: make seperate, or just set earlier, only 1 hour with plate
+    temp_mod_1.set_temperature(config['temperature']) #TODO: make seperate, or just set earlier, only 1 hour with plate
+    temp_mod_2.set_temperature(config['temperature']) #TODO: make seperate, or just set earlier, only 1 hour with plate
 
     # Load source plate initially on A4
     # source_plate = protocol.load_labware(config['source_plate_type'], config['source_plate_initial_position'])
-    source_plate = temp_adapter.load_labware(config['source_plate_type'])
+    source_plate = temp_adapter_1.load_labware(config['fragments_plate_type'])
 
 
     chute = protocol.load_waste_chute()
@@ -185,27 +193,34 @@ def run(protocol: protocol_api.ProtocolContext):
     pcr_plate = protocol.load_labware(config['pcr_plate_type'], config['pcr_plate_position'])
     pcr_plate.set_offset(x=0.4, y=0.4, z=0.0)
 
-    gg_plate = protocol.load_labware(config['gg_plate_type'], config['gg_plate_position'])
+    # gg_plate = protocol.load_labware(config['gg_plate_type'], config['gg_plate_position'])
+    gg_plate = temp_adapter_2.load_labware(config['gg_plate_type'])
     gg_plate.set_offset(x=0.4, y=0.4, z=0.0)
 
     reagent_plate = protocol.load_labware(config['reagent_plate_type'], config['reagent_plate_position'])
 
 
-    tiprack_50 = protocol.load_labware(
+    tiprack_50_1 = protocol.load_labware(
         load_name=config['tip_rack_type_50_01'], location=config['tip_rack_position_50_01']
+    )
+    tiprack_50_2 = protocol.load_labware(
+        load_name=config['tip_rack_type_50_02'], location=config['tip_rack_position_50_02']
+    )
+    tiprack_50_3 = protocol.load_labware(
+        load_name=config['tip_rack_type_50_03'], location=config['tip_rack_position_50_03']
     )
 
     # 8-channel P1000
-    tiprack_200 = protocol.load_labware(
-        load_name=config['tip_rack_type_200_01'], location=config['tip_rack_position_200_01']
-    )
+    # tiprack_200 = protocol.load_labware(
+    #     load_name=config['tip_rack_type_200_01'], location=config['tip_rack_position_200_01']
+    # )
 
     # Pipettes
-    p50 = protocol.load_instrument('flex_8channel_50', mount='right', tip_racks=[tiprack_50])
-    p1000 = protocol.load_instrument('flex_8channel_1000', mount='left', tip_racks=[tiprack_200])
+    p50 = protocol.load_instrument('flex_8channel_50', mount='right', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3])
+    p50s = protocol.load_instrument('flex_1channel_50', mount='left', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3])
 
-    p50.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_50])
-    p1000.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_200])
+    p50.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3])
+    # p1000.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_200])
 
 
 
@@ -214,7 +229,7 @@ def run(protocol: protocol_api.ProtocolContext):
         protocol=protocol,
         reagent_plate=reagent_plate,
         gg_plate=gg_plate,
-        pipette=p50,
+        pipette=p50s,
         config=config
     )
 
@@ -223,7 +238,7 @@ def run(protocol: protocol_api.ProtocolContext):
         protocol=protocol,
         source_plate=source_plate,
         pcr_plate=pcr_plate,
-        pipette=p50,
+        pipette=p50s,
         config=config
     )
 
@@ -231,7 +246,7 @@ def run(protocol: protocol_api.ProtocolContext):
         protocol=protocol,
         gg_plate=gg_plate,
         pcr_plate=pcr_plate,
-        pipette=p50,
+        pipette=p50s,
         config=config
     )
 
