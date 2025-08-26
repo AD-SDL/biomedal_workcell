@@ -354,12 +354,12 @@ def run(protocol: protocol_api.ProtocolContext):
 
 
 
-    # Mix 10X with pipet set to 36ul
+    # Mix 10X with pipet set to 36ul # CHANGE: need to aspirate and dispense in react plate, it was aspirating from temp block and dispensing in deck 1
     pipettes["left"].pick_up_tip()
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
-    pipettes["left"].aspirate(1.0, deck["3"]["B2"])
+    pipettes["left"].aspirate(1.0, deck["1"]["B2"])
 
     pipettes["left"].well_bottom_clearance.dispense = 1
 
@@ -376,7 +376,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
-    pipettes["left"].aspirate(1.0, deck["3"]["G2"])
+    pipettes["left"].aspirate(1.0, deck["1"]["G2"])
 
     pipettes["left"].well_bottom_clearance.dispense = 1
 
@@ -393,7 +393,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
-    pipettes["left"].aspirate(1.0, deck["3"]["B11"])
+    pipettes["left"].aspirate(1.0, deck["1"]["B11"])
 
     pipettes["left"].well_bottom_clearance.dispense = 1
 
@@ -410,7 +410,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     pipettes["left"].well_bottom_clearance.aspirate = 1
 
-    pipettes["left"].aspirate(1.0, deck["3"]["G11"])
+    pipettes["left"].aspirate(1.0, deck["1"]["G11"])
 
     pipettes["left"].well_bottom_clearance.dispense = 1
 
