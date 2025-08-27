@@ -40,13 +40,13 @@ flowdef:
     comment: seal the pcr plate
 
 
-  # # Open thermocycler
-  # - name: open thermocycler    
-  #   module: bio_biometra3_96
-  #   action: open
-  #   args:
-  #     foo: bar
-  #   comment: open thermocycler
+  # Open thermocycler
+  - name: open thermocycler    
+    module: bio_biometra3_96
+    action: open
+    args:
+      foo: bar
+    comment: open thermocycler
 
 
   # Transfer from sealer to exchange (need to swap grip from narrow to wide)
@@ -76,9 +76,9 @@ flowdef:
     comment: moves plate from exchange to biometra 96 thermocycler
 
   # # TODO: DON'T RUN. The open thermocycler command doesn't work
-  # - name: close thermocycler  
-  #   module: bio_biometra3_96
-  #   action: close
-  #   args:
-  #     foo: bar
-  #   comment: closes thermocycler
+  - name: close thermocycler  
+    module: bio_biometra3_96
+    action: close
+    args:
+      foo: bar
+    comment: closes thermocycler

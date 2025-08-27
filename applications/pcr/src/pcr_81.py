@@ -59,7 +59,7 @@ def main() -> None:
     flexA_sealer_flexA_wf = wf_transfers_directory / "flexA_sealer_flexA_wf.yaml"
 
     # protocol paths (for OT-Flex)
-    run_pcr = protocol_directory / "pd_pcr_81.py"
+    run_pcr = protocol_directory / "pd_pcr_81_8channel.py"
     move_source_to_staging_protocol = protocol_directory / "move_to_staging_B1_A4.py"
     move_from_staging_B2_protocol = protocol_directory / "move_from_staging_A4_B2.py"
     move_from_staging_C1_protocol = protocol_directory / "move_from_staging_A4_C1.py"
@@ -124,7 +124,7 @@ def main() -> None:
     )
 
 
-    payload = {"current_flex_protocol": str(move_from_staging_C1_protocol)}
+    payload = {"current_flex_protocol": str(move_from_staging_B1_protocol)}
 
     experiment_client.start_run(
         run_flex_wf.resolve(),
