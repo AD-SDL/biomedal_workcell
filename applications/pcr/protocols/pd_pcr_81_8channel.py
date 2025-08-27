@@ -110,6 +110,7 @@ def master_mix_to_pcr_plate(protocol, source_plate, pcr_plate, pipette, config):
     combinations = config['combinations']
 
     gg_wells = calculate_total_combinations(combinations)
+    columns_needed = (gg_wells + 7) // 8
 
     dispenses_per_well = pcr_master_mix_well_volume // master_mix_volume
     protocol.comment(f"Each master mix well ({master_mix_well_volume}µL) can serve {dispenses_per_well} destination wells")
@@ -119,22 +120,16 @@ def master_mix_to_pcr_plate(protocol, source_plate, pcr_plate, pipette, config):
     current_master_mix_well = master_mix_start_well
     remaining_dispenses = dispenses_per_well
     protocol.comment(f"\nAdding {master_mix_volume}µL master mix to each destination well:")
-
-    for dest_well_number in range(1, gg_wells + 1):
-        # Check if we need to switch to next master mix well
+# #######################
+    for col_idx in range(columns_needed+1):
         if remaining_dispenses == 0:
-            current_master_mix_well += 1
+            current_master_mix_well += 8
             remaining_dispenses = dispenses_per_well
             protocol.comment(f"  Switching to master mix well {current_master_mix_well + 1} (0-indexed: {current_master_mix_well})")
 
-        # Get the destination well
-        dest_well = pcr_plate.wells()[dest_well_number - 1]  # Convert to 0-based index
-
-        # Get the current master mix well
+        dest_well = pcr_plate.columns()[col_idx]
         master_mix_well = source_plate.wells()[current_master_mix_well]
-
-        protocol.comment(f"  Dest well {dest_well_number}: Adding {master_mix_volume}µL from master mix well {current_master_mix_well + 1} (0-indexed: {current_master_mix_well})")
-
+        protocol.comment(f"  Dest well {col_idx}: Adding {master_mix_volume}µL from master mix well {current_master_mix_well + 1} (0-indexed: {current_master_mix_well})")
         # Transfer master mix
         pipette.transfer(
             master_mix_volume,
@@ -144,11 +139,41 @@ def master_mix_to_pcr_plate(protocol, source_plate, pcr_plate, pipette, config):
             mix_before=(3, 10),
             mix_after=(3, 10)
         )
-
         # Update remaining dispenses
         remaining_dispenses -= 1
 
     protocol.comment(f"\nMaster mix addition complete. Used wells {master_mix_start_well + 1} to {current_master_mix_well + 1} (0-indexed: {master_mix_start_well} to {current_master_mix_well})")
+
+
+    # for dest_well_number in range(1, gg_wells + 1):
+    #     # Check if we need to switch to next master mix well
+    #     if remaining_dispenses == 0:
+    #         current_master_mix_well += 1
+    #         remaining_dispenses = dispenses_per_well
+    #         protocol.comment(f"  Switching to master mix well {current_master_mix_well + 1} (0-indexed: {current_master_mix_well})")
+
+    #     # Get the destination well
+    #     dest_well = pcr_plate.wells()[dest_well_number - 1]  # Convert to 0-based index
+
+    #     # Get the current master mix well
+    #     master_mix_well = source_plate.wells()[current_master_mix_well]
+
+    #     protocol.comment(f"  Dest well {dest_well_number}: Adding {master_mix_volume}µL from master mix well {current_master_mix_well + 1} (0-indexed: {current_master_mix_well})")
+
+    #     # Transfer master mix
+    #     pipette.transfer(
+    #         master_mix_volume,
+    #         master_mix_well,
+    #         dest_well,
+    #         new_tip='always',  # Use fresh tip for each master mix transfer
+    #         mix_before=(3, 10),
+    #         mix_after=(3, 10)
+    #     )
+
+    #     # Update remaining dispenses
+    #     remaining_dispenses -= 1
+
+    # protocol.comment(f"\nMaster mix addition complete. Used wells {master_mix_start_well + 1} to {current_master_mix_well + 1} (0-indexed: {master_mix_start_well} to {current_master_mix_well})")
 
     return current_master_mix_well  # Return the last used well
 
@@ -265,7 +290,7 @@ def run(protocol: protocol_api.ProtocolContext):
         protocol=protocol,
         source_plate=source_plate,
         pcr_plate=pcr_plate,
-        pipette=p50s,
+        pipette=p50,
         config=config
     )
 
