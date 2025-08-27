@@ -90,12 +90,12 @@ modules:
     config:
       rest_node_address: "http://suestorm.cels.anl.gov:3006"
     active: True
-  - name: sciclops
-    model: Hudson Scilcops Plate Crane
-    interface: wei_rest_node
-    config:
-      rest_node_address: "http://sciclops:3005"
-    active: True
+  # - name: sciclops
+  #   model: Hudson Scilcops Plate Crane
+  #   interface: wei_rest_node
+  #   config:
+  #     rest_node_address: "http://sciclops:3005"
+  #   active: True
 
 locations:
   biopf400:

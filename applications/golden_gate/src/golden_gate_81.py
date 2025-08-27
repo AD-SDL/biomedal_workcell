@@ -67,16 +67,16 @@ def main() -> None:
     move_A4_B1_protocol = protocol_directory / "move_from_staging_A4_B1.py"
     move_B4_C1_protocol = protocol_directory / "move_from_staging_B4_C1.py"
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
-    
+
     payload = {"current_flex_protocol": str(cool_block_protocol)}
 
-    # important variables
-    experiment_client.start_run(
-        run_flex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # # important variables
+    # experiment_client.start_run(
+    #     run_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
     payload = {"current_flex_protocol": str(move_A4_B1_protocol)}
 

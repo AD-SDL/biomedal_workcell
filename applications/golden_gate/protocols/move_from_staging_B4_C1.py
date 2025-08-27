@@ -11,7 +11,7 @@ requirements = {"robotType": "Flex", "apiLevel": "2.20"}
 
 def run(protocol: protocol_api.ProtocolContext):
     # Labware
-    source_plate = protocol.load_labware('nest_96_wellplate_200ul_flat', 'B1')
+    # source_plate = protocol.load_labware('nest_96_wellplate_200ul_flat', 'B1')
     pcr_plate = protocol.load_labware('nest_96_wellplate_100ul_pcr_full_skirt', 'B4')
     mastermix_tube = protocol.load_labware('nest_12_reservoir_15ml', 'B3') #TODO change
     water_reservoir = protocol.load_labware('nest_12_reservoir_15ml', 'A1')
@@ -23,9 +23,9 @@ def run(protocol: protocol_api.ProtocolContext):
         load_name="opentrons_flex_96_tiprack_50ul", location="A2",
     )
 
-    tiprack_200 = protocol.load_labware(
-        load_name="opentrons_flex_96_tiprack_200ul", location="A3"
-    )
+    # tiprack_200 = protocol.load_labware(
+    #     load_name="opentrons_flex_96_tiprack_200ul", location="A3"
+    # )
 
 
 
