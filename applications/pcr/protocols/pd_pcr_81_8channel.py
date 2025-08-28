@@ -4,7 +4,7 @@ from opentrons.protocol_api import SINGLE
 
 
 metadata = {
-    'protocolName': 'Protein Design PCR',
+    'protocolName': 'Protein Design PCR 81 8 channel',
     'author': 'LDRD team ',
     'description': 'PCR for Protein Design 81 reagents',
     'source': 'FlexAS/pd_pcr_81.py'
@@ -87,7 +87,7 @@ def transfer_water_to_gg(protocol, reagent_plate, gg_plate, pipette, config):
             dest_well,
             new_tip='always',  # Use fresh tip for each transfer
             mix_after = (3, 10)
-        )       
+        )
 
     # for well in range(1, gg_wells + 1):
     #     dest_well = gg_plate.wells()[well - 1]
@@ -195,13 +195,13 @@ def gg_to_pcr_plate(protocol, gg_plate, pcr_plate, pipette, config):
             new_tip='always',  # Use fresh tip for each transfer
             mix_before = (3, 10),
             mix_after = (3, 10)
-        )    
+        )
 
 
-    
+
     # for well in range(1, gg_wells + 1):
-    #     dest_well = pcr_plate.wells()[well - 1]  
-    #     source_well = gg_plate.wells()[well - 1]  
+    #     dest_well = pcr_plate.wells()[well - 1]
+    #     source_well = gg_plate.wells()[well - 1]
 
     #     pipette.transfer(
     #         transfer_volume,
@@ -210,7 +210,7 @@ def gg_to_pcr_plate(protocol, gg_plate, pcr_plate, pipette, config):
     #         new_tip='always',  # Use fresh tip for each transfer
     #         mix_before = (3, 10),
     #         mix_after = (3, 10)
-    #     )     
+    #     )
 
 
 
