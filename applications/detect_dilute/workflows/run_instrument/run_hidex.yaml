@@ -18,5 +18,5 @@ flowdef:
     module: hidex_geraldine
     action: run_assay
     args:
-      assay_name: "Absorbance"
+      assay_name: "PCR_Final_Results"
     comment: Run hidex protocol

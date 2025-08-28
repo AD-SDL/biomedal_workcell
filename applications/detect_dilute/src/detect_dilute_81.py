@@ -74,7 +74,7 @@ def main() -> None:
 
 
     # EXPERIMENT STEPS: --------------
-    # 
+    #
     # --------------------------------
 
 #TODO: remove pcr plate from thermo, peel, return, for now assume everything in place
@@ -129,7 +129,7 @@ def main() -> None:
         blocking=True,
         simulate=False,
     )
-    
+
 
 if __name__ == "__main__":
     main()
