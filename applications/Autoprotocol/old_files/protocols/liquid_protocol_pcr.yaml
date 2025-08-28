@@ -1,0 +1,176 @@
+metadata:
+  name: Liquid Test 2
+  author: Autoprotocol
+  info: A PCR protocol written by Autoprotocol
+  version: '0.1'
+commands:
+- name: transfer 10 uL qPCR Master Mix from react_plate A1 to dest A1, 3 times with
+    3 mix cycles and 3 uL per cycle.
+  command: transfer
+  source: react_plate:[A1]
+  destination: dest:[A1]
+  volume: 10
+  mix_cycles: 3
+  mix_volume: 3
+  drop_tip: true
+- name: transfer 10 uL qPCR Master Mix from react_plate A2 to dest A3, 3 times with
+    3 mix cycles and 3 uL per cycle.
+  command: transfer
+  source: react_plate:[A2]
+  destination: dest:[A3]
+  volume: 10
+  mix_cycles: 3
+  mix_volume: 3
+  drop_tip: true
+- name: transfer 20 uL Nuclease-free Biowater from react_plate C1 to dest A1.
+  command: transfer
+  source: react_plate:[C1]
+  destination: dest:[A1]
+  volume: 20
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 20 uL Nuclease-free Biowater from react_plate C2 to dest A3.
+  command: transfer
+  source: react_plate:[C2]
+  destination: dest:[A3]
+  volume: 20
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 3 uL Forward Primer from react_plate D1 to dest A1.
+  command: transfer
+  source: react_plate:[D1]
+  destination: dest:[A1]
+  volume: 3
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 3 uL Forward Primer from react_plate D1 to dest A3.
+  command: transfer
+  source: react_plate:[D1]
+  destination: dest:[A3]
+  volume: 3
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 3 uL Reverse Primer from react_plate E1 to dest A1.
+  command: transfer
+  source: react_plate:[E1]
+  destination: dest:[A1]
+  volume: 3
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 3 uL Reverse Primer from react_plate E1 to dest A3.
+  command: transfer
+  source: react_plate:[E1]
+  destination: dest:[A3]
+  volume: 3
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 2 uL Template DNA from react_plate H1 to dest A2.
+  command: transfer
+  source: react_plate:[H1]
+  destination: dest:[A2]
+  volume: 2
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 2 uL Template DNA from react_plate H1 to dest A4.
+  command: transfer
+  source: react_plate:[H1]
+  destination: dest:[A4]
+  volume: 2
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 10 uL qPCR Master Mix from react_plate A1 to dest A2.
+  command: transfer
+  source: react_plate:[A1]
+  destination: dest:[A2]
+  volume: 10
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 10 uL qPCR Master Mix from react_plate A2 to dest A4.
+  command: transfer
+  source: react_plate:[A2]
+  destination: dest:[A4]
+  volume: 10
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 18 uL Nuclease-free Biowater from react_plate C3 to dest A2.
+  command: transfer
+  source: react_plate:[C3]
+  destination: dest:[A2]
+  volume: 18
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 18 uL Nuclease-free Biowater from react_plate C4 to dest A4.
+  command: transfer
+  source: react_plate:[C4]
+  destination: dest:[A4]
+  volume: 18
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 3 uL Forward Primer from react_plate D1 to dest A2.
+  command: transfer
+  source: react_plate:[D1]
+  destination: dest:[A2]
+  volume: 3
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 3 uL Forward Primer from react_plate D1 to dest A4.
+  command: transfer
+  source: react_plate:[D1]
+  destination: dest:[A4]
+  volume: 3
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 3 uL Reverse Primer from react_plate E1 to dest A2.
+  command: transfer
+  source: react_plate:[E1]
+  destination: dest:[A2]
+  volume: 3
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+- name: transfer 3 uL Reverse Primer from react_plate E1 to dest A4.
+  command: transfer
+  source: react_plate:[E1]
+  destination: dest:[A4]
+  volume: 3
+  mix_cycles: 0
+  mix_volume: 0
+  drop_tip: true
+equipment:
+- name: nest_96_wellplate_100ul_pcr_full_skirt
+  location: '1'
+  alias: dest
+  offset:
+  - 0
+  - 1.7
+  - 3.9
+- name: nest_96_wellplate_100ul_pcr_full_skirt
+  location: '3'
+  module: Temperature Module
+  alias: react_plate
+  offset:
+  - 1
+  - 1.6
+  - 11
+- name: opentrons_96_tiprack_20ul
+  location: '7'
+  offset:
+  - 0.2
+  - 0.4
+  - 0
+- name: p20_single_gen2
+  mount: left
