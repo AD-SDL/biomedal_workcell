@@ -192,7 +192,7 @@ def water_to_pcr_dilution_wells(protocol, diluted_pcr, reagent_plate, pipette, c
             source_well,
             dest_well,
             new_tip='never',  # Use fresh tip for each transfer
-            mix_after = (3, 20)
+            # mix_after = (3, 20)
         )
     pipette.drop_tip()
 
@@ -261,6 +261,7 @@ def controls_to_pcr(protocol, diluted_pcr, controls_plate, pipette, config):
             dest_well,
             new_tip='always',  # Use fresh tip for each transfer
         )  
+        starting_dest_well+=1
 
 
 def run(protocol: protocol_api.ProtocolContext):
