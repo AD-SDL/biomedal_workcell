@@ -1,0 +1,42 @@
+metadata:
+  name: Liquid Test 2
+  author: Autoprotocol
+  info: A PCR protocol written by Autoprotocol
+  version: '0.1'
+commands:
+- name: "transfer 10 \xB5L of Liquid X from react_plate wells B1 and B2 to dest_plate\
+    \ wells A1 and A3 with mixing"
+  command: transfer
+  source: react_plate:B1
+  destination: dest:A1
+  volume:
+  - 10
+  - 10
+  mix_cycles: 3
+  mix_volume: 3
+  drop_tip:
+  - false
+  - true
+equipment:
+- name: corning_96_wellplate_360ul_flat
+  location: '1'
+  alias: dest
+  offset:
+  - 0
+  - 0.6
+  - 0
+- name: corning_96_wellplate_360ul_flat
+  location: '3'
+  alias: react_plate
+  offset:
+  - 0
+  - 0.6
+  - 0
+- name: opentrons_96_tiprack_300ul
+  location: '11'
+  offset:
+  - 0.3
+  - 0.7
+  - -0.5
+- name: p300_single_gen2
+  mount: left

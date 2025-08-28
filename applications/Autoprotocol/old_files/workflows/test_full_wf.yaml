@@ -1,0 +1,92 @@
+name: Test_Arm_Workflow
+metadata:
+  author: Tobias Ginsburg 
+  info: Demo of robots for AutoProtocol Project
+  version: 0.2
+
+modules:
+  - name: biopf400
+
+flowdef:
+  - name: Run Protocol
+    module: ot2bioalpha
+    action: run_protocol
+    files:
+      protocol: payload.ot2_protocol
+
+  - name: Transfer Plate I
+    module: biopf400
+    action: transfer
+    args:
+      source: ot2bioalpha.deck1
+      target: bio_sealer.default
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfers a plate from ot2bioalpha to the sealer
+  
+  - name: Seal Plate
+    module: bio_sealer
+    action: seal
+    comment: Seal the Plate
+
+  - name: Transfer Plate II
+    module: biopf400
+    action: transfer
+    args:
+      source: bio_sealer.default
+      target: bio_biometra3.default
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfers a plate from sealer to the biometra
+  
+  - name: Close Biometra I
+    module: bio_biometra3
+    action: close
+
+  - name: Run Biometra
+    module: bio_biometra3
+    action: run_program
+    args:
+      program_number: 2
+    comment: Runs a biometra program
+  
+  - name: Open Biometra I
+    module: bio_biometra3
+    action: open
+
+  - name: Transfer Plate III
+    module: biopf400
+    action: transfer
+    args:
+      source: biometra3.default
+      target: bio_peeler.default
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfers a plate from biometra to the peeler
+  
+  - name: Peel Plate
+    module: bio_peeler
+    action: peel
+    comment: Peel the Plate
+  
+  - name: Open Hidex I
+    module: hidex_geraldine
+    action: open
+
+  - name: Transfer Plate IV
+    module: biopf400
+    action: transfer
+    args:
+      source: bio_peeler.default
+      target: hidex_geraldine.default
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfers a plate from peeler to the hidex
+  
+  - name: Read Plate I
+    module: hidex_geraldine
+    action: run_assay
+    args:
+      assay_name: demo_absorbance  
+
+        
