@@ -126,7 +126,7 @@ def fdglu_to_plate(protocol, reagent_plate, fdglu_plate, pipette, config): #TODO
     # 100 ul of assay into all wells
     combinations = config['combinations']
     num_samples = calculate_total_combinations(combinations)
-    fdglu_volume = 50
+    fdglu_volume = 33.3
     columns_needed = (num_samples + 7) // 8 
     source_well = reagent_plate.columns()[5]
     pipette.pick_up_tip()
@@ -139,6 +139,13 @@ def fdglu_to_plate(protocol, reagent_plate, fdglu_plate, pipette, config): #TODO
         new_tip='never', 
         )  
 
+        pipette.transfer(
+        fdglu_volume,
+        source_well,
+        dest_well,
+        new_tip='never', 
+        )  
+        
         pipette.transfer(
         fdglu_volume,
         source_well,
