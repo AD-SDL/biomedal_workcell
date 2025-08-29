@@ -18,7 +18,7 @@ config = {
 
     'heater_shaker_temp': 37,     # °C for heater/shaker
     'shaking_duration': 180,      # minutes (3 hours) for shaking (CFPS)
-    'shaking_speed': 200,      
+    'shaking_speed': 200,
 
     'rmf_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
     'diluted_pcr_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
@@ -27,7 +27,7 @@ config = {
     'tip_rack_type_50_02': 'opentrons_flex_96_tiprack_50ul',
     'tip_rack_type_50_03': 'opentrons_flex_96_tiprack_50ul',
     'reagent_plate_type': 'nest_12_reservoir_15ml',
-    'pcr_adapter_type': 'opentrons_96_pcr_adapter', 
+    'pcr_adapter_type': 'opentrons_96_pcr_adapter',
 
     'rmf_plate_position': 'B1',
     'diluted_pcr_plate_position': 'C1',
@@ -83,7 +83,7 @@ def mixA_to_rmf(protocol, rmf_plate, pipette, config):
             36,
             source_well,
             dest_well,
-            new_tip='never', 
+            new_tip='never',
             mix_before = (5, 30)
         )
     pipette.drop_tip()
@@ -98,7 +98,7 @@ def mixA_to_rmf(protocol, rmf_plate, pipette, config):
             source_well,
             dest_well,
             new_tip='always',  # Use fresh tip for each transfer
-            mix_before = (5, 30),
+            # mix_before = (5, 30),
             mix_after = (10, 30)
         )
 
@@ -111,7 +111,7 @@ def mixA_to_rmf(protocol, rmf_plate, pipette, config):
             source_well,
             dest_well,
             new_tip='always',  # Use fresh tip for each transfer
-            mix_before = (5, 30),
+            # mix_before = (5, 30),
             mix_after = (10, 30)
         )
 
@@ -129,7 +129,7 @@ def mixB_to_rmf(protocol, rmf_plate, cfps_plate, pipette, config):
             23,
             source_well,
             dest_well,
-            new_tip='never', 
+            new_tip='never',
             mix_before = (3, 15)
         )
     pipette.drop_tip()
@@ -143,7 +143,7 @@ def mixB_to_rmf(protocol, rmf_plate, cfps_plate, pipette, config):
             23,
             source_well,
             dest_well,
-            new_tip='never', 
+            new_tip='never',
             mix_before = (3, 15)
         )
     pipette.drop_tip()
@@ -163,7 +163,7 @@ def diluted_pcr_to_cfps(protocol, diluted_pcr_plate, cfps_plate, pipette, config
             source_well,
             dest_well,
             new_tip='always',  # Use fresh tip for each transfer
-            mix_before = (3, 15),
+            # mix_before = (3, 15),
             mix_after = (3, 15)
         )
 
@@ -222,17 +222,17 @@ def run(protocol: protocol_api.ProtocolContext):
                 rmf_plate=rmf_plate,
                 pipette=p50,
                 config=config)
-    
+
     mixB_to_rmf(protocol=protocol,
                 rmf_plate=rmf_plate,
                 cfps_plate=cfps_plate,
                 pipette=p50,
                 config=config)
-    
+
     diluted_pcr_to_cfps(protocol=protocol,
                         diluted_pcr_plate=diluted_pcr_plate,
                         cfps_plate=cfps_plate,
                         pipette=p50,
                         config=config)
-    
+
     #move cfps to seal, return to incubate

@@ -18,7 +18,7 @@ config = {
 
     'heater_shaker_temp': 37,     # °C for heater/shaker
     'shaking_duration': 150,      # minutes (2.5 hours) for shaking (CFPS)
-    'shaking_speed': 200,      
+    'shaking_speed': 200,
 
     'rmf_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
     'diluted_pcr_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
@@ -27,7 +27,7 @@ config = {
     'tip_rack_type_50_02': 'opentrons_flex_96_tiprack_50ul',
     'tip_rack_type_50_03': 'opentrons_flex_96_tiprack_50ul',
     'reagent_plate_type': 'nest_12_reservoir_15ml',
-    'pcr_adapter_type': 'opentrons_96_pcr_adapter', 
+    'pcr_adapter_type': 'opentrons_96_pcr_adapter',
     'sealed_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
 
     'rmf_plate_position': 'B1',
