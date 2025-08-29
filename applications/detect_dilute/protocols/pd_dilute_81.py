@@ -90,7 +90,7 @@ def sybrgreen_to_dest(protocol, reagent_plate, sybrgreen_plate, pipette, config)
     sybrgreen_well = reagent_plate.wells()[config['sybrgreen_well'] - 1]
     pipette.pick_up_tip()
     # first 50
-    for col_idx in range(columns_needed+1):
+    for col_idx in range(columns_needed):
         dest_well = sybrgreen_plate.columns()[col_idx]
         protocol.comment(f"\nTransferring to destination well {dest_well}:")
         pipette.transfer(
@@ -100,7 +100,7 @@ def sybrgreen_to_dest(protocol, reagent_plate, sybrgreen_plate, pipette, config)
             new_tip='never',  # Use fresh tip for each transfer
         )
     # 100
-    for col_idx in range(columns_needed+1):
+    for col_idx in range(columns_needed):
         dest_well = sybrgreen_plate.columns()[col_idx]
         protocol.comment(f"\nTransferring to destination well {dest_well}:")
         pipette.transfer(
@@ -112,7 +112,7 @@ def sybrgreen_to_dest(protocol, reagent_plate, sybrgreen_plate, pipette, config)
     # change well!
     sybrgreen_well = reagent_plate.wells()[config['sybrgreen_well']]
     # 150
-    for col_idx in range(columns_needed+1):
+    for col_idx in range(columns_needed):
         dest_well = sybrgreen_plate.columns()[col_idx]
         protocol.comment(f"\nTransferring to destination well {dest_well}:")
         pipette.transfer(
@@ -122,7 +122,7 @@ def sybrgreen_to_dest(protocol, reagent_plate, sybrgreen_plate, pipette, config)
             new_tip='never',  # Use fresh tip for each transfer
         )
     #200
-    for col_idx in range(columns_needed+1):
+    for col_idx in range(columns_needed):
         dest_well = sybrgreen_plate.columns()[col_idx]
         protocol.comment(f"\nTransferring to destination well {dest_well}:")
         pipette.transfer(
@@ -151,7 +151,7 @@ def pcr_to_dest(protocol, pcr_plate, sybrgreen_plate, pipette, config):
     num_samples = calculate_total_combinations(combinations)
     columns_needed = (num_samples + 7) // 8
 
-    for col_idx in range(columns_needed+1):
+    for col_idx in range(columns_needed):
         source_well = pcr_plate.columns()[col_idx]
         dest_well = sybrgreen_plate.columns()[col_idx]
         protocol.comment(f"\nTransferring to destination well {dest_well}:")
@@ -184,7 +184,7 @@ def water_to_pcr_dilution_wells(protocol, diluted_pcr, reagent_plate, pipette, c
     water_well = config['water_well']
     source_well = reagent_plate.wells()[water_well - 1]
     pipette.pick_up_tip()
-    for col_idx in range(columns_needed+1):
+    for col_idx in range(columns_needed):
         dest_well = diluted_pcr.columns()[col_idx]
         protocol.comment(f"\nTransferring to destination well {dest_well}:")
         pipette.transfer(
@@ -218,7 +218,7 @@ def pcr_to_water(protocol, pcr_plate, diluted_pcr, pipette, config):
     columns_needed = (num_samples + 7) // 8 
     columns_to_move = config['columns_to_move_for_dilute']
 
-    for col_idx in range(columns_needed+1):
+    for col_idx in range(columns_needed):
         dest_well = diluted_pcr.columns()[col_idx]
         source_well = pcr_plate.columns()[col_idx]
         protocol.comment(f"\nTransferring to destination well {dest_well}:")
