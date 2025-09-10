@@ -23,9 +23,9 @@ config = {
     'rmf_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
     'diluted_pcr_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
     'cfps_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
-    'tip_rack_type_50_01': 'opentrons_flex_96_tiprack_50ul',
-    'tip_rack_type_50_02': 'opentrons_flex_96_tiprack_50ul',
-    'tip_rack_type_50_03': 'opentrons_flex_96_tiprack_50ul',
+    'tip_rack_type_50_01': 'opentrons_flex_96_filtertiprack_50ul',
+    'tip_rack_type_50_02': 'opentrons_flex_96_filtertiprack_50ul',
+    'tip_rack_type_50_03': 'opentrons_flex_96_filtertiprack_50ul',
     'reagent_plate_type': 'nest_12_reservoir_15ml',
     'pcr_adapter_type': 'opentrons_96_pcr_adapter',
 
@@ -194,10 +194,10 @@ def run(protocol: protocol_api.ProtocolContext):
     chute = protocol.load_waste_chute()
 
     rmf_plate = temp_adapter1.load_labware(config['rmf_plate_type'])
-    rmf_plate.set_offset(x=0.40, y=0.50, z=2.40)
+    rmf_plate.set_offset(x=0.40, y=0.50, z=2.20)
 
     diluted_pcr_plate = temp_adapter2.load_labware(config['diluted_pcr_plate_type'])
-    diluted_pcr_plate.set_offset(x=0.40, y=0.50, z=2.40)
+    diluted_pcr_plate.set_offset(x=0.40, y=0.50, z=2.20)
 
     cfps_plate = protocol.load_labware(config['cfps_plate_type'], config['cfps_plate_position'])
     cfps_plate.set_offset(x=0.4, y=0.4, z=0.0)

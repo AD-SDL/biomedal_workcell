@@ -99,14 +99,14 @@ def main() -> None:
 
     # run d&d
 
-    payload = {"current_flex_protocol": str(run_dd)}
+    # payload = {"current_flex_protocol": str(run_dd)}
 
-    experiment_client.start_run(
-        run_flex_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    # experiment_client.start_run(
+    #     run_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
     # remove sybrgreen plate at C2, move to hidex no seal
 

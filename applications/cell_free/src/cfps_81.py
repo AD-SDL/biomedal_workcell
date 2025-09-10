@@ -67,6 +67,8 @@ def main() -> None:
     move_from_staging_B3_protocol = protocol_directory / "move_from_staging_A4_B3.py"
     move_pcr_to_staging_protocol = protocol_directory / "move_pcr_to_staging.py"
     move_C2_to_A4_protocol = protocol_directory / "move_to_staging_C2_A4.py"
+    move_A4_B1_protocol = protocol_directory / "move_from_staging_A4_B1.py"
+    move_B4_C1_protocol = protocol_directory / "move_from_staging_B4_C1.py"
 
     #TODO: possibly break up in future when running multiple plates, ie make large quantity of master mix and use repeatedly
 
@@ -77,6 +79,23 @@ def main() -> None:
     # EXPERIMENT STEPS: --------------
     #
     # --------------------------------
+    # #move rmf mix A4 to B1
+    # payload = {"current_flex_protocol": str(move_A4_B1_protocol)}
+    # experiment_client.start_run(
+    #     run_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
+
+    # #move dilution pcr B4 to C1
+    # payload = {"current_flex_protocol": str(move_B4_C1_protocol)}
+    # experiment_client.start_run(
+    #     run_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
     #run cell free
     experiment_client.start_run(
