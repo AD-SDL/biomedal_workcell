@@ -25,7 +25,7 @@ config = {
     'cfps_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
     'tip_rack_type_50_01': 'opentrons_flex_96_filtertiprack_50ul',
     'tip_rack_type_50_02': 'opentrons_flex_96_filtertiprack_50ul',
-    'tip_rack_type_50_03': 'opentrons_flex_96_filtertiprack_50ul',
+    # 'tip_rack_type_50_03': 'opentrons_flex_96_filtertiprack_50ul',
     'reagent_plate_type': 'nest_12_reservoir_15ml',
     'pcr_adapter_type': 'opentrons_96_pcr_adapter',
 
@@ -36,7 +36,7 @@ config = {
     'temp_module_02_position': 'C1',
     'tip_rack_position_50_01': 'A2',
     'tip_rack_position_50_02': 'A3',
-    'tip_rack_position_50_03': 'B3',
+    # 'tip_rack_position_50_03': 'B3',
     'reagent_plate_position': 'A1',
     'shaker_module_position': 'D1',
 
@@ -208,15 +208,15 @@ def run(protocol: protocol_api.ProtocolContext):
     tiprack_50_2 = protocol.load_labware(
         load_name=config['tip_rack_type_50_02'], location=config['tip_rack_position_50_02']
     )
-    tiprack_50_3 = protocol.load_labware(
-        load_name=config['tip_rack_type_50_03'], location=config['tip_rack_position_50_03']
-    )
+    # tiprack_50_3 = protocol.load_labware(
+    #     load_name=config['tip_rack_type_50_03'], location=config['tip_rack_position_50_03']
+    # )
 
     # Pipettes
-    p50 = protocol.load_instrument('flex_8channel_50', mount='right', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3])
-    p50s = protocol.load_instrument('flex_1channel_50', mount='left', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3])
+    p50 = protocol.load_instrument('flex_8channel_50', mount='right', tip_racks=[tiprack_50_1, tiprack_50_2])
+    p50s = protocol.load_instrument('flex_1channel_50', mount='left', tip_racks=[tiprack_50_1, tiprack_50_2])
 
-    p50.configure_nozzle_layout(style='COLUMN', start='A1', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3])
+    p50.configure_nozzle_layout(style='COLUMN', start='A1', tip_racks=[tiprack_50_1, tiprack_50_2])
 
     mixA_to_rmf(protocol=protocol,
                 rmf_plate=rmf_plate,

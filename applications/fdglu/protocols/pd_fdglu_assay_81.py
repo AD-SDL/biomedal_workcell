@@ -53,9 +53,9 @@ config = {
     'cfps_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt', # Reagent plate for reactions
     'fdglu_plate_type': 'corning_96_wellplate_360ul_flat', # Internal standards
     'pcr_adapter_type': 'opentrons_96_pcr_adapter',  # Aluminum adapter for PCR plates
-    'tip_rack_type_50_01': 'opentrons_flex_96_tiprack_50ul',
-    'tip_rack_type_50_02': 'opentrons_flex_96_tiprack_50ul',
-    'tip_rack_type_50_03': 'opentrons_flex_96_tiprack_50ul',
+    'tip_rack_type_50_01': 'opentrons_flex_96_filtertiprack_50ul',
+    'tip_rack_type_50_02': 'opentrons_flex_96_filtertiprack_50ul',
+    # 'tip_rack_type_50_03': 'opentrons_flex_96_tiprack_50ul',
     'pipette_type_50': 'flex_8channel_50',
     'reagent_plate_type': 'nest_12_reservoir_15ml',
 
@@ -70,7 +70,7 @@ config = {
     'fdglu_plate_position': 'D2',
     'tip_rack_position_50_01': 'A2',
     'tip_rack_position_50_02': 'A3',
-    'tip_rack_position_50_03': 'B3',
+    # 'tip_rack_position_50_03': 'B3',
 }
 
 
@@ -116,18 +116,18 @@ def remove_rmf(protocol, cfps_plate, reagent_plate, pipette, config):
     for well in wells_to_remove:
         source_well = cfps_plate.wells()[well]
         pipette.transfer(
-        23,
+        27.6,
         source_well,
         dest_well,
         new_tip='always',  # Use fresh tip for each transfer
-        )  
+        )
 
 def fdglu_to_plate(protocol, reagent_plate, fdglu_plate, pipette, config): #TODO make sure this is all wells in plate
     # 100 ul of assay into all wells
     combinations = config['combinations']
     num_samples = calculate_total_combinations(combinations)
     fdglu_volume = 33.3
-    columns_needed = (num_samples + 7) // 8 
+    columns_needed = (num_samples + 7) // 8
     source_well = reagent_plate.columns()[5]
     pipette.pick_up_tip()
     for i in range(12):
@@ -136,22 +136,22 @@ def fdglu_to_plate(protocol, reagent_plate, fdglu_plate, pipette, config): #TODO
         fdglu_volume,
         source_well,
         dest_well,
-        new_tip='never', 
-        )  
+        new_tip='never',
+        )
 
         pipette.transfer(
         fdglu_volume,
         source_well,
         dest_well,
-        new_tip='never', 
-        )  
-        
+        new_tip='never',
+        )
+
         pipette.transfer(
         fdglu_volume,
         source_well,
         dest_well,
-        new_tip='never', 
-        )  
+        new_tip='never',
+        )
     pipette.drop_tip()
 
 def cfps_to_dest(protocol, cfps_plate, fdglu_plate, pipette, config):
@@ -163,9 +163,9 @@ def cfps_to_dest(protocol, cfps_plate, fdglu_plate, pipette, config):
         cfps_volume,
         source_well,
         dest_well,
-        new_tip='always', 
+        new_tip='always',
         mix_after = (3, 30)
-        )  
+        )
 
 def controls_to_dest(protocol, controls_plate, fdglu_plate, pipette, config):
    #controls in f3, g3, h3 into fdglu f12, g12, h12
@@ -178,8 +178,8 @@ def controls_to_dest(protocol, controls_plate, fdglu_plate, pipette, config):
         20,
         source_well,
         dest_well,
-        new_tip='always', 
-        )  
+        new_tip='always',
+        )
 
 
 
@@ -187,7 +187,7 @@ def controls_to_dest(protocol, controls_plate, fdglu_plate, pipette, config):
 
 
 
-        
+
 
 
 
@@ -229,16 +229,16 @@ def run(protocol):
     tiprack_50_2 = protocol.load_labware(
         load_name=config['tip_rack_type_50_02'], location=config['tip_rack_position_50_02']
     )
-    tiprack_50_3 = protocol.load_labware(
-        load_name=config['tip_rack_type_50_03'], location=config['tip_rack_position_50_03']
-    )
+    # tiprack_50_3 = protocol.load_labware(
+    #     load_name=config['tip_rack_type_50_03'], location=config['tip_rack_position_50_03']
+    # )
 
 
     # Pipettes
-    p50 = protocol.load_instrument('flex_8channel_50', mount='right', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3])
-    p50s = protocol.load_instrument('flex_1channel_50', mount='left', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3])
+    p50 = protocol.load_instrument('flex_8channel_50', mount='right', tip_racks=[tiprack_50_1, tiprack_50_2])
+    p50s = protocol.load_instrument('flex_1channel_50', mount='left', tip_racks=[tiprack_50_1, tiprack_50_2])
 
-    p50.configure_nozzle_layout(style='COLUMN', start='A1', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3])
+    p50.configure_nozzle_layout(style='COLUMN', start='A1', tip_racks=[tiprack_50_1, tiprack_50_2])
     # p50s.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_200])
 
 
