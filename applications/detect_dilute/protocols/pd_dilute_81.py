@@ -87,6 +87,7 @@ def sybrgreen_to_dest(protocol, reagent_plate, sybrgreen_plate, pipette, config)
     combinations = config['combinations']
     num_samples = calculate_total_combinations(combinations)
     columns_needed = (num_samples + 7) // 8 
+    columns_needed = columns_needed+1
     sybrgreen_well = reagent_plate.wells()[config['sybrgreen_well'] - 1]
     pipette.pick_up_tip()
     # first 50
@@ -132,17 +133,10 @@ def sybrgreen_to_dest(protocol, reagent_plate, sybrgreen_plate, pipette, config)
             new_tip='never',  # Use fresh tip for each transfer
         )
     pipette.drop_tip()
-    
 
-    # for well in range(1, num_samples + 1):
-    #     dest_well = sybrgreen_plate.wells()[well - 1]
-    #     protocol.comment(f"\nTransferring to destination well {dest_well}:")
-    #     pipette.transfer(
-    #         sybrgreen_volume,
-    #         sybrgreen_well,
-    #         dest_well,
-    #         new_tip='always',  # Use fresh tip for each transfer
-    #     )
+
+
+
 
 def pcr_to_dest(protocol, pcr_plate, sybrgreen_plate, pipette, config):
     pcr_sample_volume = config['pcr_sample_volume']
@@ -151,7 +145,7 @@ def pcr_to_dest(protocol, pcr_plate, sybrgreen_plate, pipette, config):
     num_samples = calculate_total_combinations(combinations)
     columns_needed = (num_samples + 7) // 8
 
-    for col_idx in range(columns_needed):
+    for col_idx in range(columns_needed+1):
         source_well = pcr_plate.columns()[col_idx]
         dest_well = sybrgreen_plate.columns()[col_idx]
         protocol.comment(f"\nTransferring to destination well {dest_well}:")
@@ -163,17 +157,17 @@ def pcr_to_dest(protocol, pcr_plate, sybrgreen_plate, pipette, config):
             mix_after = (3, 20)
         )
 
-    # for well in range(1, num_samples + 1):
-    #     source_well = pcr_plate.wells()[well - 1]
-    #     dest_well = sybrgreen_plate.wells()[well - 1]
-    #     protocol.comment(f"\nTransferring to destination well {dest_well}:")
-    #     pipette.transfer(
-    #         pcr_sample_volume,
-    #         source_well,
-    #         dest_well,
-    #         new_tip='always',  # Use fresh tip for each transfer
-    #         mix_after = (3, 20)
-    #     )
+def controls_to_sybrgreen(protocol, controls_plate, sybrgreen_plate, pipette, config):
+    pcr_sample_volume = config['pcr_sample_volume']
+    source_well = controls_plate.columns()[4]
+    dest_well = sybrgreen_plate.columns()[11]
+    pipette.transfer(
+        pcr_sample_volume,
+        source_well,
+        dest_well,
+        new_tip='always',  # Use fresh tip for each transfer
+        mix_after = (3, 20)
+    )
 
 def water_to_pcr_dilution_wells(protocol, diluted_pcr, reagent_plate, pipette, config):
     water_volume = config['water_volume']
@@ -196,20 +190,7 @@ def water_to_pcr_dilution_wells(protocol, diluted_pcr, reagent_plate, pipette, c
         )
     pipette.drop_tip()
 
-    #figure out destination wells
-    # wells_to_add = columns_to_move * 8
-    # source_well = reagent_plate.wells()[water_well - 1]
 
-    # for well in range(1, num_samples + 1):
-    #     dest_well = pcr_plate.wells()[(well - 1) + wells_to_add]
-    #     protocol.comment(f"\nTransferring to destination well {dest_well}:")
-    #     pipette.transfer(
-    #         water_volume,
-    #         source_well,
-    #         dest_well,
-    #         new_tip='always',  # Use fresh tip for each transfer
-    #         mix_after = (3, 20)
-    #     )
 
 def pcr_to_water(protocol, pcr_plate, diluted_pcr, pipette, config):
     pcr_sample_volume = config['pcr_sample_volume']
@@ -230,20 +211,6 @@ def pcr_to_water(protocol, pcr_plate, diluted_pcr, pipette, config):
             mix_after = (3, 20)
         )
 
-    #figure out destination wells
-    # wells_to_add = columns_to_move * 8
-
-    # for well in range(1, num_samples + 1):
-    #     source_well = pcr_plate.wells()[well - 1]
-    #     dest_well = pcr_plate.wells()[(well - 1) + wells_to_add]
-    #     protocol.comment(f"\nTransferring to destination well {dest_well}:")
-    #     pipette.transfer(
-    #         pcr_sample_volume,
-    #         source_well,
-    #         dest_well,
-    #         new_tip='always',  # Use fresh tip for each transfer
-    #         mix_after = (3, 20)
-    #     )
 
 def controls_to_pcr(protocol, diluted_pcr, controls_plate, pipette, config):
     control_volume = config['control_volume']

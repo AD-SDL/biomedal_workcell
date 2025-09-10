@@ -60,13 +60,13 @@ def generate_all_combinations(combinations):
 
 def mixA_to_rmf(protocol, rmf_plate, pipette, config):
     #mix at every step
-    #mix 5 times, 108ul to col 4
+    # mix 5 times, 120ul to col 4
     source_well = rmf_plate.columns()[0]
     dest_well = rmf_plate.columns()[3]
     pipette.pick_up_tip()
     for i in range(3):
         pipette.transfer(
-            36,
+            40,
             source_well,
             dest_well,
             new_tip='never',
@@ -80,7 +80,7 @@ def mixA_to_rmf(protocol, rmf_plate, pipette, config):
     pipette.pick_up_tip()
     for i in range(3):
         pipette.transfer(
-            36,
+            40,
             source_well,
             dest_well,
             new_tip='never',
@@ -94,7 +94,7 @@ def mixA_to_rmf(protocol, rmf_plate, pipette, config):
     # pipette.pick_up_tip()
     for i in range(2):
         pipette.transfer(
-            27,
+            30,
             source_well,
             dest_well,
             new_tip='always',  # Use fresh tip for each transfer
@@ -107,7 +107,7 @@ def mixA_to_rmf(protocol, rmf_plate, pipette, config):
     # pipette.pick_up_tip()
     for i in range(2):
         pipette.transfer(
-            27,
+            30,
             source_well,
             dest_well,
             new_tip='always',  # Use fresh tip for each transfer
@@ -126,7 +126,7 @@ def mixB_to_rmf(protocol, rmf_plate, cfps_plate, pipette, config):
     for i in range(6):
         dest_well = cfps_plate.columns()[i]
         pipette.transfer(
-            23,
+            27.6,
             source_well,
             dest_well,
             new_tip='never',
@@ -140,7 +140,7 @@ def mixB_to_rmf(protocol, rmf_plate, cfps_plate, pipette, config):
     for i in range(6, 12):
         dest_well = cfps_plate.columns()[i]
         pipette.transfer(
-            23,
+            27.6,
             source_well,
             dest_well,
             new_tip='never',
@@ -159,11 +159,11 @@ def diluted_pcr_to_cfps(protocol, diluted_pcr_plate, cfps_plate, pipette, config
         source_well = diluted_pcr_plate.columns()[i]
         dest_well = cfps_plate.columns()[i]
         pipette.transfer(
-            2,
+            2.4,
             source_well,
             dest_well,
             new_tip='always',  # Use fresh tip for each transfer
-            # mix_before = (3, 15),
+            mix_before = (3, 10),
             mix_after = (3, 15)
         )
 
