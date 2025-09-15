@@ -16,7 +16,7 @@ requirements = {"robotType": "Flex", "apiLevel": "2.20"}
 # Protocol Configuration
 config = {
     # Combinatorial mixing
-    'combinations': [[2,10,18],[3,11,19],[4,12,20],[5,13,21]],
+    'combinations': [[18,10,2],[11,19,3],[4,20,12],[21,13,5]],
     'transfer_volume': 2,  # µL from each source well
 
     # Master mix settings
