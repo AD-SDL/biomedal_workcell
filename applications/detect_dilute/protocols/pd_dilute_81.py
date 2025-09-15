@@ -45,9 +45,9 @@ config = {
     # 'gg_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
     'reagent_plate_type': 'nest_12_reservoir_15ml',
     'sybrgreen_plate_type': 'corning_96_wellplate_360ul_flat',
-    'tip_rack_type_50_01': 'opentrons_flex_96_tiprack_50ul',
-    'tip_rack_type_50_02': 'opentrons_flex_96_tiprack_50ul',
-    'tip_rack_type_50_03': 'opentrons_flex_96_tiprack_50ul',
+    'tip_rack_type_50_01': 'opentrons_flex_96_filtertiprack_50ul',
+    'tip_rack_type_50_02': 'opentrons_flex_96_filtertiprack_50ul',
+    'tip_rack_type_50_03': 'opentrons_flex_96_filtertiprack_50ul',
     'pipette_type_50': 'flex_8channel_50',
     'tip_rack_type_200_01': 'opentrons_flex_96_tiprack_200ul',
     # 'pipette_type_1000': 'flex_8channel_1000',
@@ -86,7 +86,7 @@ def sybrgreen_to_dest(protocol, reagent_plate, sybrgreen_plate, pipette, config)
     # num_samples = config["number_of_pcr_samples"]
     combinations = config['combinations']
     num_samples = calculate_total_combinations(combinations)
-    columns_needed = (num_samples + 7) // 8 
+    columns_needed = (num_samples + 7) // 8
     columns_needed = columns_needed+1
     sybrgreen_well = reagent_plate.wells()[config['sybrgreen_well'] - 1]
     pipette.pick_up_tip()
@@ -145,7 +145,7 @@ def pcr_to_dest(protocol, pcr_plate, sybrgreen_plate, pipette, config):
     num_samples = calculate_total_combinations(combinations)
     columns_needed = (num_samples + 7) // 8
 
-    for col_idx in range(columns_needed+1):
+    for col_idx in range(columns_needed):
         source_well = pcr_plate.columns()[col_idx]
         dest_well = sybrgreen_plate.columns()[col_idx]
         protocol.comment(f"\nTransferring to destination well {dest_well}:")
@@ -173,7 +173,7 @@ def water_to_pcr_dilution_wells(protocol, diluted_pcr, reagent_plate, pipette, c
     water_volume = config['water_volume']
     combinations = config['combinations']
     num_samples = calculate_total_combinations(combinations)
-    columns_needed = (num_samples + 7) // 8 
+    columns_needed = (num_samples + 7) // 8
     columns_to_move = config['columns_to_move_for_dilute']
     water_well = config['water_well']
     source_well = reagent_plate.wells()[water_well - 1]
@@ -189,14 +189,21 @@ def water_to_pcr_dilution_wells(protocol, diluted_pcr, reagent_plate, pipette, c
             # mix_after = (3, 20)
         )
     pipette.drop_tip()
+    # payload = {"current_flex_protocol": str(run_dd)}
 
+    # experiment_client.start_run(
+    #     run_flex_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
 
 
 def pcr_to_water(protocol, pcr_plate, diluted_pcr, pipette, config):
     pcr_sample_volume = config['pcr_sample_volume']
     combinations = config['combinations']
     num_samples = calculate_total_combinations(combinations)
-    columns_needed = (num_samples + 7) // 8 
+    columns_needed = (num_samples + 7) // 8
     columns_to_move = config['columns_to_move_for_dilute']
 
     for col_idx in range(columns_needed):
@@ -227,7 +234,7 @@ def controls_to_pcr(protocol, diluted_pcr, controls_plate, pipette, config):
             source_well,
             dest_well,
             new_tip='always',  # Use fresh tip for each transfer
-        )  
+        )
         starting_dest_well+=1
 
 
@@ -255,11 +262,11 @@ def run(protocol: protocol_api.ProtocolContext):
 
     # Load destination plate
     pcr_plate = protocol.load_labware(config['pcr_plate_type'], config['pcr_plate_position'])
-    pcr_plate.set_offset(x=0.4, y=0.4, z=0.0)
+    pcr_plate.set_offset(x=0.4, y=0.4, z=0.2)
 
     diluted_pcr_plate = temp_adapter2.load_labware(config['diluted_pcr_plate_type'])
     # diluted_pcr_plate = protocol.load_labware(config['diluted_pcr_plate_type'], config['diluted_pcr_plate_position'])
-    diluted_pcr_plate.set_offset(x=0.40, y=0.50, z=2.40)
+    diluted_pcr_plate.set_offset(x=0.40, y=0.50, z=2.60)
     # gg_plate = protocol.load_labware(config['gg_plate_type'], config['gg_plate_position'])
     # gg_plate.set_offset(x=0.4, y=0.4, z=0.0)
 
@@ -269,7 +276,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     controls_plate = temp_adapter1.load_labware(config['controls_plate_type'])
     # controls_plate = protocol.load_labware(config['controls_plate_type'], config['controls_plate_position'])
-    controls_plate.set_offset(x=0.40, y=0.50, z=2.40)
+    controls_plate.set_offset(x=0.40, y=0.50, z=2.60)
 
     tiprack_50_1 = protocol.load_labware(
         load_name=config['tip_rack_type_50_01'], location=config['tip_rack_position_50_01']
@@ -303,20 +310,26 @@ def run(protocol: protocol_api.ProtocolContext):
                 sybrgreen_plate=sybrgreen_plate,
                 pipette=p50,
                 config=config)
-    
+
+    controls_to_sybrgreen(protocol=protocol,
+                          controls_plate=controls_plate,
+                          sybrgreen_plate=sybrgreen_plate,
+                          pipette=p50,
+                          config=config)
+
     water_to_pcr_dilution_wells(protocol=protocol,
                                 diluted_pcr=diluted_pcr_plate,
                                 reagent_plate=reagent_plate,
                                 pipette=p50,
                                 config=config)
-    
+
     pcr_to_water(protocol=protocol,
                  pcr_plate=pcr_plate,
                  diluted_pcr=diluted_pcr_plate,
                  pipette=p50,
                  config=config)
-    
-    
+
+
     controls_to_pcr(protocol=protocol,
                     diluted_pcr=diluted_pcr_plate,
                     controls_plate=controls_plate,
