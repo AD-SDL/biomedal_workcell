@@ -11,7 +11,7 @@ requirements = {"robotType": "Flex", "apiLevel": "2.20"}
 
 def run(protocol: protocol_api.ProtocolContext):
     # Labware
-    source_plate = protocol.load_labware('nest_96_wellplate_200ul_flat', 'B1')
+    # source_plate = protocol.load_labware('nest_96_wellplate_200ul_flat', 'B1')
     pcr_plate = protocol.load_labware('nest_96_wellplate_100ul_pcr_full_skirt', 'B2')
     mastermix_tube = protocol.load_labware('nest_96_wellplate_100ul_pcr_full_skirt', 'C2')
     water_reservoir = protocol.load_labware('nest_12_reservoir_15ml', 'A1')
