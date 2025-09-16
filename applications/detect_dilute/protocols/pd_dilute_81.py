@@ -266,7 +266,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     diluted_pcr_plate = temp_adapter2.load_labware(config['diluted_pcr_plate_type'])
     # diluted_pcr_plate = protocol.load_labware(config['diluted_pcr_plate_type'], config['diluted_pcr_plate_position'])
-    diluted_pcr_plate.set_offset(x=0.7, y=0.30, z=0.2)
+    diluted_pcr_plate.set_offset(x=0.7, y=0.30, z=0.6)
     # gg_plate = protocol.load_labware(config['gg_plate_type'], config['gg_plate_position'])
     # gg_plate.set_offset(x=0.4, y=0.4, z=0.0)
 
@@ -276,7 +276,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     controls_plate = temp_adapter1.load_labware(config['controls_plate_type'])
     # controls_plate = protocol.load_labware(config['controls_plate_type'], config['controls_plate_position'])
-    controls_plate.set_offset(x=0.7, y=0.30, z=0.2)
+    controls_plate.set_offset(x=0.7, y=0.30, z=0.6)
 
     tiprack_50_1 = protocol.load_labware(
         load_name=config['tip_rack_type_50_01'], location=config['tip_rack_position_50_01']
