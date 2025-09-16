@@ -18,7 +18,7 @@ config = {
     # Combinatorial mixing
     'transfer_volume': 1,  # µL from each gg well
     # 'number_of_gg_samples': 6,
-    'combinations': [[2,10,18],[3,11,19],[4,12,20],[5,13,21]],
+    'combinations': [[18,10,2],[11,19,3],[4,20,12],[21,13,5]],
 
     # Master mix and reagent settings
     'pcr_master_mix_well_volume': 100,
@@ -238,7 +238,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     chute = protocol.load_waste_chute()
 
-    source_plate.set_offset(x=0.40, y=0.50, z=2.40)
+    source_plate.set_offset(x=0.7, y=0.30, z=0.2)
 
 
     # Load destination plate
