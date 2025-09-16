@@ -17,6 +17,8 @@ def run(protocol: protocol_api.ProtocolContext):
     water_reservoir = protocol.load_labware('nest_12_reservoir_15ml', 'A1')
     temp_mod = protocol.load_module(module_name="temperature module gen2", location="C1")
     temp_adapter = temp_mod.load_adapter("opentrons_96_well_aluminum_block")
+    temp_mod2 = protocol.load_module(module_name="temperature module gen2", location="B1")
+    temp_adapter2 = temp_mod2.load_adapter("opentrons_96_well_aluminum_block")
     dna = temp_adapter.load_labware('nest_96_wellplate_100ul_pcr_full_skirt')
 
     tiprack_50 = protocol.load_labware(
