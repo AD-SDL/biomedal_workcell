@@ -247,7 +247,7 @@ def run(protocol: protocol_api.ProtocolContext):
 
     # gg_plate = protocol.load_labware(config['gg_plate_type'], config['gg_plate_position'])
     gg_plate = temp_adapter_2.load_labware(config['gg_plate_type'])
-    gg_plate.set_offset(x=0.4, y=0.4, z=0.0)
+    gg_plate.set_offset(x=0.7, y=0.30, z=0.2)
 
     reagent_plate = protocol.load_labware(config['reagent_plate_type'], config['reagent_plate_position'])
 
