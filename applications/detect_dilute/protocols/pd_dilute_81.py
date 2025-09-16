@@ -311,11 +311,11 @@ def run(protocol: protocol_api.ProtocolContext):
                 pipette=p50,
                 config=config)
 
-    controls_to_sybrgreen(protocol=protocol,
-                          controls_plate=controls_plate,
-                          sybrgreen_plate=sybrgreen_plate,
-                          pipette=p50,
-                          config=config)
+    # controls_to_sybrgreen(protocol=protocol,
+    #                       controls_plate=controls_plate,
+    #                       sybrgreen_plate=sybrgreen_plate,
+    #                       pipette=p50,
+    #                       config=config)
 
     water_to_pcr_dilution_wells(protocol=protocol,
                                 diluted_pcr=diluted_pcr_plate,
