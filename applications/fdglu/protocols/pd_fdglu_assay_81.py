@@ -15,7 +15,7 @@ requirements = {"robotType": "Flex", "apiLevel": "2.20"}
 # Protocol Configuration
 config = {
     # PCR product settings
-    'combinations': [[2,10,18],[3,11,19],[4,12,20],[5,13,21]], # 1-indexed source well numbers (kept for total calculation)
+    'combinations': [[18,10,2],[11,19,3],[4,20,12],[21,13,5]], # 1-indexed source well numbers (kept for total calculation)
     'fdglu_volume': 100,    # µL of PCR product to transfer to reaction plate
     'source_samples_volume': 20,
     'protein_and_buffer_volume': 20,
