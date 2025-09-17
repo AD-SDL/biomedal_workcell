@@ -13,7 +13,7 @@ metadata = {
 requirements = {"robotType": "Flex", "apiLevel": "2.20"}
 
 config = {
-    'combinations': [[2,10,18],[3,11,19],[4,12,20],[5,13,21]], # 1-indexed source well numbers (kept for total calculation)
+    'combinations': [[18,10,2],[11,19,3],[4,20,12],[21,13,5]], # 1-indexed source well numbers (kept for total calculation)
     'temperature' : 4,
 
     'heater_shaker_temp': 37,     # °C for heater/shaker

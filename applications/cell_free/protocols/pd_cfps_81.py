@@ -13,7 +13,7 @@ metadata = {
 requirements = {"robotType": "Flex", "apiLevel": "2.20"}
 
 config = {
-    'combinations': [[2,10,18],[3,11,19],[4,12,20],[5,13,21]], # 1-indexed source well numbers (kept for total calculation)
+    'combinations': [[18,10,2],[11,19,3],[4,20,12],[21,13,5]], # 1-indexed source well numbers (kept for total calculation)
     'temperature' : 4,
 
     'heater_shaker_temp': 37,     # °C for heater/shaker
@@ -194,10 +194,10 @@ def run(protocol: protocol_api.ProtocolContext):
     chute = protocol.load_waste_chute()
 
     rmf_plate = temp_adapter1.load_labware(config['rmf_plate_type'])
-    rmf_plate.set_offset(x=0.40, y=0.50, z=2.20)
+    rmf_plate.set_offset(x=0.7, y=0.30, z=0.6)
 
     diluted_pcr_plate = temp_adapter2.load_labware(config['diluted_pcr_plate_type'])
-    diluted_pcr_plate.set_offset(x=0.40, y=0.50, z=2.20)
+    diluted_pcr_plate.set_offset(x=0.7, y=0.30, z=0.6)
 
     cfps_plate = protocol.load_labware(config['cfps_plate_type'], config['cfps_plate_position'])
     cfps_plate.set_offset(x=0.4, y=0.4, z=0.0)
@@ -217,6 +217,9 @@ def run(protocol: protocol_api.ProtocolContext):
     p50s = protocol.load_instrument('flex_1channel_50', mount='left', tip_racks=[tiprack_50_1, tiprack_50_2])
 
     p50.configure_nozzle_layout(style='COLUMN', start='A1', tip_racks=[tiprack_50_1, tiprack_50_2])
+
+    p50.flow_rate.aspirate = 20
+    p50.flow_rate.dispense = 20
 
     mixA_to_rmf(protocol=protocol,
                 rmf_plate=rmf_plate,
