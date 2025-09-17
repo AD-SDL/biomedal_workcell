@@ -179,6 +179,7 @@ def controls_to_dest(protocol, controls_plate, fdglu_plate, pipette, config):
         source_well,
         dest_well,
         new_tip='always',
+        mix_after = (3, 30)
         )
 
 
