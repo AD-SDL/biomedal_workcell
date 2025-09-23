@@ -1,0 +1,37 @@
+name: Run the Tekmatic incubator - Substrate App Workflow
+
+metadata:
+  author: Casey Stone
+  info: Workflow for incubating on tekmatic incubator
+  version: 0.1
+
+flowdef:
+  - name: open incubator
+    module: payload.incubator_node 
+    action: open
+
+  - name: transfer
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_low_narrow
+      target: payload.incubator_location
+      source_approach: safe_path_exchange
+      target_approach: safe_path_inheco_dev2
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+    comment: Transfer plate with lid from bmg reader to specified tekmatic incubator
+
+  - name: close incubator
+    module: payload.incubator_node
+    action: close
+
+  - name: run incubation
+    module: payload.incubator_node
+    action: incubate
+    args:
+      temperature: 30.0
+      shaker_frequency: 6.6
+      wait_for_incubation_time: False
+      incubation_time: payload.incubation_seconds   # 10 hours at start, 1 hour after
+    comment: incubate for specified time
