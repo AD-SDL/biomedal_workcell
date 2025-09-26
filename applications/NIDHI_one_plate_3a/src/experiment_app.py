@@ -33,6 +33,7 @@ def main() -> None:
         campaign=campaign,
     )
 
+
     # DEFINE PATHS AND VARIABLES ---------------------------------
 
     # capture the expriment ID
@@ -48,13 +49,13 @@ def main() -> None:
     protocol_directory = app_directory / "protocols"
 
     # workflow paths (run instruments)
-    run_ot2_wf = wf_run_instrument_directory / "run_ot2_wf.yaml"
-    incubator_to_run_bmg_wf = (
-        wf_run_instrument_directory / "incubator_to_run_bmg_wf.yaml"
-    )
-    bmg_to_run_incubator_wf = (
-        wf_run_instrument_directory / "bmg_to_run_incubator_wf.yaml"
-    )
+    # run_ot2_wf = wf_run_instrument_directory / "run_ot2_wf.yaml"
+    # incubator_to_run_bmg_wf = (
+    #     wf_run_instrument_directory / "incubator_to_run_bmg_wf.yaml"
+    # )
+    # bmg_to_run_incubator_wf = (
+    #     wf_run_instrument_directory / "bmg_to_run_incubator_wf.yaml"
+    # )
     exchange_to_run_incubator_wf = (
         wf_run_instrument_directory / "exchange_to_run_incubator_wf.yaml"
     )
@@ -65,17 +66,17 @@ def main() -> None:
         wf_set_up_tear_down_directory / "get_new_plate_and_run_bmg_wf.yaml"
     )
 
-    remove_old_substrate_plate_wf = (
-        wf_set_up_tear_down_directory / "remove_old_substrate_plate_wf.yaml"
-    )
+    # remove_old_substrate_plate_wf = (
+    #     wf_set_up_tear_down_directory / "remove_old_substrate_plate_wf.yaml"
+    # )
 
-    # workflow paths (pf400 transfers)
-    switch_lid_move_to_ot2_wf = (
-        wf_transfers_directory / "switch_lid_move_to_ot2_wf.yaml"
-    )
-    move_to_bmg_switch_lid_read_wf = (
-        wf_transfers_directory / "move_to_bmg_switch_lid_read_wf.yaml"
-    )
+    # # workflow paths (pf400 transfers)
+    # switch_lid_move_to_ot2_wf = (
+    #     wf_transfers_directory / "switch_lid_move_to_ot2_wf.yaml"
+    # )
+    # move_to_bmg_switch_lid_read_wf = (
+    #     wf_transfers_directory / "move_to_bmg_switch_lid_read_wf.yaml"
+    # )
 
     # protocol paths (for OT-2)
     inoculate_protocol = protocol_directory / "inoculate.yaml"
@@ -92,7 +93,9 @@ def main() -> None:
 
     test_prints = True  # if True, print out extra info for testing purposes
 
-
+    # incubation_seconds_initial = 36000  # 10 hours
+    incubation_seconds_initial = 20 # for testing
+    incubation_seconds_between_readings = 3600  # 1 hour
 
     # initial payload setup
     payload = {
@@ -101,12 +104,12 @@ def main() -> None:
         "old_lid_location": "lidnest2",
         "remove_lid_safe_path": "safe_path_lidnest_1",
         "bmg_assay_name": "NIDHI",
-        "ot2_new_plate_location": "ot2biobeta_deck1_wide", 
+        "ot2_new_plate_location": "ot2biobeta_deck1_wide",
         "ot2_old_plate_location": "ot2biobeta_deck3_wide",
-        "ot2_safe_path": "safe_path_ot2bioalpha", 
+        "ot2_safe_path": "safe_path_ot2bioalpha",
         "incubator_node": "inheco_devID2_floor1",
         "incubator_location": "inheco_devID2_floor1_nest",
-        "incubation_seconds": 36000,  # 10 hours
+        "incubation_seconds": incubation_seconds_initial,
         "stack": "stack1",
     }
 
@@ -115,7 +118,7 @@ def main() -> None:
     # start with inoculated assay plate with lid on exchange and extra assay plates in Plate Crane stack 1
 
 
-    # move immediately into incubator with lid on for 10 hours
+    # move immediately into incubator with lid on for 10 hours  # NOT TESTED
     experiment_client.start_run(
         exchange_to_run_incubator_wf.resolve(),
         payload=payload,
@@ -123,56 +126,56 @@ def main() -> None:
         simulate=False,
     )
 
-    # transfer plate 0 into bmg and take reading (plate0_T10)
-    timestamp_now = int(datetime.now().timestamp())
-    payload["bmg_data_output_name"] = (
-        f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_T{reading_in_plate_num}.txt"
-    )
-    run_info = experiment_client.start_run(
-        incubator_to_run_bmg_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
-    # write utc bmg timestamp to csv data file
-    helper_functions.write_timestamps_to_csv(
-        csv_directory_path=csv_data_directory,
-        experiment_id=experiment_id,
-        bmg_filename=payload["bmg_data_output_name"],
-        accurate_timestamp=run_info.steps[7].end_time,  # index 7 = bmg reading
-    )
-    if test_prints == True: 
-        print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[7].end_time}")
+    # # transfer plate 0 into bmg and take reading (plate0_T10)   # NOT TESTED
+    # timestamp_now = int(datetime.now().timestamp())
+    # payload["bmg_data_output_name"] = (
+    #     f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_T{reading_in_plate_num}.txt"
+    # )
+    # run_info = experiment_client.start_run(
+    #     incubator_to_run_bmg_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
+    # # write utc bmg timestamp to csv data file
+    # helper_functions.write_timestamps_to_csv(
+    #     csv_directory_path=csv_data_directory,
+    #     experiment_id=experiment_id,
+    #     bmg_filename=payload["bmg_data_output_name"],
+    #     accurate_timestamp=run_info.steps[7].end_time,  # index 7 = bmg reading
+    # )
+    # if test_prints:
+    #     print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[7].end_time}")
 
 
-    # modify variables
-    plate_num += 1
-    reading_in_plate_num = 0
-    
-    # get new substrate plate, take contam reading, then move to OT-2
-    timestamp_now = int(datetime.now().timestamp())
-    payload["bmg_data_output_name"] = (
-        f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_contam.txt"
-    )
-    experiment_client.start_run(
-        get_new_plate_and_run_bmg_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
-    # write utc bmg timestamp to csv data file
-    helper_functions.write_timestamps_to_csv(
-        csv_directory_path=csv_data_directory,
-        experiment_id=experiment_id,
-        bmg_filename=payload["bmg_data_output_name"],
-        accurate_timestamp=run_info.steps[5].end_time,  # index 5 = bmg reading
-    )
-    if test_prints == True: 
-        print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[5].end_time}")
+    # # modify variables
+    # plate_num += 1
+    # reading_in_plate_num = 0
+
+    # # get new substrate plate, take contam reading, then move to OT-2
+    # timestamp_now = int(datetime.now().timestamp())
+    # payload["bmg_data_output_name"] = (
+    #     f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_contam.txt"
+    # )
+    # experiment_client.start_run(
+    #     get_new_plate_and_run_bmg_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
+    # # write utc bmg timestamp to csv data file
+    # helper_functions.write_timestamps_to_csv(
+    #     csv_directory_path=csv_data_directory,
+    #     experiment_id=experiment_id,
+    #     bmg_filename=payload["bmg_data_output_name"],
+    #     accurate_timestamp=run_info.steps[5].end_time,  # index 5 = bmg reading
+    # )
+    # if test_prints:
+    #     print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[5].end_time}")
 
 
-    # Take T10 (endpoint reading) of plate 0 in incubator then move to OT-2 old location
-    
+    # # Take T10 (endpoint reading) of plate 0 in incubator then move to OT-2 old location
+
 
 
 

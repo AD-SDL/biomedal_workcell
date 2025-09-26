@@ -7,7 +7,7 @@ metadata:
 
 flowdef:
   - name: open incubator
-    module: payload.incubator_node 
+    module: payload.incubator_node
     action: open
 
   - name: transfer
