@@ -48,6 +48,18 @@ flowdef:
     module: bio_bmg
     action: open
 
+  # transfer plate from ot2 to exchange
+  - name: Transfer plate without lid to exchange location
+    module: biopf400
+    action: transfer
+    args:
+      source: payload.ot2_location
+      target: exchange_deck_high_wide
+      source_approach: payload.ot2_safe_path
+      target_approach: safe_path_exchange
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+
   # transfer plate without lid to bmg nest
   - name: Transfer plate without lid to bmg nest
     module: biopf400
