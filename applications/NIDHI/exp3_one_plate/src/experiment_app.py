@@ -2,7 +2,7 @@
 """
 Experiment application for Chris and Nidhi's substrate experiment
 
-TODO: 
+TODO:
 - automatic data transfer
 - TEST everything
 
@@ -107,7 +107,7 @@ def main() -> None:
     """
     Experiment setup at start:
 
-    Location: 
+    Location:
         exchange: inoculated plate with lid
         Stack 1: extra substrate plates with lids
         OT-2 (ot2biobeta) decks 4-11: tip racks
@@ -123,55 +123,55 @@ def main() -> None:
 
     )
 
-    # transfer plate 0 into bmg and take reading (plate0_T10)   # NOT TESTED
-    timestamp_now = int(datetime.now().timestamp())
-    payload["bmg_data_output_name"] = (
-        f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_T{reading_in_plate_num}.txt"
-    )
-    run_info = experiment_client.start_run(
-        incubator_to_run_bmg_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
-    # write utc bmg timestamp to csv data file
-    helper_functions.write_timestamps_to_csv(
-        csv_directory_path=csv_data_directory,
-        experiment_id=experiment_id,
-        bmg_filename=payload["bmg_data_output_name"],
-        accurate_timestamp=run_info.steps[7].end_time,  # index 7 = bmg reading
-    )
-    if test_prints:
-        print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[7].end_time}")
+    # # transfer plate 0 into bmg and take reading (plate0_T10)   # NOT TESTED
+    # timestamp_now = int(datetime.now().timestamp())
+    # payload["bmg_data_output_name"] = (
+    #     f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_T{reading_in_plate_num}.txt"
+    # )
+    # run_info = experiment_client.start_run(
+    #     incubator_to_run_bmg_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
+    # # write utc bmg timestamp to csv data file
+    # helper_functions.write_timestamps_to_csv(
+    #     csv_directory_path=csv_data_directory,
+    #     experiment_id=experiment_id,
+    #     bmg_filename=payload["bmg_data_output_name"],
+    #     accurate_timestamp=run_info.steps[7].end_time,  # index 7 = bmg reading
+    # )
+    # if test_prints:
+    #     print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[7].end_time}")
 
 
-    # modify variables
-    plate_num += 1
-    reading_in_plate_num = 0
+    # # modify variables
+    # plate_num += 1
+    # reading_in_plate_num = 0
 
-    # get new substrate plate, take contam reading, then move to OT-2
-    timestamp_now = int(datetime.now().timestamp())
-    payload["bmg_data_output_name"] = (
-        f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_contam.txt"
-    )
-    experiment_client.start_run(
-        get_new_plate_and_run_bmg_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
-    # write utc bmg timestamp to csv data file
-    helper_functions.write_timestamps_to_csv(
-        csv_directory_path=csv_data_directory,
-        experiment_id=experiment_id,
-        bmg_filename=payload["bmg_data_output_name"],
-        accurate_timestamp=run_info.steps[5].end_time,  # index 5 = bmg reading
-    )
-    if test_prints:
-        print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[5].end_time}")
+    # # get new substrate plate, take contam reading, then move to OT-2
+    # timestamp_now = int(datetime.now().timestamp())
+    # payload["bmg_data_output_name"] = (
+    #     f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_contam.txt"
+    # )
+    # experiment_client.start_run(
+    #     get_new_plate_and_run_bmg_wf.resolve(),
+    #     payload=payload,
+    #     blocking=True,
+    #     simulate=False,
+    # )
+    # # write utc bmg timestamp to csv data file
+    # helper_functions.write_timestamps_to_csv(
+    #     csv_directory_path=csv_data_directory,
+    #     experiment_id=experiment_id,
+    #     bmg_filename=payload["bmg_data_output_name"],
+    #     accurate_timestamp=run_info.steps[5].end_time,  # index 5 = bmg reading
+    # )
+    # if test_prints:
+    #     print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[5].end_time}")
 
 
-    # Take T10 (endpoint reading) of plate 0 in incubator then move to OT-2 old location
+    # # Take T10 (endpoint reading) of plate 0 in incubator then move to OT-2 old location
 
 
 
