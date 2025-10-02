@@ -95,7 +95,7 @@ modules:
     interface: wei_rest_node
     config:
       rest_node_address: "http://sciclops:3005"
-    active: True
+    active: False
 
 locations:
   biopf400:

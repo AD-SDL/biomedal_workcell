@@ -5,11 +5,17 @@ metadata:
   info: Workflow for incubating on tekmatic incubator
   version: 0.1
 
+# TESTED AND WORKING
+
 flowdef:
+  # start with plate with lid on exchange
+
+  # open incubator
   - name: open incubator
-    module: payload.incubator_node
+    module: inheco_devID2_floor0
     action: open
 
+  # transfer from exchange to incubator
   - name: transfer
     module: biopf400
     action: transfer
@@ -22,12 +28,14 @@ flowdef:
       target_plate_rotation: narrow
     comment: Transfer plate with lid from bmg reader to specified tekmatic incubator
 
+  # close incubator
   - name: close incubator
-    module: payload.incubator_node
+    module: inheco_devID2_floor0
     action: close
 
+  # run incubation
   - name: run incubation
-    module: payload.incubator_node
+    module: inheco_devID2_floor0
     action: incubate
     args:
       temperature: 30.0
