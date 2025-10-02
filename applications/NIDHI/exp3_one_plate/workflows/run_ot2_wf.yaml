@@ -5,11 +5,12 @@ version: '0.1'
 
 
 flowdef:
+  # run OT-2 inoculation protocol
   - name: Run OT-2 protocol
     module: ot2biobeta
     action: run_protocol
     args:
-      foo: bar
+      use_existing_resources: False
     files:
       protocol: payload.current_ot2_protocol
     comment: Run the current OT-2 protocol
