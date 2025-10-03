@@ -1,0 +1,33 @@
+name: OT-2 to exchange, replace lid - Substrate App Workflow
+
+metadata:
+  author: Casey Stone
+  info: Workflow for moving final plate to exchange
+  version: 0.1
+
+flowdef:
+  # transfer from ot2 to exchange
+  - name: transfer from ot2 to exchange
+    module: biopf400
+    action: transfer
+    args:
+      source: payload.ot2_location
+      target: exchange_deck_high_wide
+      source_approach: payload.ot2_safe_path
+      target_approach: safe_path_exchange
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+    comment: Transfer new substrate plate from OT-2 to exchange
+
+  # replace the lid
+  - name: Replace lid on exchange
+    module: biopf400
+    action: replace_lid
+    args:
+      source: payload.lid_location
+      target: exchange_deck_low_wide
+      source_approach: payload.lid_safe_path
+      target_approach: safe_path_exchange
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+      lid_height: 8
