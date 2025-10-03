@@ -1,13 +1,12 @@
 """ Python script to start the Inheco FastAPI server and WEI nodes for each Inheco single plate incubator device in new terminal windows """
 
 # TODO: TEST
-# TODO: don't use "0.0.0.0" for the FastAPI host
 
 import subprocess
 
 # FastAPI Server ------------------------------------------
 subprocess.Popen(
-    'start "Inheco FastAPI Server" cmd /K ".\\source\\repos\\inheco_incubator_module\\.venv\\Scripts\\activate & python .\\source\\repos\\inheco_incubator_module\\src\\inheco_interface_FastAPI_wrapper.py --host "0.0.0.0" --device "COM5" --port 7000 --dll_path "C:\\Program Files\\INHECO\\Incubator-Control\\ComLib.dll"', 
+    'start "Inheco FastAPI Server" cmd /K ".\\source\\repos\\inheco_incubator_module\\.venv\\Scripts\\activate & python .\\source\\repos\\inheco_incubator_module\\src\\inheco_interface_FastAPI_wrapper.py --host "127.0.0.1" --device "COM5" --port 7000 --dll_path "C:\\Program Files\\INHECO\\Incubator-Control\\ComLib.dll"', 
     shell=True
 )
 
