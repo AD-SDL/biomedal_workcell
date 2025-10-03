@@ -1,11 +1,12 @@
-name: Get new plate from stack - Substrate App Workflow
+name: Get new plate from tower, take contam BMG reading WF
 author: Casey Stone
-info: Workflow for preparing decks for first OT-2 inoculations
+info: Workflow for getting a new substrate plate from the tower and taking initial contamination reading
 version: '0.1'
+
 
 flowdef:
   # get new plate from current tower deck
-  - name: transfer
+  - name: transfer from tower to exchange
     module: biopf400
     action: transfer
     args:
@@ -34,8 +35,8 @@ flowdef:
     module: bio_bmg
     action: open
 
-  # transfer from exchange to bmg
-  - name: Transfer plate without lid to bmg nest
+  # transfer from exchange to BMG
+  - name: transfer plate without lid to bmg nest
     module: biopf400
     action: transfer
     args:
@@ -52,7 +53,7 @@ flowdef:
     action: close
 
   # run BMG assay
-  - name: Run BMG absorbance assay
+  - name: run BMG absorbance assay
     module: bio_bmg
     action: run_assay
     args:

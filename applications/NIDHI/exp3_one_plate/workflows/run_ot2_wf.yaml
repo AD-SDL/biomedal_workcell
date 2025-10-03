@@ -1,4 +1,4 @@
-name: Run OT-2 Protocol - Substrate App Workflow
+name: Run OT-2 Protocol WF
 author: Casey Stone
 info: Workflow for running one OT-2 protocol from payload
 version: '0.1'

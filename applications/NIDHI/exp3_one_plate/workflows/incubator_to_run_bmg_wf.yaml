@@ -1,15 +1,14 @@
-name: Transfer to BMG and read absorbance
+name: Transfer to from incubator to BMG and take reading WF
 
 metadata:
   author: Casey Stone
-  info: Workflow for moving to bmg and reading
+  info: Workflow for transferring from incubator to BMG then taking an absorbance reading
   version: 0.1
 
-# TESTED AND WORKING
 
 flowdef:
-  # open bmg
-  - name: open bmg
+  # open BMG
+  - name: open BMG
     module: bio_bmg
     action: open
 
@@ -29,14 +28,13 @@ flowdef:
       target_approach: safe_path_exchange
       source_plate_rotation: narrow
       target_plate_rotation: narrow
-    comment: transfer microplate with lid to exchange
 
   # close incubator
   - name: close incubator
     module: inheco_devID2_floor0
     action: close
 
-  # remove the lid to lid nest 2 (wide)
+  # remove the lid to lid nest
   - name: remove lid from plate on exchange
     module: biopf400
     action: remove_lid
@@ -49,8 +47,8 @@ flowdef:
       target_plate_rotation: wide
       lid_height: 8
 
-  # transfer from exchange to bmg
-  - name: Transfer plate without lid to bmg nest
+  # transfer from exchange to BMG
+  - name: transfer plate without lid to BMG nest
     module: biopf400
     action: transfer
     args:
@@ -62,11 +60,11 @@ flowdef:
       target_plate_rotation: narrow
 
   # close BMG tray
-  - name: close bmg
+  - name: close BMG
     module: bio_bmg
     action: close
 
-  # # close incubator
+  # close incubator
   - name: close incubator
     module: inheco_devID2_floor0
     action: close
@@ -80,6 +78,6 @@ flowdef:
       data_output_file_name: payload.bmg_data_output_name
 
   # open BMG tray
-  - name: open bmg
+  - name: open BMG
     module: bio_bmg
     action: open

@@ -1,12 +1,11 @@
-name: Remove old substrate plate - Substrate App Workflow
+name: Remove old substrate plate to tower WF
 author: Casey Stone
-info: Workflow for using PF400 to remove old substrate plate from OT-2 back to stack
+info: Workflow for using PF400 to remove old substrate plate from OT-2 back to tower
 version: '0.1'
 
-# TESTED AND WORKING
 
 flowdef:
-  # transfer from ot2 to exchange
+  # transfer from OT-2 to exchange
   - name: transfer from ot2 to exchange
     module: biopf400
     action: transfer
@@ -17,8 +16,8 @@ flowdef:
       target_approach: safe_path_exchange
       source_plate_rotation: wide
       target_plate_rotation: wide
-    comment: Transfer new substrate plate from OT-2 to exchange
 
+  # replace lid on exchange
   - name: replace lid
     module: biopf400
     action: replace_lid
@@ -30,7 +29,6 @@ flowdef:
       source_plate_rotation: wide
       target_plate_rotation: wide
       lid_height: 8
-    comment: replace lid on old substrate plate
 
   # return old plate to tower
   - name: transfer old plate to tower

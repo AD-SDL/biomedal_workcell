@@ -1,13 +1,14 @@
-name: OT-2 to exchange, replace lid - Substrate App Workflow
+name: FINAL WORKFLOW - OT-2 to exchange, replace lid WF
 
 metadata:
   author: Casey Stone
   info: Workflow for moving final plate to exchange
   version: 0.1
 
+
 flowdef:
-  # transfer from ot2 to exchange
-  - name: transfer from ot2 to exchange
+  # transfer from OT-2 to exchange
+  - name: transfer from OT-2 to exchange
     module: biopf400
     action: transfer
     args:
@@ -17,10 +18,9 @@ flowdef:
       target_approach: safe_path_exchange
       source_plate_rotation: wide
       target_plate_rotation: wide
-    comment: Transfer new substrate plate from OT-2 to exchange
 
   # replace the lid
-  - name: Replace lid on exchange
+  - name: replace lid on exchange
     module: biopf400
     action: replace_lid
     args:

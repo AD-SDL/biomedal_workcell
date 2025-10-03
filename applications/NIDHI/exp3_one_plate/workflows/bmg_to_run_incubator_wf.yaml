@@ -1,20 +1,19 @@
-name: Transfer from BMG to incubator, then incubate - Substrate App Workflow
+name: Transfer from BMG to incubator, then incubate WF
 
 metadata:
   author: Casey Stone
   info: Workflow for transfer from bmg to incubator and incubation
   version: 0.1
 
-# TESTED AND WORKING
 
 flowdef:
   # open the BMG - might be redundant
-  - name: open bmg
+  - name: open BMG
     module: bio_bmg
     action: open
 
   # transfer from BMG to exchange
-  - name: transfer from bmg to exchange
+  - name: transfer from BMG to exchange
     module: biopf400
     action: transfer
     args:
@@ -26,7 +25,7 @@ flowdef:
       target_plate_rotation: narrow
 
   # replace the lid
-  - name: Replace lid on exchange
+  - name: replace lid on exchange
     module: biopf400
     action: replace_lid
     args:
@@ -38,6 +37,7 @@ flowdef:
       target_plate_rotation: wide
       lid_height: 8
 
+  # open the incubator
   - name: open incubator
     module: inheco_devID2_floor0
     action: open
@@ -53,13 +53,14 @@ flowdef:
       target_approach: safe_path_inheco_dev2
       source_plate_rotation: narrow
       target_plate_rotation: narrow
-    comment: transfer microplate with lid to exchange
 
+  # close the incubator
   - name: close incubator
     module: inheco_devID2_floor0
     action: close
 
-  - name: close bmg
+  # close the BMG
+  - name: close BMG
     module: bio_bmg
     action: close
 

@@ -1,18 +1,17 @@
-name: Setup for First Inoculation - Substrate App Workflow
+name: Transfer from BMG to OT-2 WF
 author: Casey Stone
-info: Workflow for preparing decks for first OT-2 inoculations
+info: Workflow for transferring from BMG to OT-2
 version: '0.1'
 
-# TESTED AND WORKING
 
 flowdef:
   # open the BMG - might be redundant
-  - name: open bmg
+  - name: open BMG
     module: bio_bmg
     action: open
 
   # transfer from BMG to exchange
-  - name: transfer from bmg to exchange
+  - name: transfer from BMG to exchange
     module: biopf400
     action: transfer
     args:
@@ -24,7 +23,7 @@ flowdef:
       target_plate_rotation: narrow
 
   # transfer into OT-2 deck
-  - name: transfer from exchange to ot2
+  - name: transfer from exchange to OT-2
     module: biopf400
     action: transfer
     args:
@@ -37,6 +36,6 @@ flowdef:
     comment: Transfer new substrate plate from exchange to OT-2
 
   # close the BMG
-  - name: close bmg
+  - name: close BMG
     module: bio_bmg
     action: close

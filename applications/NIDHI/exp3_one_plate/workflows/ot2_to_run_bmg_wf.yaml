@@ -1,14 +1,13 @@
-name: Transfer to BMG and read absorbance
+name: Transfer from OT-2 to BMG and read absorbance WF
 
 metadata:
   author: Casey Stone
-  info: Workflow for moving to bmg and reading
+  info: Workflow for transferring from OT-2 to BMG and reading
   version: 0.1
 
-# TESTED AND WORKING
 
 flowdef:
-  # transfer from ot2 to exchange
+  # transfer from OT-2 to exchange
   - name: transfer from ot2 to exchange
     module: biopf400
     action: transfer
@@ -19,15 +18,14 @@ flowdef:
       target_approach: safe_path_exchange
       source_plate_rotation: wide
       target_plate_rotation: wide
-    comment: Transfer new substrate plate from OT-2 to exchange
 
   # open BMG tray
-  - name: open bmg
+  - name: open BMG
     module: bio_bmg
     action: open
 
   # transfer from exchange to bmg
-  - name: Transfer plate without lid to bmg nest
+  - name: Transfer plate without lid to BMG nest
     module: biopf400
     action: transfer
     args:
@@ -39,7 +37,7 @@ flowdef:
       target_plate_rotation: narrow
 
   # close BMG tray
-  - name: close bmg
+  - name: close BMG
     module: bio_bmg
     action: close
 
@@ -52,6 +50,6 @@ flowdef:
       data_output_file_name: payload.bmg_data_output_name
 
   # open BMG tray
-  - name: open bmg
+  - name: open BMG
     module: bio_bmg
     action: open
