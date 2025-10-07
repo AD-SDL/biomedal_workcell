@@ -84,13 +84,15 @@ def main() -> None:
     inoculate_protocol = protocol_directory / "inoculate.py"
 
     # important variables
+    run_robots = True  # if False, no robots will run
+    test_prints = True  # if True, will print out extra info for testing purposes
     total_outer_loops = 33 # 33 # inoculations into new plate every 10ish hours
     total_inner_loops = 9 # 10 readings (T1 happens before the inner loop starts, only need 9 more inner loops)
     plate_num = 0
     reading_in_plate_num = 10
     current_tower_deck = 1
     csv_data_directory = "/home/rpl/workspace/Nidhi_data"
-    test_prints = True  # if True, print out extra info for testing purposes
+
     incubation_seconds_initial = 36000 # 36000 seconds = 10 hours
     incubation_seconds_between_readings = 3600 # 3600 seconds = 1 hour
 
@@ -140,51 +142,60 @@ def main() -> None:
     """
 
     # 1. Move immediately into incubator with lid on for 10 hours
-    experiment_client.start_run(
-        exchange_to_run_incubator_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    if run_robots:
+        experiment_client.start_run(
+            exchange_to_run_incubator_wf.resolve(),
+            payload=payload,
+            blocking=True,
+            simulate=False,
+        )
     # capture incubation start time
     incubation_start_time = time.time()
 
-    # wait for incubation to finish   # NOT TESTED
-    while time.time() - incubation_start_time < payload["incubation_seconds"]:
-        print(f"will continue in... {int(payload["incubation_seconds"]-(time.time() - incubation_start_time))} seconds")
-        time.sleep(5) # 5 seconds
+    # wait for incubation to finish
+    if test_prints:
+        print("running 10 hour incubation")
+    if run_robots:
+        while time.time() - incubation_start_time < payload["incubation_seconds"]:
+            print(f"will continue in... {int(payload["incubation_seconds"]-(time.time() - incubation_start_time))} seconds")
+            time.sleep(5) # 5 seconds
 
     # 2. Transfer plate 0 into bmg and take reading (plate0_T10)
     timestamp_now = int(datetime.now().timestamp())
     payload["bmg_data_output_name"] = (
         f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_T{reading_in_plate_num}.txt"
     )
-    run_info = experiment_client.start_run(
-        incubator_to_run_bmg_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
-    # write utc bmg timestamp to csv data file
-    helper_functions.write_timestamps_to_csv(
-        csv_directory_path=csv_data_directory,
-        experiment_id=experiment_id,
-        bmg_filename=payload["bmg_data_output_name"],
-        accurate_timestamp=run_info.steps[8].end_time,  # index 8 = bmg reading
-    )
-    if test_prints:
-        print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[8].end_time}")
+    if run_robots:
+        run_info = experiment_client.start_run(
+            incubator_to_run_bmg_wf.resolve(),
+            payload=payload,
+            blocking=True,
+            simulate=False,
+        )
+        # write utc bmg timestamp to csv data file
+        helper_functions.write_timestamps_to_csv(
+            csv_directory_path=csv_data_directory,
+            experiment_id=experiment_id,
+            bmg_filename=payload["bmg_data_output_name"],
+            accurate_timestamp=run_info.steps[8].end_time,  # index 8 = bmg reading
+        )
+        if test_prints:
+            print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[8].end_time}")
 
     # 3. Transfer old plate into the OT-2
-    experiment_client.start_run(
-        bmg_to_ot2_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    if run_robots:
+        experiment_client.start_run(
+            bmg_to_ot2_wf.resolve(),
+            payload=payload,
+            blocking=True,
+            simulate=False,
+        )
 
     # OUTER LOOP START
     for i in range(total_outer_loops):
+
+        if test_prints:
+            print(f"\nOUTER LOOP INDEX: {i} -------------------")
 
         # modify variables
         plate_num += 1
@@ -199,43 +210,53 @@ def main() -> None:
         payload["bmg_data_output_name"] = (
             f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_contam.txt"
         )
-        run_info = experiment_client.start_run(
-            get_new_plate_and_run_bmg_wf.resolve(),
-            payload=payload,
-            blocking=True,
-            simulate=False,
-        )
-        # write utc bmg timestamp to csv data file
-        helper_functions.write_timestamps_to_csv(
-            csv_directory_path=csv_data_directory,
-            experiment_id=experiment_id,
-            bmg_filename=payload["bmg_data_output_name"],
-            accurate_timestamp=run_info.steps[5].end_time,  # index 5 = bmg reading
-        )
         if test_prints:
-            print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[5].end_time}")
+            print("getting new plate from tower")
+            print(f"\tplate num: {plate_num}")
+            print(f"\ttower location: {payload["current_tower_deck"]}")
+            print(f"\ttower safe path: {payload["current_tower_deck_safe_path"]}")
+        if run_robots:
+            run_info = experiment_client.start_run(
+                get_new_plate_and_run_bmg_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            # write utc bmg timestamp to csv data file
+            helper_functions.write_timestamps_to_csv(
+                csv_directory_path=csv_data_directory,
+                experiment_id=experiment_id,
+                bmg_filename=payload["bmg_data_output_name"],
+                accurate_timestamp=run_info.steps[5].end_time,  # index 5 = bmg reading
+            )
+            if test_prints:
+                print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[5].end_time}")
 
         # modify variables
         reading_in_plate_num += 1
 
         # 5. Transfer new plate from bmg to new ot2 location
-        experiment_client.start_run(
-            bmg_to_ot2_wf.resolve(),
-            payload=payload,
-            blocking=True,
-            simulate=False,
-        )
+        if run_robots:
+            experiment_client.start_run(
+                bmg_to_ot2_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
 
         # 6. Run inoculation ot2 protocol
         ot2_replacement_variables = helper_functions.collect_ot2_replacement_variables(payload)
         temp_ot2_file_str = helper_functions.generate_ot2_protocol(inoculate_protocol, ot2_replacement_variables)
         payload["current_ot2_protocol"] = temp_ot2_file_str
-        experiment_client.start_run(
-            run_ot2_wf.resolve(),
-            payload=payload,
-            blocking=True,
-            simulate=False,
-        )
+        if test_prints:
+            print(f"running ot2 inoculation with tip box @ deck {payload["tip_box_location"]}")
+        if run_robots:
+            experiment_client.start_run(
+                run_ot2_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
 
         # modify variables
         exp1_variables["tip_box_location"] += 1
@@ -248,32 +269,34 @@ def main() -> None:
         payload["bmg_data_output_name"] = (
             f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_T{reading_in_plate_num}.txt"
         )
-        run_info = experiment_client.start_run(
-            ot2_to_run_bmg_wf.resolve(),
-            payload=payload,
-            blocking=True,
-            simulate=False,
-        )
-        # write utc bmg timestamp to csv data file
-        helper_functions.write_timestamps_to_csv(
-            csv_directory_path=csv_data_directory,
-            experiment_id=experiment_id,
-            bmg_filename=payload["bmg_data_output_name"],
-            accurate_timestamp=run_info.steps[4].end_time,  # index 5 = bmg reading
-        )
-        if test_prints:
-            print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[4].end_time}")
+        if run_robots:
+            run_info = experiment_client.start_run(
+                ot2_to_run_bmg_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
+            # write utc bmg timestamp to csv data file
+            helper_functions.write_timestamps_to_csv(
+                csv_directory_path=csv_data_directory,
+                experiment_id=experiment_id,
+                bmg_filename=payload["bmg_data_output_name"],
+                accurate_timestamp=run_info.steps[4].end_time,  # index 5 = bmg reading
+            )
+            if test_prints:
+                print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[4].end_time}")
 
         # modify variables
         reading_in_plate_num += 1
 
         # 8. Transfer from bmg to incubator and incubate (1hr)
-        experiment_client.start_run(
-            bmg_to_run_incubator_wf.resolve(),
-            payload=payload,
-            blocking=True,
-            simulate=False,
-        )
+        if run_robots:
+            experiment_client.start_run(
+                bmg_to_run_incubator_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
 
         # capture incubation start time
         incubation_start_time = time.time()
@@ -284,12 +307,13 @@ def main() -> None:
         payload["ot2_location"] = exp1_variables["old_ot2_plate_location"]
 
         # 9. Get rid of the old substrate plate
-        experiment_client.start_run(
-            remove_old_substrate_plate_wf.resolve(),
-            payload=payload,
-            blocking=True,
-            simulate=False,
-        )
+        if run_robots:
+            experiment_client.start_run(
+                remove_old_substrate_plate_wf.resolve(),
+                payload=payload,
+                blocking=True,
+                simulate=False,
+            )
 
         # modify variables
         current_tower_deck += 1
@@ -299,9 +323,12 @@ def main() -> None:
         payload["current_tower_deck_safe_path"] = "safe_path_tower_deck" + str(current_tower_deck)
 
         # wait for incubation to finish
-        while (time.time() - incubation_start_time) < payload["incubation_seconds"]:
-            print(f"will continue in... {int(payload["incubation_seconds"]-(time.time() - incubation_start_time))} seconds")
-            time.sleep(5) # 5 seconds
+        if test_prints:
+            print("running 1 hour incubation")
+        if run_robots:
+            while (time.time() - incubation_start_time) < payload["incubation_seconds"]:
+                print(f"will continue in... {int(payload["incubation_seconds"]-(time.time() - incubation_start_time))} seconds")
+                time.sleep(5) # 5 seconds
 
         # INNER LOOP START HERE
         for j in range(total_inner_loops):
@@ -319,21 +346,22 @@ def main() -> None:
             payload["bmg_data_output_name"] = (
                 f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_T{reading_in_plate_num}.txt"
             )
-            run_info = experiment_client.start_run(
-                incubator_to_run_bmg_wf.resolve(),
-                payload=payload,
-                blocking=True,
-                simulate=False,
-            )
-            # write utc bmg timestamp to csv data file
-            helper_functions.write_timestamps_to_csv(
-                csv_directory_path=csv_data_directory,
-                experiment_id=experiment_id,
-                bmg_filename=payload["bmg_data_output_name"],
-                accurate_timestamp=run_info.steps[8].end_time,  # index 8 = bmg reading
-            )
-            if test_prints:
-                print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[8].end_time}")
+            if run_robots:
+                run_info = experiment_client.start_run(
+                    incubator_to_run_bmg_wf.resolve(),
+                    payload=payload,
+                    blocking=True,
+                    simulate=False,
+                )
+                # write utc bmg timestamp to csv data file
+                helper_functions.write_timestamps_to_csv(
+                    csv_directory_path=csv_data_directory,
+                    experiment_id=experiment_id,
+                    bmg_filename=payload["bmg_data_output_name"],
+                    accurate_timestamp=run_info.steps[8].end_time,  # index 8 = bmg reading
+                )
+                if test_prints:
+                    print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[8].end_time}")
 
             # modify variables
             reading_in_plate_num += 1
@@ -342,33 +370,36 @@ def main() -> None:
                 # 11. Transfer from bmg to incubator, and incubate
                 if test_prints:
                     print("running bmg to incubator")
-                experiment_client.start_run(
-                    bmg_to_run_incubator_wf.resolve(),
-                    payload=payload,
-                    blocking=True,
-                    simulate=False,
-                )
+                if run_robots:
+                    experiment_client.start_run(
+                        bmg_to_run_incubator_wf.resolve(),
+                        payload=payload,
+                        blocking=True,
+                        simulate=False,
+                    )
                 # capture incubation start time
                 incubation_start_time = time.time()
 
                 # sleep for incubation
                 if test_prints:
-                    print("running incubaton")
-                while time.time() - incubation_start_time < payload["incubation_seconds"]:
-                    print(f"will continue in... {int(payload["incubation_seconds"]-(time.time() - incubation_start_time))} seconds")
-                    time.sleep(5) # 5 seconds
+                    print("running 1 hour incubaton")
+                if run_robots:
+                    while time.time() - incubation_start_time < payload["incubation_seconds"]:
+                        print(f"will continue in... {int(payload["incubation_seconds"]-(time.time() - incubation_start_time))} seconds")
+                        time.sleep(5) # 5 seconds
 
 
             else:  # plate will end in the bmg with bmg open
                 # 12. transfer from bmg to ot2 old location
                 if test_prints:
                     print("running bmg to ot2")
-                experiment_client.start_run(
-                    bmg_to_ot2_wf.resolve(),
-                    payload=payload,
-                    blocking=True,
-                    simulate=False,
-                )
+                if run_robots:
+                    experiment_client.start_run(
+                        bmg_to_ot2_wf.resolve(),
+                        payload=payload,
+                        blocking=True,
+                        simulate=False,
+                    )
 
         # INNER LOOP END HERE
 
@@ -380,12 +411,13 @@ def main() -> None:
     # 13. Move from old ot-2 location to exchange, replace lid.
     if test_prints:
         print("END OF EXPEREMENT APP: returning old plate from ot2 to exchange")
-    experiment_client.start_run(
-        at_end_ot2_to_exchange_wf.resolve(),
-        payload=payload,
-        blocking=True,
-        simulate=False,
-    )
+    if run_robots:
+        experiment_client.start_run(
+            at_end_ot2_to_exchange_wf.resolve(),
+            payload=payload,
+            blocking=True,
+            simulate=False,
+        )
 
     print("YAY WE MADE IT!")
 
