@@ -83,15 +83,15 @@ def main() -> None:
     inoculate_protocol = protocol_directory / "inoculate.py"
 
     # important variables
-    total_outer_loops = 9 # 33 # inoculations into new plate every 10ish hours
-    total_inner_loops = 2 # 10 # readings every hour for 10 hours
+    total_outer_loops = 33 # 33 # inoculations into new plate every 10ish hours
+    total_inner_loops = 9 # 10 readings (T1 happens before the inner loop starts, only need 9 more inner loops)
     plate_num = 0
     reading_in_plate_num = 10
     current_tower_deck = 1
     csv_data_directory = "/home/rpl/workspace/Nidhi_data"
     test_prints = True  # if True, print out extra info for testing purposes
-    incubation_seconds_initial = 40 # TESTING change back to 36000 seconds = 10 hours
-    incubation_seconds_between_readings = 180 # TESTING change back to 3600 seconds = 1 hour
+    incubation_seconds_initial = 36000 # 36000 seconds = 10 hours
+    incubation_seconds_between_readings = 3600 # 3600 seconds = 1 hour
 
     exp1_variables = {
         "old_lid_location": "lidnest_2_wide", # use old lid location at start
