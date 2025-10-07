@@ -28,6 +28,7 @@ def main() -> None:
     experiment_design = ExperimentDesign(
         experiment_name="Substrate_Experiment_3a",
         experiment_description="Experiment application for the adaptive evolution to substrates experiment",
+        email_addresses=["cstone@anl.gov"],
     )
     # define a campaign object
     campaign = CampaignDesign(
@@ -138,7 +139,7 @@ def main() -> None:
         ALL OTHER LOCATIONS: EMPTY
     """
 
-    # 1. Move immediately into incubator with lid on for 10 hours  # WORKING
+    # 1. Move immediately into incubator with lid on for 10 hours
     experiment_client.start_run(
         exchange_to_run_incubator_wf.resolve(),
         payload=payload,
@@ -153,7 +154,7 @@ def main() -> None:
         print(f"will continue in... {int(payload["incubation_seconds"]-(time.time() - incubation_start_time))} seconds")
         time.sleep(5) # 5 seconds
 
-    # 2. Transfer plate 0 into bmg and take reading (plate0_T10)   # WORKING
+    # 2. Transfer plate 0 into bmg and take reading (plate0_T10)
     timestamp_now = int(datetime.now().timestamp())
     payload["bmg_data_output_name"] = (
         f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_T{reading_in_plate_num}.txt"
@@ -174,7 +175,7 @@ def main() -> None:
     if test_prints:
         print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[8].end_time}")
 
-    # 3. Transfer old plate into the OT-2   # WORKING
+    # 3. Transfer old plate into the OT-2
     experiment_client.start_run(
         bmg_to_ot2_wf.resolve(),
         payload=payload,
@@ -193,7 +194,7 @@ def main() -> None:
         payload["ot2_location"] = exp1_variables["new_ot2_plate_location"]
         payload["incubation_seconds"] = incubation_seconds_between_readings
 
-        # 4. Get new substrate plate, take contam reading, then move to OT-2 new location   # WORKING
+        # 4. Get new substrate plate, take contam reading, then move to OT-2 new location
         timestamp_now = int(datetime.now().timestamp())
         payload["bmg_data_output_name"] = (
             f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_contam.txt"
@@ -217,7 +218,7 @@ def main() -> None:
         # modify variables
         reading_in_plate_num += 1
 
-        # 5. Transfer new plate from bmg to new ot2 location  # WORKING
+        # 5. Transfer new plate from bmg to new ot2 location
         experiment_client.start_run(
             bmg_to_ot2_wf.resolve(),
             payload=payload,
@@ -225,7 +226,7 @@ def main() -> None:
             simulate=False,
         )
 
-        # 6. Run inoculation ot2 protocol   # WORKS
+        # 6. Run inoculation ot2 protocol
         ot2_replacement_variables = helper_functions.collect_ot2_replacement_variables(payload)
         temp_ot2_file_str = helper_functions.generate_ot2_protocol(inoculate_protocol, ot2_replacement_variables)
         payload["current_ot2_protocol"] = temp_ot2_file_str
@@ -242,7 +243,7 @@ def main() -> None:
             exp1_variables["tip_box_location"] = 4
         payload["tip_box_location"] = exp1_variables["tip_box_location"]
 
-        # 7. Transfer new plate into bmg and take T1 reading - WORKING
+        # 7. Transfer new plate into bmg and take T1 reading
         timestamp_now = int(datetime.now().timestamp())
         payload["bmg_data_output_name"] = (
             f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_T{reading_in_plate_num}.txt"
@@ -266,7 +267,7 @@ def main() -> None:
         # modify variables
         reading_in_plate_num += 1
 
-        # 8. Transfer from bmg to incubator and incubate (1hr)  # WORKING
+        # 8. Transfer from bmg to incubator and incubate (1hr)
         experiment_client.start_run(
             bmg_to_run_incubator_wf.resolve(),
             payload=payload,
@@ -282,7 +283,7 @@ def main() -> None:
         payload["lid_safe_path"] = exp1_variables["old_safe_lid_location"]
         payload["ot2_location"] = exp1_variables["old_ot2_plate_location"]
 
-        # 9. Get rid of the old substrate plate  # WORKING
+        # 9. Get rid of the old substrate plate
         experiment_client.start_run(
             remove_old_substrate_plate_wf.resolve(),
             payload=payload,

@@ -14,9 +14,9 @@ flowdef:
     module: biopf400
     action: transfer
     args:
-      source: tekmatic_incubator_nest
+      source: inheco_devID2_floor0_nest
       target: bmg_reader_nest
-      source_approach: safe_path_tekmatic
+      source_approach: safe_path_inheco_dev2
       target_approach: safe_path_bmg
       source_plate_rotation: narrow
       target_plate_rotation: narrow
@@ -39,7 +39,7 @@ flowdef:
     action: close
 
   - name: close incubator
-    module: tekmatic
+    module: inheco_devID2_floor0
     action: close
 
   - name: Run BMG absorbance assay
