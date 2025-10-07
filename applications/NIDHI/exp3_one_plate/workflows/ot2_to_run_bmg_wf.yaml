@@ -1,0 +1,55 @@
+name: Transfer from OT-2 to BMG and read absorbance WF
+
+metadata:
+  author: Casey Stone
+  info: Workflow for transferring from OT-2 to BMG and reading
+  version: 0.1
+
+
+flowdef:
+  # transfer from OT-2 to exchange
+  - name: transfer from ot2 to exchange
+    module: biopf400
+    action: transfer
+    args:
+      source: payload.ot2_location
+      target: exchange_deck_high_wide
+      source_approach: payload.ot2_safe_path
+      target_approach: safe_path_exchange
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+
+  # open BMG tray
+  - name: open BMG
+    module: bio_bmg
+    action: open
+
+  # transfer from exchange to bmg
+  - name: Transfer plate without lid to BMG nest
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_low_narrow
+      target: bmg_reader_nest
+      source_approach: safe_path_exchange
+      target_approach: safe_path_bmg
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+  # close BMG tray
+  - name: close BMG
+    module: bio_bmg
+    action: close
+
+  # run BMG assay
+  - name: Run BMG absorbance assay
+    module: bio_bmg
+    action: run_assay
+    args:
+      assay_name: NIDHI
+      data_output_file_name: payload.bmg_data_output_name
+
+  # open BMG tray
+  - name: open BMG
+    module: bio_bmg
+    action: open

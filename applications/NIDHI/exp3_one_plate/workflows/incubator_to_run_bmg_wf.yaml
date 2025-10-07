@@ -1,0 +1,83 @@
+name: Transfer to from incubator to BMG and take reading WF
+
+metadata:
+  author: Casey Stone
+  info: Workflow for transferring from incubator to BMG then taking an absorbance reading
+  version: 0.1
+
+
+flowdef:
+  # open BMG
+  - name: open BMG
+    module: bio_bmg
+    action: open
+
+  # open incubator
+  - name: open incubator
+    module: inheco_devID2_floor0
+    action: open
+
+  # transfer from incubator to exchange
+  - name: transfer to exchange
+    module: biopf400
+    action: transfer
+    args:
+      source: payload.incubator_location
+      target: exchange_deck_low_narrow
+      source_approach: safe_path_inheco_dev2
+      target_approach: safe_path_exchange
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+  # close incubator
+  - name: close incubator
+    module: inheco_devID2_floor0
+    action: close
+
+  # remove the lid to lid nest
+  - name: remove lid from plate on exchange
+    module: biopf400
+    action: remove_lid
+    args:
+      source: exchange_deck_low_wide
+      target: payload.lid_location
+      source_approach: safe_path_exchange
+      target_approach: payload.lid_safe_path
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+      lid_height: 8
+
+  # transfer from exchange to BMG
+  - name: transfer plate without lid to BMG nest
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_low_narrow
+      target: bmg_reader_nest
+      source_approach: safe_path_exchange
+      target_approach: safe_path_bmg
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+  # close BMG tray
+  - name: close BMG
+    module: bio_bmg
+    action: close
+
+  # close incubator
+  - name: close incubator
+    module: inheco_devID2_floor0
+    action: close
+
+  # run BMG assay
+  - name: Run BMG absorbance assay
+    module: bio_bmg
+    action: run_assay
+    args:
+      assay_name: NIDHI
+      data_output_file_name: payload.bmg_data_output_name
+
+  # open BMG tray
+  - name: open BMG
+    module: bio_bmg
+    action: open

@@ -1,0 +1,40 @@
+name: Transfer from exchange to incubator, then incubate WF
+
+metadata:
+  author: Casey Stone
+  info: Workflow for transferring from exchange to incubator then incubating
+  version: 0.1
+
+
+flowdef:
+  # open incubator
+  - name: open incubator
+    module: inheco_devID2_floor0
+    action: open
+
+  # transfer from exchange to incubator
+  - name: transfer from exchange to incubator
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_low_narrow
+      target: payload.incubator_location
+      source_approach: safe_path_exchange
+      target_approach: safe_path_inheco_dev2
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+  # close incubator
+  - name: close incubator
+    module: inheco_devID2_floor0
+    action: close
+
+  # run incubation
+  - name: run incubation
+    module: inheco_devID2_floor0
+    action: incubate
+    args:
+      temperature: 30.0
+      shaker_frequency: 6.6
+      wait_for_incubation_time: False
+      incubation_time: payload.incubation_seconds

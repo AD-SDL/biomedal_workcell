@@ -1,0 +1,72 @@
+name: Get new plate from tower, take contam BMG reading WF
+author: Casey Stone
+info: Workflow for getting a new substrate plate from the tower and taking initial contamination reading
+version: '0.1'
+
+
+flowdef:
+  # get new plate from current tower deck
+  - name: transfer from tower to exchange
+    module: biopf400
+    action: transfer
+    args:
+      source: payload.current_tower_deck
+      target: exchange_deck_low_narrow
+      source_approach: payload.current_tower_deck_safe_path
+      target_approach: safe_path_exchange
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+  - name: remove lid
+    module: biopf400
+    action: remove_lid
+    args:
+      source: exchange_deck_low_wide
+      target: payload.lid_location
+      source_approach: safe_path_exchange
+      target_approach: payload.lid_safe_path
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+      lid_height: 8
+    comment: Remove lid from the new substrate plate to lid nest 1
+
+  # open BMG tray
+  - name: open bmg
+    module: bio_bmg
+    action: open
+
+  # transfer from exchange to BMG
+  - name: transfer plate without lid to bmg nest
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_low_narrow
+      target: bmg_reader_nest
+      source_approach: safe_path_exchange
+      target_approach: safe_path_bmg
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+  # close BMG tray
+  - name: close bmg
+    module: bio_bmg
+    action: close
+
+  # run BMG assay
+  - name: run BMG absorbance assay
+    module: bio_bmg
+    action: run_assay
+    args:
+      assay_name: NIDHI
+      data_output_file_name: payload.bmg_data_output_name
+
+  # open BMG tray
+  - name: open bmg
+    module: bio_bmg
+    action: open
+
+
+
+
+
+

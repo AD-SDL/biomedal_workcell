@@ -1,0 +1,43 @@
+name: Remove old substrate plate to tower WF
+author: Casey Stone
+info: Workflow for using PF400 to remove old substrate plate from OT-2 back to tower
+version: '0.1'
+
+
+flowdef:
+  # transfer from OT-2 to exchange
+  - name: transfer from ot2 to exchange
+    module: biopf400
+    action: transfer
+    args:
+      source: payload.ot2_location
+      target: exchange_deck_high_wide
+      source_approach: payload.ot2_safe_path
+      target_approach: safe_path_exchange
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+
+  # replace lid on exchange
+  - name: replace lid
+    module: biopf400
+    action: replace_lid
+    args:
+      source: payload.lid_location
+      target: exchange_deck_low_wide
+      source_approach: payload.lid_safe_path
+      target_approach: safe_path_exchange
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+      lid_height: 8
+
+  # return old plate to tower
+  - name: transfer old plate to tower
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_low_narrow
+      target: payload.current_tower_deck
+      source_approach: safe_path_exchange
+      target_approach: payload.current_tower_deck_safe_path
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow

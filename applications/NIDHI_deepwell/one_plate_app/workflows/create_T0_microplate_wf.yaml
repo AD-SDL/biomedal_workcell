@@ -1,8 +1,0 @@
-# steps: 
-# (almost the same at the endpoint microplate but OT-2 positions swapped)
-
-# PC: tr new microplate (stack 3) to exchange
-# remove lid (lid nest 1)
-# PC: tr exchange to Ot2 biobeta pos 1
-# OT: run protocol 
-#   (transfer ____ volume from pos 3 to 1)

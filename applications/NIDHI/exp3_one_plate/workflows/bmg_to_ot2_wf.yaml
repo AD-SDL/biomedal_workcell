@@ -1,0 +1,41 @@
+name: Transfer from BMG to OT-2 WF
+author: Casey Stone
+info: Workflow for transferring from BMG to OT-2
+version: '0.1'
+
+
+flowdef:
+  # open the BMG - might be redundant
+  - name: open BMG
+    module: bio_bmg
+    action: open
+
+  # transfer from BMG to exchange
+  - name: transfer from BMG to exchange
+    module: biopf400
+    action: transfer
+    args:
+      source: bmg_reader_nest
+      target: exchange_deck_low_narrow
+      source_approach: safe_path_bmg
+      target_approach: safe_path_exchange
+      source_plate_rotation: narrow
+      target_plate_rotation: narrow
+
+  # transfer into OT-2 deck
+  - name: transfer from exchange to OT-2
+    module: biopf400
+    action: transfer
+    args:
+      source: exchange_deck_high_wide
+      target: payload.ot2_location
+      source_approach: safe_path_exchange
+      target_approach: payload.ot2_safe_path
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+    comment: Transfer new substrate plate from exchange to OT-2
+
+  # close the BMG
+  - name: close BMG
+    module: bio_bmg
+    action: close
