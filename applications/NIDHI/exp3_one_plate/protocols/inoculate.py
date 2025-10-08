@@ -32,16 +32,16 @@ def run(protocol: protocol_api.ProtocolContext):
     )
 
     # set labware offsets
-    tip_rack.set_offset(x=float("$x"), y=float("$y"), z=float("$z")) 
+    tip_rack.set_offset(x=float("$x"), y=float("$y"), z=float("$z"))
     substrate_assay_plate_new.set_offset(x=0.0,y=2.0,z=0.0)  # pos 1
     substrate_assay_plate_old.set_offset(x=0.0,y=0.5,z=0.0)   # pos 3
 
     # variables
-    inoculation_volume = 20
+    inoculation_volume = 15
 
     left_pipette_20uL_multi = protocol.load_instrument(
         "p20_multi_gen2", mount="left", tip_racks=[
-            tip_rack, 
+            tip_rack,
         ]
     )
 
@@ -56,8 +56,8 @@ def run(protocol: protocol_api.ProtocolContext):
     left_pipette_20uL_multi.pick_up_tip()
     left_pipette_20uL_multi.transfer(
         inoculation_volume,
-        source_columns[0], 
-        destination_columns[0], 
+        source_columns[0],
+        destination_columns[0],
         new_tip="never",
         disposal_volume = 0,
     )
@@ -68,8 +68,8 @@ def run(protocol: protocol_api.ProtocolContext):
         left_pipette_20uL_multi.pick_up_tip()
         left_pipette_20uL_multi.transfer(
             inoculation_volume,
-            source_columns[i], 
-            destination_columns[i], 
+            source_columns[i],
+            destination_columns[i],
             new_tip = "never",
             disposal_volume = 0
         )

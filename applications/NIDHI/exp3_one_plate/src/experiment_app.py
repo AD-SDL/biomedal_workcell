@@ -87,13 +87,13 @@ def main() -> None:
     run_robots = True  # if False, no robots will run
     test_prints = True  # if True, will print out extra info for testing purposes
     total_outer_loops = 33 # 33 # inoculations into new plate every 10ish hours
-    total_inner_loops = 9 # 10 readings (T1 happens before the inner loop starts, only need 9 more inner loops)
+    total_inner_loops = 10 # 10 readings (T1 happens before the inner loop starts, only need 9 more inner loops)
     plate_num = 0
     reading_in_plate_num = 10
     current_tower_deck = 1
     csv_data_directory = "/home/rpl/workspace/Nidhi_data"
 
-    incubation_seconds_initial = 36000 # 36000 seconds = 10 hours
+    incubation_seconds_initial = 10 # 36000 seconds = 10 hours
     incubation_seconds_between_readings = 3600 # 3600 seconds = 1 hour
 
     exp1_variables = {
@@ -181,6 +181,9 @@ def main() -> None:
         )
         if test_prints:
             print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[8].end_time}")
+    else:
+        if test_prints:
+            print(f"\twriting data to csv: {payload['bmg_data_output_name']}")
 
     # 3. Transfer old plate into the OT-2
     if run_robots:
@@ -231,9 +234,12 @@ def main() -> None:
             )
             if test_prints:
                 print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[5].end_time}")
+        else:
+            if test_prints:
+                print(f"\twriting data to csv: {payload['bmg_data_output_name']}")
 
         # modify variables
-        reading_in_plate_num += 1
+        # reading_in_plate_num += 1
 
         # 5. Transfer new plate from bmg to new ot2 location
         if run_robots:
@@ -264,7 +270,7 @@ def main() -> None:
             exp1_variables["tip_box_location"] = 4
         payload["tip_box_location"] = exp1_variables["tip_box_location"]
 
-        # 7. Transfer new plate into bmg and take T1 reading
+        # 7. Transfer new plate into bmg and take T0 reading
         timestamp_now = int(datetime.now().timestamp())
         payload["bmg_data_output_name"] = (
             f"{experiment_label}_{timestamp_now}_{experiment_id}_exp1_{plate_num}_T{reading_in_plate_num}.txt"
@@ -285,6 +291,9 @@ def main() -> None:
             )
             if test_prints:
                 print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[4].end_time}")
+        else:
+            if test_prints:
+                print(f"\twriting data to csv: {payload['bmg_data_output_name']}")
 
         # modify variables
         reading_in_plate_num += 1
@@ -362,6 +371,9 @@ def main() -> None:
                 )
                 if test_prints:
                     print(f"\twriting data to csv: {payload['bmg_data_output_name']}, with timestamp {run_info.steps[8].end_time}")
+            else:
+                if test_prints:
+                    print(f"\twriting data to csv: {payload['bmg_data_output_name']}")
 
             # modify variables
             reading_in_plate_num += 1
