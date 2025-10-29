@@ -84,11 +84,11 @@ def main() -> None:
     inoculate_protocol = protocol_directory / "inoculate.py"
 
     # important variables
-    run_robots = True  # if False, no robots will run
+    run_robots = True # if False, no robots will run
     test_prints = True  # if True, will print out extra info for testing purposes
-    total_outer_loops = 33 # 33 # inoculations into new plate every 10ish hours
+    total_outer_loops = 19 # 33 # inoculations into new plate every 10ish hours
     total_inner_loops = 10 # 10 readings (T1 happens before the inner loop starts, only need 9 more inner loops)
-    plate_num = 0
+    plate_num = 14
     reading_in_plate_num = 10
     current_tower_deck = 1
     csv_data_directory = "/home/rpl/workspace/Nidhi_data"
@@ -237,9 +237,6 @@ def main() -> None:
         else:
             if test_prints:
                 print(f"\twriting data to csv: {payload['bmg_data_output_name']}")
-
-        # modify variables
-        # reading_in_plate_num += 1
 
         # 5. Transfer new plate from bmg to new ot2 location
         if run_robots:
