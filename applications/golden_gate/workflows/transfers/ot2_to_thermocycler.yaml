@@ -1,0 +1,39 @@
+name: Run OT-2 Protocol WF
+
+metadata:
+  author: Abe Stroka
+  info: Workflow for tranfering plate from temperature block of ot-2 patrick to the biometra thermocycler
+  version: '0.1'
+
+
+
+steps:
+  #open biometra
+  - name: Open biometra
+    node: biometra_beauford_96
+    action: open
+
+  #transfer from ot2 3 (D3) on temperature block to the biometra
+  - name: Transfer plate to thermocycler
+    node: pf400_piper
+    action: transfer
+    args:
+      source_plate_rotation: wide
+      target_plate_rotation: wide
+    location:
+      source: ot2_3_tempblock
+      target: biometra_96_beauford
+      source_approach: ot2_safe_path
+      target_approach: biometra_safe_path
+
+  #close biometra
+  - name: Close biometra
+    node: biometra_beauford_96
+    action: close
+
+  #run golden gate protocol on biometra
+  - name: Run golden gate on biometra
+    node: biometra_beauford_96
+    action: run_protocol
+    files:
+      protocol: 1

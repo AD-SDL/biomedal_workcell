@@ -1,23 +1,59 @@
 from opentrons import protocol_api
 import itertools
 from opentrons.protocol_api import SINGLE
+# from ot2_offsets import ot2_spongebob, ot2_patrick
 
 
 metadata = {
-    'protocolName': 'Protein Design Golden Gate 81 reagents',
+    'protocolName': 'Protein Design Golden Gate 81 reagents for the OT-2',
     'author': 'LDRD team ',
     'description': 'Golden Gate Assembly for Protein Design 81 combinations',
-    'source': 'FlexAS/pd_golden_gate_811.py'
+    'source': 'FlexGB/ProteinDesign/pd_golden_gate_81_ot2.py',
 }
 
-requirements = {"robotType": "Flex", "apiLevel": "2.20"}
+requirements = {"robotType": "OT-2", "apiLevel": "2.20"}
 
 
 # Protocol Configuration
 config = {
     # Combinatorial mixing
     'combinations': [[18,10,2],[11,19,3],[4,20,12],[21,13,5]],
-    'transfer_volume': 2,  # µL from each source well
+    # gbabnigg.changes.start
+    'use_combinations': False,
+    # the below 2D array defines which source wells to combine for each destination well
+    # 2025-11-03.example    
+    'non_combinatorial_sources': [
+        # [1,2,3,4],
+        # [9,2,3,12],
+        # [9,10,3,4],
+        # [9,10,3,12],
+        # [9,10,11,12],
+        # [9,18,3,4],
+        # [17,18,19,4],
+        # [17,18,19,20],
+
+        [1,2,3,4],
+        [9,2,3,12],
+        [9,10,3,4],
+        [9,10,3,12],
+        [9,10,11,12],
+        [9,18,3,4],
+        [17,18,19,4],
+        [17,18,19,20],
+
+        [1,2,3,4],
+        [9,2,3,12],
+        [9,10,3,4],
+        [9,10,3,12],
+        [9,10,11,12],
+        [9,18,3,4],
+        [17,18,19,4],
+        [17,18,19,20]
+    ],
+    # gbabnigg.changes.end
+    'transfer_volume': 2.5,  # µL from each source well
+    'aspirate_transfer_volume': 5.5,
+    'dispense_transfer_volume': 5,
 
     # Master mix settings
     'master_mix_volume': 12,  # µL per destination well
@@ -28,29 +64,46 @@ config = {
     'temperature': 4,  # °C
 
     # Labware
-    'fragments_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
-    'gg_plate_type': 'nest_96_wellplate_100ul_pcr_full_skirt',
-    'tip_rack_type_50_01': 'opentrons_flex_96_tiprack_50ul',
-    'tip_rack_type_50_02': 'opentrons_flex_96_tiprack_50ul',
-    'tip_rack_type_50_03': 'opentrons_flex_96_tiprack_50ul',
-    'tip_rack_type_50_04': 'opentrons_flex_96_tiprack_50ul',
-    'tip_rack_type_50_05': 'opentrons_flex_96_tiprack_50ul',
-    'pipette_type_50': 'flex_8channel_50',
+    'fragments_plate_type': 'opentrons_96_wellplate_200ul_pcr_full_skirt', # nest_96_wellplate_100ul_pcr_full_skirt
+    'gg_plate_type': 'opentrons_96_wellplate_200ul_pcr_full_skirt', # nest_96_wellplate_100ul_pcr_full_skirt
+    'tip_rack_type_50_01': 'opentrons_96_filtertiprack_20ul',
+    'tip_rack_type_50_02': 'opentrons_96_filtertiprack_20ul',
+    'tip_rack_type_50_03': 'opentrons_96_filtertiprack_20ul',
+    'tip_rack_type_50_04': 'opentrons_96_filtertiprack_20ul',
+    'tip_rack_type_50_05': 'opentrons_96_filtertiprack_20ul',
+    'pipette_type_20': 'p20_single_gen2',
     # 'tip_rack_type_200_01': 'opentrons_flex_96_tiprack_200ul',
     'pipette_type_1000': 'flex_8channel_1000',
 
     # Deck positions
-    'temp_module_01_position': 'B1',
-    'temp_module_02_position': 'C1',
-    'fragments_plate_initial_position': 'B1',
-    'gg_plate_position': 'C1',
-    'tip_rack_position_50_01': 'A2',
-    'tip_rack_position_50_02': 'A3',
+    'temp_module_01_position': 'D1',
+    'temp_module_02_position': 'D3',
+    'fragments_plate_initial_position': 'D1',
+    'gg_plate_position': 'D3',
+    'tip_rack_position_50_01': 'C1',
+    'tip_rack_position_50_02': 'C2',
     'tip_rack_position_50_03': 'B2',
     'tip_rack_position_50_04': 'B3',
-    'tip_rack_position_50_05': 'C3',
+    'tip_rack_position_50_05': 'B1',
     # 'tip_rack_position_200_01': 'A2',
-    'reagent_block': 'A1'
+    'reagent_block': 'A1',
+
+    #Offsets
+    # 'fragments_plate_initial_offset': ot2_patrick[1],
+    # 'gg_plate_offset': ot2_patrick[3],
+    # 'tip_rack_01_offset': ot2_patrick[4],
+    # 'tip_rack_02_offset': ot2_patrick[5],
+    # 'tip_rack_03_offset': ot2_patrick[8],
+    # 'tip_rack_04_offset': ot2_patrick[9],
+    # 'tip_rack_05_offset': ot2_patrick[7]
+
+    'fragments_plate_initial_offset': [0.0, 0.0, 0.0],
+    'gg_plate_offset': [0.3, 0.0, 0.0],
+    'tip_rack_01_offset': [-0.6, 0.4, -0.2],
+    'tip_rack_02_offset': [-0.6, 0.5, 0.4],
+    'tip_rack_03_offset': [-0.6, 0.5, -1.2],
+    'tip_rack_04_offset': [-0.4, 0.5, -1.0],
+    'tip_rack_05_offset': [-1.0, 0.8, -0.8]
 }
 
 
@@ -77,22 +130,38 @@ def transfer_combinatorial_liquids(protocol, source_plate, dest_plate, pipette, 
         config: Configuration dictionary containing combinations and transfer_volume
     """
 
-    combinations = config['combinations']
+    
     transfer_volume = config['transfer_volume']
+    #reverse pipetting values
+    aspirate_transfer_volume = config['aspirate_transfer_volume']
+    dispense_transfer_volume = config['dispense_transfer_volume']
 
     # Calculate total combinations before generating them
-    total_combinations = calculate_total_combinations(combinations)
+
+    # gbabnigg.changes.start
+
+    combinations = None
+    total_combinations = 0
+    all_combinations = None
+    if  config['use_combinations'] is True:
+        combinations = config['combinations']
+        total_combinations = calculate_total_combinations(combinations)
+        # Generate all possible combinations
+        all_combinations = generate_all_combinations(combinations)
+    else:
+        all_combinations = config['non_combinatorial_sources']
+        total_combinations = len(all_combinations)
+    # gbabnigg.changes.end
     protocol.comment(f"Total destination wells needed: {total_combinations}")
 
-    # Generate all possible combinations
-    all_combinations = generate_all_combinations(combinations)
+
 
     print(f"Generated {len(all_combinations)} combinations:")
     for i, combo in enumerate(all_combinations):
         print(f"Destination well {i+1}: Sources {combo}")
 
     # Perform transfers
-    dest_well_number = 1
+    dest_well_number = 9
 
     for combination in all_combinations:
         # For each combination, transfer from all source wells to one destination well
@@ -100,18 +169,39 @@ def transfer_combinatorial_liquids(protocol, source_plate, dest_plate, pipette, 
 
         protocol.comment(f"\nTransferring to destination well {dest_well_number}:")
 
-        for source_well_number in combination:
+        for idx, source_well_number in enumerate(combination):
             source_well = source_plate.wells()[source_well_number - 1]  # Convert to 0-based index
 
             protocol.comment(f"  - Transferring {transfer_volume}µL from source well {source_well_number} to dest well {dest_well_number}")
 
-            # Perform the transfer
-            pipette.transfer(
-                transfer_volume,
-                source_well,
-                dest_well,
-                new_tip='always'  # Use fresh tip for each transfer
-            )
+            # Pick up tip for transfer
+            pipette.pick_up_tip()
+            
+            # Aspirate from source
+            #default flow rate is 35
+            # pipette.flow_rate.aspirate = 18
+            pipette.aspirate(aspirate_transfer_volume, source_well)
+            
+            # Dispense to destination
+            pipette.flow_rate.dispense = 29
+            pipette.dispense(dispense_transfer_volume, dest_well)
+            
+            # Blow out after dispensing
+            # pipette.blow_out(dest_well)
+            pipette.drop_tip()
+            
+            # Check if this is the last member of the combination
+            #TODO: mixing temporarily removed
+            if idx == len(combination) - 1:
+                pipette.pick_up_tip()
+                protocol.comment(f"  - Mixing in destination well {dest_well_number} after last transfer")
+                # Mix using the same tip
+                pipette.mix(repetitions=3, volume=transfer_volume * len(combination) * 0.7, location=dest_well, rate=0.2)
+                # pipette.blow_out(dest_well)
+                pipette.drop_tip()
+            # Drop tip
+            # pipette.drop_tip()
+            
         dest_well_number += 1
 
 def add_master_mix_to_combinations(protocol, source_plate, dest_plate, pipette, config):
@@ -203,34 +293,45 @@ def run(protocol: protocol_api.ProtocolContext):
     #     use_gripper=True
     # )
 
-    chute = protocol.load_waste_chute()
+    # chute = protocol.load_waste_chute()
 
     # source_plate.set_offset(x=0.40, y=0.50, z=2.40)
-    source_plate.set_offset(x=0.7, y=0.30, z=0.2)
-
+    # source_plate.set_offset(x=0.7, y=0.30, z=0.2)
+    # source_plate.set_offset(x=0.0, y=0.80, z=-1.5)
+    source_plate.set_offset(x=config['fragments_plate_initial_offset'][0], y=config['fragments_plate_initial_offset'][1], z=config['fragments_plate_initial_offset'][2])
 
 
     # Load destination plate
     # dest_plate = protocol.load_labware(config['gg_plate_type'], config['gg_plate_position'])
     dest_plate = temp_adapter_2.load_labware(config['gg_plate_type'])
-    dest_plate.set_offset(x=0.4, y=0.4, z=0.0)
-
+    # dest_plate.set_offset(x=0.4, y=0.4, z=0.0)
+    # dest_plate.set_offset(x=0.0, y=0.8, z=-1.5)
+    dest_plate.set_offset(x=config['gg_plate_offset'][0], y=config['gg_plate_offset'][1], z=config['gg_plate_offset'][2])
 
     tiprack_50_1 = protocol.load_labware(
         load_name=config['tip_rack_type_50_01'], location=config['tip_rack_position_50_01']
     )
+    tiprack_50_1.set_offset(x=config['tip_rack_01_offset'][0], y=config['tip_rack_01_offset'][1], z=config['tip_rack_01_offset'][2])
     tiprack_50_2 = protocol.load_labware(
         load_name=config['tip_rack_type_50_02'], location=config['tip_rack_position_50_02']
     )
+    tiprack_50_2.set_offset(x=config['tip_rack_02_offset'][0], y=config['tip_rack_02_offset'][1], z=config['tip_rack_02_offset'][2])
+
     tiprack_50_3 = protocol.load_labware(
         load_name=config['tip_rack_type_50_03'], location=config['tip_rack_position_50_03']
     )
+    tiprack_50_3.set_offset(x=config['tip_rack_03_offset'][0], y=config['tip_rack_03_offset'][1], z=config['tip_rack_03_offset'][2])
+
     tiprack_50_4 = protocol.load_labware(
         load_name=config['tip_rack_type_50_04'], location=config['tip_rack_position_50_04']
     )
+    tiprack_50_4.set_offset(x=config['tip_rack_04_offset'][0], y=config['tip_rack_04_offset'][1], z=config['tip_rack_04_offset'][2])
+
     tiprack_50_5 = protocol.load_labware(
         load_name=config['tip_rack_type_50_05'], location=config['tip_rack_position_50_05']
     )
+    tiprack_50_5.set_offset(x=config['tip_rack_05_offset'][0], y=config['tip_rack_05_offset'][1], z=config['tip_rack_05_offset'][2])
+
 
     # # 8-channel P1000
     # tiprack_200 = protocol.load_labware(
@@ -238,10 +339,10 @@ def run(protocol: protocol_api.ProtocolContext):
     # )
 
     # Pipettes
-    p50 = protocol.load_instrument('flex_8channel_50', mount='right', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3, tiprack_50_4, tiprack_50_5])
-    p50s = protocol.load_instrument('flex_1channel_50', mount='left', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3, tiprack_50_4, tiprack_50_5])
+    # p50 = protocol.load_instrument('flex_8channel_50', mount='right', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3, tiprack_50_4, tiprack_50_5])
+    p50s = protocol.load_instrument(config['pipette_type_20'], mount='left', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3, tiprack_50_4, tiprack_50_5])
 
-    p50.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3, tiprack_50_4, tiprack_50_5])
+    # p50.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3, tiprack_50_4, tiprack_50_5])
     # p50s.configure_nozzle_layout(style=SINGLE, start='A1', tip_racks=[tiprack_50_1, tiprack_50_2, tiprack_50_3, tiprack_50_4, tiprack_50_5])
 
 
@@ -263,6 +364,3 @@ def run(protocol: protocol_api.ProtocolContext):
     #     pipette=p50s,
     #     config=config
     # )
-
-
-
