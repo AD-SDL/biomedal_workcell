@@ -97,8 +97,8 @@ config = {
     # 'tip_rack_04_offset': ot2_patrick[9],
     # 'tip_rack_05_offset': ot2_patrick[7]
 
-    'fragments_plate_initial_offset': [0.0, 0.0, 0.0],
-    'gg_plate_offset': [0.3, 0.0, 0.0],
+    'fragments_plate_initial_offset': [0.3, 1.1, -0.7],
+    'gg_plate_offset': [0.7, 1.7, -1.2],
     'tip_rack_01_offset': [-0.6, 0.4, -0.2],
     'tip_rack_02_offset': [-0.6, 0.5, 0.4],
     'tip_rack_03_offset': [-0.6, 0.5, -1.2],
