@@ -20,10 +20,11 @@ steps:
     args:
       source_plate_rotation: wide
       target_plate_rotation: wide
+      source_approach_height_offset: 10
     location:
-      source: ot2_3_tempblock
+      source: ot2_patrick_nest4_wide
       target: biometra_96_beauford
-      source_approach: ot2_safe_path
+      source_approach: safe_path_ot2_patrick_nest4_high
       target_approach: biometra_safe_path
 
   #close biometra

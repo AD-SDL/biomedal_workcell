@@ -76,10 +76,10 @@ config = {
     'pipette_type_1000': 'flex_8channel_1000',
 
     # Deck positions
-    'temp_module_01_position': 'D1',
-    'temp_module_02_position': 'D3',
-    'fragments_plate_initial_position': 'D1',
-    'gg_plate_position': 'D3',
+    'temp_module_01_position': 'C1',
+    'temp_module_02_position': 'C3',
+    'fragments_plate_initial_position': 'C1',
+    'gg_plate_position': 'C3',
     'tip_rack_position_50_01': 'C1',
     'tip_rack_position_50_02': 'C2',
     'tip_rack_position_50_03': 'B2',
