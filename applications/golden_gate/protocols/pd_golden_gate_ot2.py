@@ -80,7 +80,7 @@ config = {
     'temp_module_02_position': 'C3',
     'fragments_plate_initial_position': 'C1',
     'gg_plate_position': 'C3',
-    'tip_rack_position_50_01': 'C1',
+    'tip_rack_position_50_01': 'A1',
     'tip_rack_position_50_02': 'C2',
     'tip_rack_position_50_03': 'B2',
     'tip_rack_position_50_04': 'B3',
